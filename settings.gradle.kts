@@ -11,6 +11,5 @@ plugins {
 }
 
 rootProject.name = "birthday-reminder"
-include("app")
-include("core")
+
 include("core")
