@@ -12,8 +12,8 @@ public class RemoveContact {
     }
 
     public void execute(RemoveContactRequest request) {
-        if (!repository.has(request.number()))
-            throw new ContactNotFoundException(request.number());
-        repository.remove(request.number());
+        final var contact = repository.get(request.number())
+                .orElseThrow(() -> new ContactNotFoundException(request.number()));
+        repository.remove(contact.number());
     }
 }

@@ -1,11 +1,11 @@
 package org.gbl.contacts.domain;
 
+import java.util.Optional;
+
 public interface ContactRepository {
     void add(Contact aContact);
 
-    boolean has(String aNumber);
-
     void remove(String aNumber);
 
-    Contact get(String aNumber);
+    Optional<Contact> get(String aNumber);
 }

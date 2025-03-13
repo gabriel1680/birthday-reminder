@@ -6,6 +6,7 @@ import org.gbl.contacts.domain.ContactRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class InMemoryContactRepository implements ContactRepository {
 
@@ -21,18 +22,13 @@ public class InMemoryContactRepository implements ContactRepository {
     }
 
     @Override
-    public boolean has(String aNumber) {
-        return contacts.containsKey(aNumber);
-    }
-
-    @Override
     public void remove(String aNumber) {
         contacts.remove(aNumber, contacts.get(aNumber));
     }
 
     @Override
-    public Contact get(String aNumber) {
-        return contacts.get(aNumber);
+    public Optional<Contact> get(String aNumber) {
+        return Optional.ofNullable(contacts.get(aNumber));
     }
 
     public int size() {

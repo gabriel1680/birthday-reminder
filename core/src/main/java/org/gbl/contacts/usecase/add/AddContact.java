@@ -12,9 +12,8 @@ public class AddContact {
     }
 
     public void execute(AddContactRequest request) {
-        if (repository.has(request.number())) {
+        if (repository.get(request.number()).isPresent())
             throw new ContactNumberAlreadyExistsException(request.number());
-        }
         final var contact = new Contact(request.name(), request.number(), request.birthdate());
         repository.add(contact);
     }
