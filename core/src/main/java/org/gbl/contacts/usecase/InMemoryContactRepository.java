@@ -26,8 +26,13 @@ public class InMemoryContactRepository implements ContactRepository {
     }
 
     @Override
-    public void remove(String number) {
-        contacts.remove(number, contacts.get(number));
+    public void remove(String aNumber) {
+        contacts.remove(aNumber, contacts.get(aNumber));
+    }
+
+    @Override
+    public Contact get(String aNumber) {
+        return contacts.get(aNumber);
     }
 
     public int size() {

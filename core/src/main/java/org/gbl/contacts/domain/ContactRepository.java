@@ -5,5 +5,7 @@ public interface ContactRepository {
 
     boolean has(String aNumber);
 
-    void remove(String number);
+    void remove(String aNumber);
+
+    Contact get(String aNumber);
 }
