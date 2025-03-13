@@ -2,7 +2,7 @@ package org.gbl.contacts.usecase.get;
 
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.domain.ContactRepository;
-import org.gbl.contacts.usecase.remove.ContactNotFoundException;
+import org.gbl.contacts.usecase.shared.ContactNotFoundException;
 
 public class GetContact {
     private final ContactRepository repository;

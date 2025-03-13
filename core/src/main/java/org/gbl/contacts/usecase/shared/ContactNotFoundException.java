@@ -1,4 +1,4 @@
-package org.gbl.contacts.usecase.remove;
+package org.gbl.contacts.usecase.shared;
 
 public class ContactNotFoundException extends RuntimeException {
 

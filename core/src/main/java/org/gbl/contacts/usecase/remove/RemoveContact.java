@@ -1,6 +1,7 @@
 package org.gbl.contacts.usecase.remove;
 
 import org.gbl.contacts.domain.ContactRepository;
+import org.gbl.contacts.usecase.shared.ContactNotFoundException;
 
 public class RemoveContact {
 
