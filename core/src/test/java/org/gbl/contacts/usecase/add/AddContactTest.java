@@ -27,7 +27,7 @@ public class AddContactTest {
     void shouldNotAddAContactWithSameNumber() {
         final var request = new AddContactRequest(JOHN_DOE.name(), JOHN_DOE.number(),
                                                   JOHN_DOE.birthdate());
-        assertThatThrownBy(() -> sut.addContact(request))
+        assertThatThrownBy(() -> sut.execute(request))
                 .isInstanceOf(ContactNumberAlreadyExistsException.class)
                 .hasMessage("Contact already exists with number \"119991234\"");
         assertThat(contactRepository.size()).isEqualTo(1);
@@ -36,7 +36,7 @@ public class AddContactTest {
     @Test
     void shouldAddAContact() {
         final var request = new AddContactRequest("Mary Ann", "1198881234", toDate("19/09/1999"));
-        sut.addContact(request);
+        sut.execute(request);
         assertThat(contactRepository.size()).isEqualTo(2);
     }
 }
