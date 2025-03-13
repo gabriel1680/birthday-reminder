@@ -11,9 +11,6 @@ public class InMemoryContactRepository implements ContactRepository {
 
     private final Map<String, Contact> contacts = new HashMap<>();
 
-    public InMemoryContactRepository() {
-    }
-
     public InMemoryContactRepository(List<Contact> contacts) {
         contacts.forEach(contact -> this.contacts.put(contact.number(), contact));
     }
@@ -26,6 +23,11 @@ public class InMemoryContactRepository implements ContactRepository {
     @Override
     public boolean has(String aNumber) {
         return contacts.containsKey(aNumber);
+    }
+
+    @Override
+    public void remove(String number) {
+        contacts.remove(number, contacts.get(number));
     }
 
     public int size() {
