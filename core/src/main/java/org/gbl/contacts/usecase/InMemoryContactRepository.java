@@ -1,4 +1,4 @@
-package org.gbl.contacts.usecase.add;
+package org.gbl.contacts.usecase;
 
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.domain.ContactRepository;

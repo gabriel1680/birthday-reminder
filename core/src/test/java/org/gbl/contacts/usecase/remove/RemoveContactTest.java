@@ -1,6 +1,6 @@
 package org.gbl.contacts.usecase.remove;
 
-import org.gbl.contacts.usecase.add.InMemoryContactRepository;
+import org.gbl.contacts.usecase.InMemoryContactRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
