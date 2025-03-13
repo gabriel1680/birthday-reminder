@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.contacts.usecase.add;
 
 import java.time.LocalDate;
 

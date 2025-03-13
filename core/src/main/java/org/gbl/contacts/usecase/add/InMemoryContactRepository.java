@@ -1,4 +1,7 @@
-package org.gbl;
+package org.gbl.contacts.usecase.add;
+
+import org.gbl.contacts.domain.Contact;
+import org.gbl.contacts.domain.ContactRepository;
 
 import java.util.HashMap;
 import java.util.List;

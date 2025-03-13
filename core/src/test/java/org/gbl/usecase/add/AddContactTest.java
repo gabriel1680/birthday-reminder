@@ -1,5 +1,10 @@
-package org.gbl;
+package org.gbl.usecase.add;
 
+import org.gbl.contacts.domain.Contact;
+import org.gbl.contacts.usecase.add.AddContact;
+import org.gbl.contacts.usecase.add.AddContactRequest;
+import org.gbl.contacts.usecase.add.ContactNumberAlreadyExistsException;
+import org.gbl.contacts.usecase.add.InMemoryContactRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

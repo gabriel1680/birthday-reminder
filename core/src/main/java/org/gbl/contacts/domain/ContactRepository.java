@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.contacts.domain;
 
 public interface ContactRepository {
     void add(Contact aContact);
