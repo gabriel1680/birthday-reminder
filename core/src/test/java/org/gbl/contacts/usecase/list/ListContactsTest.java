@@ -1,6 +1,6 @@
 package org.gbl.contacts.usecase.list;
 
-import org.gbl.shared.SearchRequest;
+import org.gbl.shared.SearchInput;
 import org.gbl.shared.SortingOrder;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class ListContactsTest {
         final var queryContactRepository = new InMemoryContactQueryRepository(List.of(JOHN_DOE));
         final var sut = new ListContacts(queryContactRepository);
         final var filter = new ContactFilter(null, null);
-        final var request = new SearchRequest<>(1, 2, 2, SortingOrder.ASC, filter);
+        final var request = new SearchInput<>(1, 2, 2, SortingOrder.ASC, filter);
         final var result = sut.execute(request);
         assertThat(result.page()).isEqualTo(request.page());
         assertThat(result.take()).isEqualTo(request.take());

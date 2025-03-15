@@ -2,7 +2,7 @@ package org.gbl.contacts.usecase.list;
 
 import org.gbl.contacts.usecase.get.ContactOutput;
 import org.gbl.shared.PaginationOutput;
-import org.gbl.shared.SearchRequest;
+import org.gbl.shared.SearchInput;
 
 public class ListContacts {
 
@@ -12,7 +12,7 @@ public class ListContacts {
         this.repository = repository;
     }
 
-    public PaginationOutput<ContactOutput> execute(SearchRequest<ContactFilter> request) {
+    public PaginationOutput<ContactOutput> execute(SearchInput<ContactFilter> request) {
         return repository.search(request);
     }
 }

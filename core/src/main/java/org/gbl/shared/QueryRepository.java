@@ -1,5 +1,5 @@
 package org.gbl.shared;
 
 public interface QueryRepository<O, F> {
-    PaginationOutput<O> search(SearchRequest<F> aRequest);
+    PaginationOutput<O> search(SearchInput<F> aRequest);
 }
