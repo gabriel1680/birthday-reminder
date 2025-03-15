@@ -2,19 +2,22 @@ package org.gbl.contacts.usecase.add;
 
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.domain.ContactRepository;
+import org.gbl.shared.IdProvider;
 
 public class AddContact {
 
     private final ContactRepository repository;
+    private final IdProvider provider;
 
-    public AddContact(ContactRepository repository) {
+    public AddContact(ContactRepository repository, IdProvider provider) {
         this.repository = repository;
+        this.provider = provider;
     }
 
-    public void execute(AddContactRequest request) {
-        if (repository.get(request.number()).isPresent())
-            throw new ContactNumberAlreadyExistsException(request.number());
-        final var contact = new Contact(request.name(), request.number(), request.birthdate());
+    public void execute(AddContactInput input) {
+        if (repository.existsByName(input.name()))
+            throw new ContactAlreadyExistsException(input.name());
+        final var contact = new Contact(provider.provideId(), input.name(), input.birthdate());
         repository.add(contact);
     }
 }

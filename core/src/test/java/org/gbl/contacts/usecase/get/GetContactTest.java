@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gbl.contacts.usecase.ContactFixture.JOHN_DOE;
+import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
 
 class GetContactTest {
 
@@ -24,14 +24,14 @@ class GetContactTest {
 
     @Test
     void shouldNotGetAContactThatDoesNotExists() {
-        assertThatThrownBy(() -> sut.execute(new GetContactRequest("1199888321")))
+        assertThatThrownBy(() -> sut.execute(new GetContactInput("99")))
                 .isInstanceOf(ContactNotFoundException.class)
-                .hasMessage("Contact with number \"1199888321\" not found");
+                .hasMessage("Contact with id \"99\" not found");
     }
 
     @Test
     void shouldGetAContact() {
-        final var request = new GetContactRequest(JOHN_DOE.number());
+        final var request = new GetContactInput(JOHN_DOE.id());
         final var output = sut.execute(request);
         assertThat(output.name()).isEqualTo(JOHN_DOE.name());
         assertThat(output.name()).isEqualTo(JOHN_DOE.name());

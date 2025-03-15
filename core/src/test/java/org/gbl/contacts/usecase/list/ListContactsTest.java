@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gbl.contacts.usecase.ContactFixture.JOHN_DOE;
+import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
 
 class ListContactsTest {
 

@@ -11,13 +11,13 @@ public class GetContact {
         this.repository = repository;
     }
 
-    public ContactOutput execute(GetContactRequest request) {
-        if (!repository.has(request.number()))
-            throw new ContactNotFoundException(request.number());
-        return toOutput(repository.get(request.number()));
+    public ContactOutput execute(GetContactInput input) {
+        final var contact = repository.getById(input.id())
+                .orElseThrow(() -> new ContactNotFoundException(input.id()));
+        return toOutput(contact);
     }
 
     private ContactOutput toOutput(Contact contact) {
-        return new ContactOutput(contact.name(), contact.number(), contact.birthdate());
+        return new ContactOutput(contact.id(), contact.name(), contact.birthdate());
     }
 }
