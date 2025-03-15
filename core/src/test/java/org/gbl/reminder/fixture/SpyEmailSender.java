@@ -1,4 +1,4 @@
-package org.gbl.reminder.app;
+package org.gbl.reminder.fixture;
 
 import org.gbl.reminder.out.email.EmailSender;
 import org.gbl.reminder.out.email.SendEmailRequest;

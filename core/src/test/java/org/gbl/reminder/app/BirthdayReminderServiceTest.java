@@ -1,5 +1,7 @@
 package org.gbl.reminder.app;
 
+import org.gbl.reminder.fixture.FakeContactsModule;
+import org.gbl.reminder.fixture.SpyEmailSender;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

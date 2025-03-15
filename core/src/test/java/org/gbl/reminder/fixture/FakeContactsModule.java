@@ -1,4 +1,4 @@
-package org.gbl.reminder.app;
+package org.gbl.reminder.fixture;
 
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.usecase.add.AddContactInput;
@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
 
-class FakeContactsModule implements ContactsModule {
+public class FakeContactsModule implements ContactsModule {
     @Override
     public void addContact(AddContactInput input) {
 
