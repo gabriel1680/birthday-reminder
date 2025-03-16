@@ -89,10 +89,9 @@ public class ContactsSparkController {
     public HttpAPIResponse deleteContact(Request request, Response response) {
         response.type("application/json");
         try {
-            final var id = request.params("id");
-            if (id == null || id.isEmpty())
-                throw new InvalidPayloadException("invalid id");
-            contactsModule.removeContact(new RemoveContactInput(id));
+            final var id = getId(request);
+            final var input = new RemoveContactInput(id);
+            contactsModule.removeContact(input);
             response.status(NO_CONTENT.getCode());
             return HttpAPIResponse.empty();
         } catch (InvalidPayloadException e) {
