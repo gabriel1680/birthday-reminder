@@ -72,9 +72,8 @@ public class ContractsSparkController {
 
     private static String getId(Request request) {
         final var id = request.params("id");
-        if (id == null || id.isEmpty()) {
+        if (id == null || id.isEmpty())
             throw new InvalidPayloadException("invalid id");
-        }
         return id;
     }
 

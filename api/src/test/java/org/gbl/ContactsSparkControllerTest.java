@@ -97,7 +97,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
     }
 
     @Nested
-    class GetContractShould {
+    class GetContactShould {
 
         @Test
         void throwAParseError_whenReceiveAnInvalidId() {
