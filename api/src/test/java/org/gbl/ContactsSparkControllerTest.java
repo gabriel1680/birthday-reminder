@@ -7,10 +7,14 @@ import org.gbl.contacts.usecase.get.ContactOutput;
 import org.gbl.contacts.usecase.get.GetContactInput;
 import org.gbl.contacts.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.usecase.update.UpdateContactInput;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -207,6 +211,81 @@ class ContactsSparkControllerTest extends SparkControllerTest {
                     .build();
             verify(contactsModule).removeContact(captor.capture());
             assertThat(captor.getValue().id()).isEqualTo("123");
+        }
+    }
+
+    @Nested
+    class UpdateContactShould {
+
+        private static final String VALID_PAYLOAD = "{\"name\": \"Maria\", \"birthdate\": " +
+                "\"2018-11-15T00:00:00\"}";
+
+        @Test
+        void throwAParseError_whenReceiveAnInvalidId() {
+            when(request.params("id")).thenReturn("");
+            final var output = sut.updateContact(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(BAD_REQUEST)
+                    .forExpected(ResponseStatus.ERROR, "invalid id", new JSONObject())
+                    .withActual(output)
+                    .build();
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"{}", "{\"name\": \"\"}", "{\"birthdate\":\"\"}"})
+        void throwAParseError_whenReceiveAnInvalidPayload(String body) {
+            when(request.params("id")).thenReturn("123");
+            when(request.body()).thenReturn(body);
+            final var output = sut.updateContact(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(BAD_REQUEST)
+                    .forExpected(ResponseStatus.ERROR, "invalid payload", new JSONObject())
+                    .withActual(output)
+                    .build();
+        }
+
+        @Test
+        void throwTheUnknownError() {
+            when(request.params("id")).thenReturn("123");
+            when(request.body()).thenReturn(VALID_PAYLOAD);
+            doThrow(new RuntimeException("Internal error")).when(contactsModule).updateContact(any());
+            assertThatThrownBy(() -> sut.updateContact(request, response))
+                    .hasMessage("Internal error")
+                    .isInstanceOf(RuntimeException.class);
+        }
+
+        @Test
+        void parseAnErrorResponse_whenAApplicationExceptionIsThrown() {
+            when(request.params("id")).thenReturn("123");
+            when(request.body()).thenReturn(VALID_PAYLOAD);
+            final var exception = new ContactNotFoundException("123");
+            doThrow(exception).when(contactsModule).updateContact(any());
+            final var output = sut.updateContact(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(NOT_FOUND)
+                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
+                    .withActual(output)
+                    .build();
+        }
+
+        @Captor
+        ArgumentCaptor<UpdateContactInput> captor;
+
+        @Test
+        void updateContact() {
+            when(request.params("id")).thenReturn("123");
+            when(request.body()).thenReturn(VALID_PAYLOAD);
+            final var output = sut.updateContact(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(NO_CONTENT)
+                    .forExpected(ResponseStatus.SUCCESS, "", new JSONObject())
+                    .withActual(output)
+                    .build();
+            verify(contactsModule).updateContact(captor.capture());
+            final var input = captor.getValue();
+            assertThat(input.id()).isEqualTo("123");
+            assertThat(input.name()).isEqualTo("Maria");
+            assertThat(input.birthdate()).isEqualTo("2018-11-15");
         }
     }
 }

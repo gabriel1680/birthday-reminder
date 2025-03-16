@@ -7,6 +7,7 @@ import org.gbl.contacts.usecase.get.ContactOutput;
 import org.gbl.contacts.usecase.get.GetContactInput;
 import org.gbl.contacts.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.usecase.update.UpdateContactInput;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -100,6 +101,35 @@ public class ContactsSparkController {
         } catch (ContactNotFoundException e) {
             response.status(NOT_FOUND.getCode());
             return HttpAPIResponse.ofError(e.getMessage());
+        }
+    }
+
+    public HttpAPIResponse updateContact(Request request, Response response) {
+        response.type("application/json");
+        try {
+            final var id = getId(request);
+            final var input = parseBodyFrom(id, request);
+            contactsModule.updateContact(input);
+            response.status(NO_CONTENT.getCode());
+            return HttpAPIResponse.empty();
+        } catch (InvalidPayloadException e) {
+            response.status(BAD_REQUEST.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        } catch (ContactNotFoundException e) {
+            response.status(NOT_FOUND.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        }
+    }
+
+    private static UpdateContactInput parseBodyFrom(String id, Request request) {
+        try {
+            final var json = new JSONObject(request.body());
+            final var birthdate = LocalDate.parse(json.getString("birthdate"),
+                                                  DateTimeFormatter.ISO_DATE_TIME);
+            final var name = json.getString("name");
+            return new UpdateContactInput(id, name, birthdate);
+        } catch (RuntimeException e) {
+            throw new InvalidPayloadException(e);
         }
     }
 }

@@ -4,6 +4,7 @@ import org.gbl.contacts.ContactsModuleFactory;
 
 import static spark.Spark.delete;
 import static spark.Spark.get;
+import static spark.Spark.patch;
 import static spark.Spark.port;
 import static spark.Spark.post;
 
@@ -16,5 +17,6 @@ public class Main {
         post("/contacts", contactsAPI::createContact);
         get("/contacts/:id", contactsAPI::getContract);
         delete("/contacts/:id", contactsAPI::deleteContact);
+        patch("/contacts/:id", contactsAPI::updateContact);
     }
 }
