@@ -5,6 +5,7 @@ import org.gbl.contacts.usecase.add.AddContactInput;
 import org.gbl.contacts.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.usecase.get.ContactOutput;
 import org.gbl.contacts.usecase.get.GetContactInput;
+import org.gbl.contacts.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.usecase.shared.ContactNotFoundException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Nested;
@@ -23,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
 import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
+import static org.eclipse.jetty.http.HttpStatus.Code.NO_CONTENT;
 import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 import static org.gbl.SparkResponseAssertionBuilder.aAssertionFor;
@@ -151,6 +153,59 @@ class ContactsSparkControllerTest extends SparkControllerTest {
                     .withActual(output)
                     .build();
             verify(contactsModule).getContact(captor.capture());
+            assertThat(captor.getValue().id()).isEqualTo("123");
+        }
+    }
+
+    @Nested
+    class DeleteContactShould {
+
+        @Test
+        void throwAParseError_whenReceiveAnInvalidId() {
+            when(request.params("id")).thenReturn("");
+            final var output = sut.deleteContact(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(BAD_REQUEST)
+                    .forExpected(ResponseStatus.ERROR, "invalid id", new JSONObject())
+                    .withActual(output)
+                    .build();
+        }
+
+        @Test
+        void throwTheUnknownError() {
+            when(request.params("id")).thenReturn("123");
+            doThrow(new RuntimeException("Internal error")).when(contactsModule).removeContact(any());
+            assertThatThrownBy(() -> sut.deleteContact(request, response))
+                    .hasMessage("Internal error")
+                    .isInstanceOf(RuntimeException.class);
+        }
+
+        @Test
+        void parseAnErrorResponse_whenAApplicationExceptionIsThrown() {
+            when(request.params("id")).thenReturn("123");
+            final var exception = new ContactNotFoundException("123");
+            doThrow(exception).when(contactsModule).removeContact(any());
+            final var output = sut.deleteContact(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(NOT_FOUND)
+                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
+                    .withActual(output)
+                    .build();
+        }
+
+        @Captor
+        ArgumentCaptor<RemoveContactInput> captor;
+
+        @Test
+        void deleteAContact() {
+            when(request.params("id")).thenReturn("123");
+            final var output = sut.deleteContact(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(NO_CONTENT)
+                    .forExpected(ResponseStatus.SUCCESS, "", new JSONObject())
+                    .withActual(output)
+                    .build();
+            verify(contactsModule).removeContact(captor.capture());
             assertThat(captor.getValue().id()).isEqualTo("123");
         }
     }

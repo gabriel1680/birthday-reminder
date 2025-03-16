@@ -5,6 +5,7 @@ import org.gbl.contacts.usecase.add.AddContactInput;
 import org.gbl.contacts.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.usecase.get.ContactOutput;
 import org.gbl.contacts.usecase.get.GetContactInput;
+import org.gbl.contacts.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.usecase.shared.ContactNotFoundException;
 import org.json.JSONObject;
 import spark.Request;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
 import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
+import static org.eclipse.jetty.http.HttpStatus.Code.NO_CONTENT;
 import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 
@@ -85,6 +87,20 @@ public class ContactsSparkController {
     }
 
     public HttpAPIResponse deleteContact(Request request, Response response) {
-        return null;
+        response.type("application/json");
+        try {
+            final var id = request.params("id");
+            if (id == null || id.isEmpty())
+                throw new InvalidPayloadException("invalid id");
+            contactsModule.removeContact(new RemoveContactInput(id));
+            response.status(NO_CONTENT.getCode());
+            return HttpAPIResponse.empty();
+        } catch (InvalidPayloadException e) {
+            response.status(BAD_REQUEST.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        } catch (ContactNotFoundException e) {
+            response.status(NOT_FOUND.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        }
     }
 }
