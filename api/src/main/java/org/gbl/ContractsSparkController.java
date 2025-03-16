@@ -14,11 +14,11 @@ import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 
-public class ContactsWebAPI {
+public class ContractsSparkController {
 
     private final ContactsModule contactsModule;
 
-    public ContactsWebAPI(ContactsModule contactsModule) {
+    public ContractsSparkController(ContactsModule contactsModule) {
         this.contactsModule = contactsModule;
     }
 
@@ -47,5 +47,9 @@ public class ContactsWebAPI {
         } catch (RuntimeException e) {
             throw new InvalidPayloadException(e);
         }
+    }
+
+    public HttpAPIResponse getContract(Request request, Response response) {
+        return null;
     }
 }

@@ -31,7 +31,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
     @Mock
     ContactsModule contactsModule;
     @InjectMocks
-    ContactsWebAPI sut;
+    ContractsSparkController sut;
 
     @Nested
     class CreateContactShould {
