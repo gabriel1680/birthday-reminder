@@ -15,6 +15,6 @@ public class Main {
         port(8080);
         post("/contacts", contactsAPI::createContact);
         get("/contacts/:id", contactsAPI::getContract);
-        delete("/contaacts/:id", contactsAPI::deleteContact);
+        delete("/contacts/:id", contactsAPI::deleteContact);
     }
 }
