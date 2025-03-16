@@ -1,4 +1,4 @@
-package org.gbl.contacts.usecase;
+package org.gbl.contacts.infra;
 
 import org.gbl.shared.IdProvider;
 
