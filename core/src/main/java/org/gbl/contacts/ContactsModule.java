@@ -5,11 +5,14 @@ import org.gbl.contacts.usecase.get.ContactOutput;
 import org.gbl.contacts.usecase.get.GetContactInput;
 import org.gbl.contacts.usecase.list.ContactFilter;
 import org.gbl.contacts.usecase.remove.RemoveContactInput;
+import org.gbl.contacts.usecase.update.UpdateContactInput;
 import org.gbl.shared.PaginationOutput;
 import org.gbl.shared.SearchInput;
 
 public interface ContactsModule {
     void addContact(AddContactInput input);
+
+    void updateContact(UpdateContactInput input);
 
     void removeContact(RemoveContactInput input);
 

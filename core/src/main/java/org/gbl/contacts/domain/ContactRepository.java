@@ -10,4 +10,6 @@ public interface ContactRepository {
     Optional<Contact> getById(String anId);
 
     boolean existsByName(String aName);
+
+    void update(Contact aContact);
 }

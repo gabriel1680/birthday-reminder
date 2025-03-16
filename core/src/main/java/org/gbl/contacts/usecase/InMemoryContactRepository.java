@@ -37,7 +37,16 @@ public class InMemoryContactRepository implements ContactRepository {
                 .anyMatch(contact -> contact.name().equals(aName));
     }
 
+    @Override
+    public void update(Contact aContact) {
+        contacts.put(aContact.id(), aContact);
+    }
+
     public int size() {
         return contacts.size();
+    }
+
+    public List<Contact> contacts() {
+        return contacts.values().stream().toList();
     }
 }
