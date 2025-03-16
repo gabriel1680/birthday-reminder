@@ -51,7 +51,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
             final var output = sut.createContact(request, response);
             aAssertionFor(response)
                     .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid payload", null)
+                    .forExpected(ResponseStatus.ERROR, "invalid payload", new JSONObject())
                     .withActual(output)
                     .build();
         }
@@ -73,7 +73,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
             final var output = sut.createContact(request, response);
             aAssertionFor(response)
                     .withStatusCode(UNPROCESSABLE_ENTITY)
-                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), null)
+                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
                     .withActual(output)
                     .build();
         }
@@ -87,7 +87,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
             final var output = sut.createContact(request, response);
             aAssertionFor(response)
                     .withStatusCode(CREATED)
-                    .forExpected(ResponseStatus.SUCCESS, "", null)
+                    .forExpected(ResponseStatus.SUCCESS, "", new JSONObject())
                     .withActual(output)
                     .build();
             verify(contactsModule).addContact(captor.capture());
@@ -105,7 +105,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
             final var output = sut.getContract(request, response);
             aAssertionFor(response)
                     .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid id", null)
+                    .forExpected(ResponseStatus.ERROR, "invalid id", new JSONObject())
                     .withActual(output)
                     .build();
         }
@@ -127,7 +127,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
             final var output = sut.getContract(request, response);
             aAssertionFor(response)
                     .withStatusCode(NOT_FOUND)
-                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), null)
+                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
                     .withActual(output)
                     .build();
         }
@@ -147,7 +147,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
                     .put("birthdate", contact.birthdate());
             aAssertionFor(response)
                     .withStatusCode(OK)
-                    .forExpected(ResponseStatus.SUCCESS, null, data)
+                    .forExpected(ResponseStatus.SUCCESS, "", data)
                     .withActual(output)
                     .build();
             verify(contactsModule).getContact(captor.capture());
