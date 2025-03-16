@@ -3,6 +3,9 @@ package org.gbl;
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.usecase.add.AddContactInput;
 import org.gbl.contacts.usecase.add.ContactAlreadyExistsException;
+import org.gbl.contacts.usecase.get.ContactOutput;
+import org.gbl.contacts.usecase.get.GetContactInput;
+import org.gbl.contacts.usecase.shared.ContactNotFoundException;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -12,6 +15,8 @@ import java.time.format.DateTimeFormatter;
 
 import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
+import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
+import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 
 public class ContractsSparkController {
@@ -50,6 +55,33 @@ public class ContractsSparkController {
     }
 
     public HttpAPIResponse getContract(Request request, Response response) {
-        return null;
+        response.type("application/json");
+        try {
+            final var input = new GetContactInput(getId(request));
+            final var contact = contactsModule.getContact(input);
+            response.status(OK.getCode());
+            return HttpAPIResponse.ofSuccess(toJson(contact));
+        } catch (InvalidPayloadException e) {
+            response.status(BAD_REQUEST.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        } catch (ContactNotFoundException e) {
+            response.status(NOT_FOUND.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        }
+    }
+
+    private static String getId(Request request) {
+        final var id = request.params("id");
+        if (id == null || id.isEmpty()) {
+            throw new InvalidPayloadException("invalid id");
+        }
+        return id;
+    }
+
+    private static JSONObject toJson(ContactOutput contact) {
+        return new JSONObject()
+                .put("id", contact.id())
+                .put("name", contact.name())
+                .put("birthdate", contact.birthdate());
     }
 }

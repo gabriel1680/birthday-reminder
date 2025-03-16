@@ -45,6 +45,6 @@ public class SparkResponseAssertionBuilder {
         verify(response).status(statusCode.getCode());
         assertThat(actual.status()).isEqualTo(expected.status());
         assertThat(actual.message()).isEqualTo(expected.message());
-        assertThat(actual.data()).isEqualTo(expected.data());
+        assertThat(actual.data()).usingRecursiveComparison().isEqualTo(expected.data());
     }
 }

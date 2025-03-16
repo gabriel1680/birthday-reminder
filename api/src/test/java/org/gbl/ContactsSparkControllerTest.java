@@ -3,6 +3,10 @@ package org.gbl;
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.usecase.add.AddContactInput;
 import org.gbl.contacts.usecase.add.ContactAlreadyExistsException;
+import org.gbl.contacts.usecase.get.ContactOutput;
+import org.gbl.contacts.usecase.get.GetContactInput;
+import org.gbl.contacts.usecase.shared.ContactNotFoundException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
+import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
+import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 import static org.gbl.SparkResponseAssertionBuilder.aAssertionFor;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +46,7 @@ class ContactsSparkControllerTest extends SparkControllerTest {
                 "\"2018-11-15T00:00:00\"}";
 
         @Test
-        void invalidPayload() {
+        void throwAParseError_whenReceiveAnInvalidPayload() {
             when(request.body()).thenReturn("{}");
             final var output = sut.createContact(request, response);
             aAssertionFor(response)
@@ -87,6 +93,65 @@ class ContactsSparkControllerTest extends SparkControllerTest {
             verify(contactsModule).addContact(captor.capture());
             assertThat(captor.getValue().name()).isEqualTo("Maria");
             assertThat(captor.getValue().birthdate()).isEqualTo(LocalDate.of(2018, 11, 15));
+        }
+    }
+
+    @Nested
+    class GetContractShould {
+
+        @Test
+        void throwAParseError_whenReceiveAnInvalidId() {
+            when(request.params("id")).thenReturn("");
+            final var output = sut.getContract(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(BAD_REQUEST)
+                    .forExpected(ResponseStatus.ERROR, "invalid id", null)
+                    .withActual(output)
+                    .build();
+        }
+
+        @Test
+        void throwTheUnknownError() {
+            when(request.params("id")).thenReturn("123");
+            doThrow(new RuntimeException("Internal error")).when(contactsModule).getContact(any());
+            assertThatThrownBy(() -> sut.getContract(request, response))
+                    .hasMessage("Internal error")
+                    .isInstanceOf(RuntimeException.class);
+        }
+
+        @Test
+        void parseAnErrorResponse_whenAApplicationExceptionIsThrown() {
+            when(request.params("id")).thenReturn("123");
+            final var exception = new ContactNotFoundException("123");
+            doThrow(exception).when(contactsModule).getContact(any());
+            final var output = sut.getContract(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(NOT_FOUND)
+                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), null)
+                    .withActual(output)
+                    .build();
+        }
+
+        @Captor
+        ArgumentCaptor<GetContactInput> captor;
+
+        @Test
+        void getAContact() {
+            when(request.params("id")).thenReturn("123");
+            final var contact = new ContactOutput("123", "Mary", LocalDate.now());
+            when(contactsModule.getContact(any())).thenReturn(contact);
+            final var output = sut.getContract(request, response);
+            final var data = new JSONObject()
+                    .put("id", contact.id())
+                    .put("name", contact.name())
+                    .put("birthdate", contact.birthdate());
+            aAssertionFor(response)
+                    .withStatusCode(OK)
+                    .forExpected(ResponseStatus.SUCCESS, null, data)
+                    .withActual(output)
+                    .build();
+            verify(contactsModule).getContact(captor.capture());
+            assertThat(captor.getValue().id()).isEqualTo("123");
         }
     }
 }
