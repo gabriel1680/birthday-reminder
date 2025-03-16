@@ -19,11 +19,11 @@ import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
 import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 
-public class ContractsSparkController {
+public class ContactsSparkController {
 
     private final ContactsModule contactsModule;
 
-    public ContractsSparkController(ContactsModule contactsModule) {
+    public ContactsSparkController(ContactsModule contactsModule) {
         this.contactsModule = contactsModule;
     }
 
@@ -82,5 +82,9 @@ public class ContractsSparkController {
                 .put("id", contact.id())
                 .put("name", contact.name())
                 .put("birthdate", contact.birthdate());
+    }
+
+    public HttpAPIResponse deleteContact(Request request, Response response) {
+        return null;
     }
 }
