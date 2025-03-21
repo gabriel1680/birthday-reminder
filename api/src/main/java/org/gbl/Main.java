@@ -10,13 +10,19 @@ import static spark.Spark.put;
 
 public class Main {
     public static void main(String[] args) {
-        final var contactsModule = ContactsModuleFactory.createInMemory();
-        final var contactsAPI = new ContactsSparkController(contactsModule);
+        var contactsModule = ContactsModuleFactory.createInMemory();
+        var contactsAPI = new ContactsSparkController(contactsModule);
 
-        port(8080);
+        port(getPort());
         post("/contacts", contactsAPI::createContact);
         get("/contacts/:id", contactsAPI::getContract);
         delete("/contacts/:id", contactsAPI::deleteContact);
         put("/contacts/:id", contactsAPI::updateContact);
+    }
+
+    private static int getPort() {
+        var processBuilder = new ProcessBuilder();
+        var port = processBuilder.environment().getOrDefault("PORT", "8080");
+        return Integer.parseInt(port);
     }
 }

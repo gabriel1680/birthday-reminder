@@ -6,6 +6,7 @@ import org.gbl.contacts.usecase.get.ContactOutput;
 import org.gbl.contacts.usecase.get.GetContactInput;
 import org.gbl.contacts.usecase.list.ContactFilter;
 import org.gbl.contacts.usecase.remove.RemoveContactInput;
+import org.gbl.contacts.usecase.update.UpdateContactInput;
 import org.gbl.shared.PaginationOutput;
 import org.gbl.shared.SearchInput;
 
@@ -17,12 +18,14 @@ import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
 public class FakeContactsModule implements ContactsModule {
     @Override
     public void addContact(AddContactInput input) {
+    }
 
+    @Override
+    public void updateContact(UpdateContactInput input) {
     }
 
     @Override
     public void removeContact(RemoveContactInput input) {
-
     }
 
     @Override

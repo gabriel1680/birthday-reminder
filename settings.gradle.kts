@@ -13,3 +13,4 @@ plugins {
 rootProject.name = "birthday-reminder"
 
 include("core", "api")
+include("web")
