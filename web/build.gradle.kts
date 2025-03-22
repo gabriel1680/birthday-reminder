@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    id("buildlogic.java-application-conventions")
 }
 
 group = "org.gbl"
@@ -18,11 +18,6 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.2")
     implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
 
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.assertj:assertj-core:3.26.3")
-    testImplementation("org.mockito:mockito-core:5.14.1")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.13.0")
     testImplementation("io.javalin:javalin-testtools:6.5.0")
 }
 
