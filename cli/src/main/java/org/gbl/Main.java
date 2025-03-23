@@ -9,7 +9,7 @@ public class Main {
         ColorScheme colorScheme = new ColorScheme.Builder()
                 .commands(Style.bold, Style.underline)
                 .options(Style.fg_yellow)
-                .parameters(Style.fg_yellow)
+                .parameters(Style.fg_blue)
                 .optionParams(Style.italic)
                 .errors(Style.fg_red, Style.bold)
                 .stackTraces(Style.italic)
@@ -17,7 +17,7 @@ public class Main {
         final var commandLine = new CommandLine(new BReminder());
         int status = commandLine
                 .setColorScheme(colorScheme)
-                .execute("create", "-h");
+                .execute(args);
         System.exit(status);
     }
 }
