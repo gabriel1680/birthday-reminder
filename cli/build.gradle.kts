@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     implementation("info.picocli:picocli:4.7.0")
+    implementation("io.vavr:vavr:0.9.0")
+    implementation("com.google.code.gson:gson:2.12.1")
 }
 
 application {
