@@ -1,5 +1,6 @@
 package org.gbl;
 
+import org.gbl.in.di.GuiceFactory;
 import org.gbl.in.BReminder;
 import picocli.CommandLine;
 import picocli.CommandLine.Help.Ansi.Style;
@@ -15,7 +16,7 @@ public class Main {
                 .errors(Style.fg_red, Style.bold)
                 .stackTraces(Style.italic)
                 .build();
-        final var commandLine = new CommandLine(new BReminder());
+        final var commandLine = new CommandLine(new BReminder(), new GuiceFactory());
         int status = commandLine
                 .setColorScheme(colorScheme)
                 .execute(args);

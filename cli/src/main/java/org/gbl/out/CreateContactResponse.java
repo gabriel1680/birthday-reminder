@@ -1,4 +1,4 @@
 package org.gbl.out;
 
-public class CreateContactResponse {
+public record CreateContactResponse(String name, String birthdate) {
 }
