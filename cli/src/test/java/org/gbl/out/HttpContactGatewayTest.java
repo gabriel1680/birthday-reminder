@@ -1,6 +1,6 @@
 package org.gbl.out;
 
-import org.gbl.CreateContact.CreateContactRequest;
+import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.out.http.ApiResponse;
 import org.gbl.out.http.HttpContactGateway;
 import org.gbl.utils.JSON;

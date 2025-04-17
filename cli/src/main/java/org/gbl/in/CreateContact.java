@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.in;
 
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;

@@ -1,7 +1,7 @@
 package org.gbl.out.http;
 
 import com.google.gson.reflect.TypeToken;
-import org.gbl.CreateContact.CreateContactRequest;
+import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.out.ContactsGateway;
 import org.gbl.out.CreateContactResponse;
 import org.gbl.utils.JSON;

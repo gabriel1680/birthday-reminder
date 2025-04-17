@@ -1,6 +1,6 @@
 package org.gbl.out;
 
-import org.gbl.CreateContact.CreateContactRequest;
+import org.gbl.in.CreateContact.CreateContactRequest;
 
 public interface ContactsGateway {
     CreateContactResponse create(CreateContactRequest request);
