@@ -29,7 +29,8 @@ public class CreateContact implements Callable<Integer> {
                 description = "The name of the contact.")
         public String name;
         @Option(names = {"-b", "--birthdate"}, required = true,
-                description = "The birthdate of the contact in ISO format (Eg.: 2018-11-15T00:00:00Z).")
+                description = "The birthdate of the contact in ISO format (Eg.: " +
+                        "2018-11-15T00:00:00Z).")
         public String birthdate;
 
         // needed in order to the framework to instantiate the class
