@@ -3,7 +3,7 @@ package org.gbl.out.http;
 import com.google.gson.reflect.TypeToken;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.out.ContactsGateway;
-import org.gbl.out.CreateContactResponse;
+import org.gbl.out.ContactResponse;
 import org.gbl.utils.JSON;
 
 import java.io.IOException;
@@ -15,10 +15,13 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public class HttpContactGateway implements ContactsGateway {
 
-    private static final String resource = "/contacts";
+    private static final List<Integer> OK_RESPONSES = List.of(200, 201);
+    private static final String RESOURCE = "/contacts";
+
     private final HttpClient client;
     private final String baseUrl;
 
@@ -31,20 +34,33 @@ public class HttpContactGateway implements ContactsGateway {
         return HttpRequest.newBuilder()
                 .version(Version.HTTP_2)
                 .timeout(Duration.of(500, ChronoUnit.MILLIS))
-                .uri(URI.create(baseUrl + resource))
+                .uri(URI.create(baseUrl + RESOURCE))
                 .headers("Accept", "application/json");
     }
 
     @Override
-    public CreateContactResponse create(CreateContactRequest request) {
+    public ContactResponse create(CreateContactRequest request) {
+        final var httpRequest = baseRequest()
+                .POST(BodyPublishers.ofString(JSON.stringify(request)))
+                .build();
+        return execute(httpRequest);
+    }
+
+    @Override
+    public ContactResponse get(String contactId) {
+        final var httpRequest = baseRequest()
+                .GET()
+                .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
+                .build();
+        return execute(httpRequest);
+    }
+
+    private ContactResponse execute(HttpRequest httpRequest) {
         try {
-            final var httpRequest = baseRequest()
-                    .POST(BodyPublishers.ofString(JSON.stringify(request)))
-                    .build();
             final var response = client.send(httpRequest, BodyHandlers.ofString());
-            var type = new TypeToken<ApiResponse<CreateContactResponse>>() {}.getType();
-            ApiResponse<CreateContactResponse> apiResponse = JSON.parse(response.body(), type);
-            if (response.statusCode() != 201) {
+            var type = new TypeToken<ApiResponse<ContactResponse>>() {}.getType();
+            ApiResponse<ContactResponse> apiResponse = JSON.parse(response.body(), type);
+            if (!OK_RESPONSES.contains(response.statusCode())) {
                 throw new RuntimeException(apiResponse.message());
             }
             return apiResponse.data();

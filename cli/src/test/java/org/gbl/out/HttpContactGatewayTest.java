@@ -72,7 +72,7 @@ class HttpContactGatewayTest {
         void shouldReturnAValidOutput() {
             assertThat(sut.create(request))
                     .isNotNull()
-                    .isInstanceOf(CreateContactResponse.class);
+                    .isInstanceOf(ContactResponse.class);
         }
 
         @Test
@@ -113,5 +113,46 @@ class HttpContactGatewayTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Error during request")
                 .hasCause(error);
+    }
+
+    @Nested
+    class WhenGetAContact {
+
+        private final String request = "1";
+
+        @Captor
+        private ArgumentCaptor<HttpRequest> requestCaptor;
+
+        @BeforeEach
+        void setUp() throws IOException, InterruptedException {
+            when(response.statusCode()).thenReturn(200);
+            final var body = """
+                    {
+                    "status": 200,
+                    "message": "success",
+                    "data": { "name":"Mary Ann","birthdate":"1959-08-14" }
+                    }
+                    """;
+            when(response.body()).thenReturn(body);
+            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        }
+
+        @Test
+        void shouldReturnAValidOutput() {
+            assertThat(sut.get(request))
+                    .isNotNull()
+                    .isInstanceOf(ContactResponse.class);
+        }
+
+        @Test
+        void shouldCallSendWithAValidRequest() throws IOException, InterruptedException {
+            sut.get(request);
+            verify(client).send(requestCaptor.capture(), any());
+            final var httpRequest = requestCaptor.getValue();
+            assertThat(httpRequest)
+                    .extracting(HttpRequest::uri)
+                    .extracting(URI::getPath)
+                    .isEqualTo("/contacts/1");
+        }
     }
 }

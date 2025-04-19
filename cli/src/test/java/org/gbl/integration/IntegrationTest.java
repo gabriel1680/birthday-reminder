@@ -60,4 +60,22 @@ public class IntegrationTest {
                     "Error: Missing required argument(s): --name=<name>");
         }
     }
+
+    @Nested
+    class GetContact {
+
+        @Test
+        void ok() {
+            int exitCode = commandLine.execute("get", "1");
+            assertThat(exitCode).isEqualTo(0);
+            assertThat(out.toString()).isEqualTo("Contact => id: 1, name: Bella, birthdate: 13/09/1987");
+        }
+
+        @Test
+        void invalidId() {
+            int exitCode = commandLine.execute("get");
+            assertThat(exitCode).isEqualTo(2);
+            assertThat(err.toString()).contains("Missing required parameter: '<id>'");
+        }
+    }
 }
