@@ -9,4 +9,6 @@ public interface ContactsGateway {
     ContactResponse get(String contactId);
 
     ContactResponse update(UpdateContactRequest request);
+
+    void delete(String contactId);
 }

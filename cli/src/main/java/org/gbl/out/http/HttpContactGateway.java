@@ -64,6 +64,11 @@ public class HttpContactGateway implements ContactsGateway {
         return execute(httpRequest);
     }
 
+    @Override
+    public void delete(String contactId) {
+        
+    }
+
     private ContactResponse execute(HttpRequest httpRequest) {
         try {
             final var response = client.send(httpRequest, BodyHandlers.ofString());

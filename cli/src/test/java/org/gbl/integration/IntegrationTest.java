@@ -32,4 +32,13 @@ public class IntegrationTest extends CLITest {
         var output = "Update contact with name: John and birthdate: 27/02/1998";
         assertThat(out.toString()).isEqualTo(output);
     }
+
+    @Test
+    void delete() {
+        var args = new String[]{"delete", "1"};
+        int exitCode = commandLine.execute(args);
+        assertThat(exitCode).isEqualTo(0);
+        var output = "Contact of id 1 deleted";
+        assertThat(out.toString()).isEqualTo(output);
+    }
 }

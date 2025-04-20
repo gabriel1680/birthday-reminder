@@ -20,4 +20,9 @@ public class ContactsGatewayStub implements ContactsGateway {
     public ContactResponse update(UpdateContactRequest request) {
         return new ContactResponse("1", "John", "27/02/1998");
     }
+
+    @Override
+    public void delete(String contactId) {
+        // noop
+    }
 }
