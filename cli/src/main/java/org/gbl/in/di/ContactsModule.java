@@ -2,7 +2,7 @@ package org.gbl.in.di;
 
 import com.google.inject.AbstractModule;
 import org.gbl.out.ContactsGateway;
-import org.gbl.out.http.ContactsGatewayMock;
+import org.gbl.out.http.ContactsGatewayStub;
 import org.gbl.out.http.HttpContactGateway;
 import org.gbl.utils.Env;
 
@@ -20,7 +20,7 @@ public class ContactsModule extends AbstractModule {
     }
 
     private void bindTest() {
-        bind(ContactsGateway.class).to(ContactsGatewayMock.class);
+        bind(ContactsGateway.class).to(ContactsGatewayStub.class);
     }
 
     private void bindProduction() {

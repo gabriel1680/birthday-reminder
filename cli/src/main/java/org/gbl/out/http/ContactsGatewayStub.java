@@ -5,7 +5,7 @@ import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
 
-public class ContactsGatewayMock implements ContactsGateway {
+public class ContactsGatewayStub implements ContactsGateway {
     @Override
     public ContactResponse create(CreateContactRequest request) {
         return new ContactResponse("1", request.name, request.birthdate);
