@@ -35,7 +35,7 @@ class CreateContactTest extends CLITest {
         var exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
         var output =
-                "Create contact called with name: Gabriel and birthdate: 12/02/1998\n";
+                "Create contact with name: Gabriel and birthdate: 12/02/1998\n";
         assertThat(out.toString()).isEqualTo(output);
     }
 

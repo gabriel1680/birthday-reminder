@@ -46,7 +46,7 @@ public class CreateContact implements Callable<Integer> {
     @Override
     public Integer call() {
         final var response = contactsGateway.create(request);
-        final var msg = "Create contact called with name: %s and birthdate: %s";
+        final var msg = "Create contact¡ with name: %s and birthdate: %s";
         System.out.printf((msg) + "%n", response.name(), response.birthdate());
         return 0;
     }
