@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -204,6 +205,46 @@ class HttpContactGatewayTest {
                     .extracting(Optional::get)
                     .extracting(HttpRequest.BodyPublisher::contentLength)
                     .isEqualTo(45L);
+        }
+    }
+
+    @Nested
+    class WhenDeleteAContact {
+
+        private final String request = "1";
+
+        @Captor
+        private ArgumentCaptor<HttpRequest> requestCaptor;
+
+        @BeforeEach
+        void setUp() throws IOException, InterruptedException {
+            when(response.statusCode()).thenReturn(204);
+            final var body = """
+                    {
+                    "status": 204,
+                    "message": "success",
+                    "data": {}
+                    }
+                    """;
+            when(response.body()).thenReturn(body);
+            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        }
+
+        @Test
+        void success() {
+            assertDoesNotThrow(() -> sut.delete(request));
+        }
+
+        @Test
+        void invalidPayload() throws IOException, InterruptedException {
+            sut.delete(request);
+            verify(client).send(requestCaptor.capture(), any());
+            final var httpRequest = requestCaptor.getValue();
+            assertThat(httpRequest.method()).isEqualTo("DELETE");
+            assertThat(httpRequest)
+                    .extracting(HttpRequest::uri)
+                    .extracting(URI::getPath)
+                    .isEqualTo("/contacts/1");
         }
     }
 }

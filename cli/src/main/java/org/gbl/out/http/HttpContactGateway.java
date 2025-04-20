@@ -20,7 +20,7 @@ import java.util.List;
 
 public class HttpContactGateway implements ContactsGateway {
 
-    private static final List<Integer> OK_RESPONSES = List.of(200, 201);
+    private static final List<Integer> OK_RESPONSES = List.of(200, 201, 204);
     private static final String RESOURCE = "/contacts";
 
     private final HttpClient client;
@@ -66,7 +66,11 @@ public class HttpContactGateway implements ContactsGateway {
 
     @Override
     public void delete(String contactId) {
-        
+        final var httpRequest = baseRequest()
+                .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
+                .DELETE()
+                .build();
+        execute(httpRequest);
     }
 
     private ContactResponse execute(HttpRequest httpRequest) {
