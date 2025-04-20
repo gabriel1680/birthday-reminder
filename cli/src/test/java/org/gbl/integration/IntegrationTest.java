@@ -12,8 +12,7 @@ public class IntegrationTest extends CLITest {
         var args = new String[]{"create", "--name=Gabriel", "--birthdate=12/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
-        var output =
-                "Create contact with name: Gabriel and birthdate: 12/02/1998\n";
+        var output = "Create contact with name: Gabriel and birthdate: 12/02/1998";
         assertThat(out.toString()).isEqualTo(output);
     }
 
@@ -30,8 +29,7 @@ public class IntegrationTest extends CLITest {
         var args = new String[]{"update", "--name=John", "--birthdate=27/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
-        var output =
-                "Update contact with name: John and birthdate: 27/02/1998\n";
+        var output = "Update contact with name: John and birthdate: 27/02/1998";
         assertThat(out.toString()).isEqualTo(output);
     }
 }

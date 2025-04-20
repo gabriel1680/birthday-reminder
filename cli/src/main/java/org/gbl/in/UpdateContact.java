@@ -1,5 +1,7 @@
 package org.gbl.in;
 
+import jakarta.inject.Inject;
+import org.gbl.out.ContactsGateway;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -12,23 +14,45 @@ import java.util.concurrent.Callable;
         description = "Update an existent contact")
 public class UpdateContact implements Callable<Integer> {
 
-    @ArgGroup(exclusive = false, heading = "Optional flags\n")
-    private Payload payload;
+    private final ContactsGateway gateway;
 
-    static class Payload {
+    @ArgGroup(exclusive = false, heading = "Optional flags\n")
+    private UpdateContactRequest request;
+
+    @Inject
+    public UpdateContact(ContactsGateway gateway) {
+        this.gateway = gateway;
+    }
+
+    public static class UpdateContactRequest {
         @Option(names = {"-n", "--name"},
                 description = "The name of the contact.")
-        private String name;
+        public String name;
+
         @Option(names = {"-b", "--birthdate"},
                 description = "The birthdate of the contact in ISO format (Eg.: " +
                         "2018-11-15T00:00:00Z).")
-        private String birthdate;
+        public String birthdate;
+
+        public UpdateContactRequest() {
+        }
+
+        public UpdateContactRequest(String name, String birthdate) {
+            this.name = name;
+            this.birthdate = birthdate;
+        }
     }
 
     @Override
     public Integer call() {
-        final var msg = "Update contact called with name: %s and birthdate: %s";
-        System.out.printf((msg) + "%n", payload.name, payload.birthdate);
+        if (request == null) {
+            var errMsg = "Error: Missing one of arguments: --name=<name> --birthdate=<birthdate>";
+            System.err.print(errMsg);
+            return 2;
+        }
+        final var response = gateway.update(request);
+        final var msg = "Update contact with name: %s and birthdate: %s";
+        System.out.printf(msg, response.name(), response.birthdate());
         return 0;
     }
 }

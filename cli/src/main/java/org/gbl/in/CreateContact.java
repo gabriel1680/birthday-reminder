@@ -28,6 +28,7 @@ public class CreateContact implements Callable<Integer> {
         @Option(names = {"-n", "--name"}, required = true,
                 description = "The name of the contact.")
         public String name;
+
         @Option(names = {"-b", "--birthdate"}, required = true,
                 description = "The birthdate of the contact in ISO format (Eg.: " +
                         "2018-11-15T00:00:00Z).")
@@ -46,8 +47,8 @@ public class CreateContact implements Callable<Integer> {
     @Override
     public Integer call() {
         final var response = contactsGateway.create(request);
-        final var msg = "Create contact¡ with name: %s and birthdate: %s";
-        System.out.printf((msg) + "%n", response.name(), response.birthdate());
+        final var msg = "Create contact with name: %s and birthdate: %s";
+        System.out.printf(msg, response.name(), response.birthdate());
         return 0;
     }
 }

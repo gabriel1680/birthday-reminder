@@ -2,6 +2,7 @@ package org.gbl.out.http;
 
 import com.google.gson.reflect.TypeToken;
 import org.gbl.in.CreateContact.CreateContactRequest;
+import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.ContactsGateway;
 import org.gbl.out.ContactResponse;
 import org.gbl.utils.JSON;
@@ -53,6 +54,11 @@ public class HttpContactGateway implements ContactsGateway {
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .build();
         return execute(httpRequest);
+    }
+
+    @Override
+    public ContactResponse update(UpdateContactRequest request) {
+        return null;
     }
 
     private ContactResponse execute(HttpRequest httpRequest) {

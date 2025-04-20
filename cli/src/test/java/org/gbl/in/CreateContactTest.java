@@ -34,8 +34,7 @@ class CreateContactTest extends CLITest {
         var args = new String[]{"--name=Gabriel", "--birthdate=12/02/1998"};
         var exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
-        var output =
-                "Create contact with name: Gabriel and birthdate: 12/02/1998\n";
+        var output = "Create contact with name: Gabriel and birthdate: 12/02/1998";
         assertThat(out.toString()).isEqualTo(output);
     }
 
@@ -53,7 +52,7 @@ class CreateContactTest extends CLITest {
     void help() {
         int exitCode = commandLine.execute("--help");
         assertThat(exitCode).isEqualTo(0);
-        final var helpMessage = "Usage: create [-hV] [-n=<name> -b=<birthdate>]\n";
+        final var helpMessage = "Usage: create [-hV] [-n=<name> -b=<birthdate>]";
         assertThat(out.toString()).contains(helpMessage);
         verify(gateway, never()).create(any());
     }
