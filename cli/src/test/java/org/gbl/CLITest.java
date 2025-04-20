@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-public class CLITest {
+public abstract class CLITest {
     protected CommandLine commandLine;
     protected ByteArrayOutputStream err;
     protected ByteArrayOutputStream out;
@@ -21,7 +21,7 @@ public class CLITest {
         err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
         System.setOut(new PrintStream(out));
-        commandLine = new CommandLine(new BReminder(), new GuiceFactory());
+        setCommandLine();
         commandLine.setOut(new PrintWriter(out));
     }
 
@@ -29,5 +29,9 @@ public class CLITest {
     void tearDown() {
         System.setErr(System.err);
         System.setOut(System.out);
+    }
+
+    protected void setCommandLine() {
+        commandLine = new CommandLine(new BReminder(), new GuiceFactory());
     }
 }
