@@ -1,11 +1,17 @@
 package org.gbl.integration;
 
 import org.gbl.CLITest;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntegrationTest extends CLITest {
+
+    @BeforeAll
+    static void beforeAll() {
+        System.setProperty("env", "test");
+    }
 
     @Test
     void create() {
