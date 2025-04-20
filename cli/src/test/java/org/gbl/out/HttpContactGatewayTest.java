@@ -50,7 +50,7 @@ class HttpContactGatewayTest {
     @Test
     void responseError() throws IOException, InterruptedException {
         when(response.statusCode()).thenReturn(400);
-        when(response.body()).thenReturn(JSON.stringify(new ApiResponse<String>(400, "invalid " +
+        when(response.body()).thenReturn(JSON.stringify(new ApiResponse<String>("error", "invalid " +
                 "name", null)));
         when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
         var request = new CreateContactRequest("John", "1957-04-14");
@@ -84,8 +84,8 @@ class HttpContactGatewayTest {
             when(response.statusCode()).thenReturn(201);
             final var body = """
                     {
-                    "status": 201,
-                    "message": "success",
+                    "status": "success",
+                    "message": "contact created",
                     "data": { "name":"Mary Ann","birthdate":"1959-08-14" }
                     }
                     """;
@@ -131,8 +131,8 @@ class HttpContactGatewayTest {
             when(response.statusCode()).thenReturn(200);
             final var body = """
                     {
-                    "status": 200,
-                    "message": "success",
+                    "status": "success",
+                    "message": "",
                     "data": { "name":"Mary Ann","birthdate":"1959-08-14" }
                     }
                     """;
@@ -174,8 +174,8 @@ class HttpContactGatewayTest {
             when(response.statusCode()).thenReturn(200);
             final var body = """
                     {
-                    "status": 201,
-                    "message": "success",
+                    "status": "success",
+                    "message": "Contact updated",
                     "data": { "name":"John Wick","birthdate":"1964-09-02" }
                     }
                     """;
@@ -221,8 +221,8 @@ class HttpContactGatewayTest {
             when(response.statusCode()).thenReturn(204);
             final var body = """
                     {
-                    "status": 204,
-                    "message": "success",
+                    "status": "success",
+                    "message": "contact deleted",
                     "data": {}
                     }
                     """;

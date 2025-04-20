@@ -25,7 +25,7 @@ public class ContactsModule extends AbstractModule {
 
     private void bindProduction() {
         final var httpClient = HttpClient.newHttpClient();
-        final var contactGateway = new HttpContactGateway(httpClient, "https://localhost:8080");
+        final var contactGateway = new HttpContactGateway(httpClient, "http://localhost:8080");
         bind(ContactsGateway.class).toInstance(contactGateway);
     }
 }
