@@ -1,6 +1,7 @@
 package org.gbl.out;
 
 import org.gbl.in.CreateContact.CreateContactRequest;
+import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.http.ApiResponse;
 import org.gbl.out.http.HttpContactGateway;
 import org.gbl.utils.JSON;
@@ -45,6 +46,29 @@ class HttpContactGatewayTest {
         sut = new HttpContactGateway(client, BASE_URL);
     }
 
+    @Test
+    void responseError() throws IOException, InterruptedException {
+        when(response.statusCode()).thenReturn(400);
+        when(response.body()).thenReturn(JSON.stringify(new ApiResponse<String>(400, "invalid " +
+                "name", null)));
+        when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        var request = new CreateContactRequest("John", "1957-04-14");
+        assertThatThrownBy(() -> sut.create(request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("invalid name");
+    }
+
+    @Test
+    void clientThrowsError() throws IOException, InterruptedException {
+        final var error = new IOException("invalid error");
+        when(client.send(any(), any())).thenThrow(error);
+        var request = new CreateContactRequest("John", "1957-04-14");
+        assertThatThrownBy(() -> sut.create(request))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Error during request")
+                .hasCause(error);
+    }
+
     @Nested
     class WhenCreateAContact {
 
@@ -80,6 +104,7 @@ class HttpContactGatewayTest {
             sut.create(request);
             verify(client).send(requestCaptor.capture(), any());
             final var httpRequest = requestCaptor.getValue();
+            assertThat(httpRequest.method()).isEqualTo("POST");
             assertThat(httpRequest)
                     .extracting(HttpRequest::uri)
                     .extracting(URI::getPath)
@@ -90,29 +115,6 @@ class HttpContactGatewayTest {
                     .extracting(HttpRequest.BodyPublisher::contentLength)
                     .isEqualTo(44L);
         }
-    }
-
-    @Test
-    void responseError() throws IOException, InterruptedException {
-        when(response.statusCode()).thenReturn(400);
-        when(response.body()).thenReturn(JSON.stringify(new ApiResponse<String>(400, "invalid " +
-                "name", null)));
-        when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
-        var request = new CreateContactRequest("John", "1957-04-14");
-        assertThatThrownBy(() -> sut.create(request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("invalid name");
-    }
-
-    @Test
-    void clientThrowsError() throws IOException, InterruptedException {
-        final var error = new IOException("invalid error");
-        when(client.send(any(), any())).thenThrow(error);
-        var request = new CreateContactRequest("John", "1957-04-14");
-        assertThatThrownBy(() -> sut.create(request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Error during request")
-                .hasCause(error);
     }
 
     @Nested
@@ -149,10 +151,59 @@ class HttpContactGatewayTest {
             sut.get(request);
             verify(client).send(requestCaptor.capture(), any());
             final var httpRequest = requestCaptor.getValue();
+            assertThat(httpRequest.method()).isEqualTo("GET");
             assertThat(httpRequest)
                     .extracting(HttpRequest::uri)
                     .extracting(URI::getPath)
                     .isEqualTo("/contacts/1");
+        }
+    }
+
+    @Nested
+    class WhenUpdateAContact {
+
+        private final UpdateContactRequest request =
+                new UpdateContactRequest("John Wick", "1964-09-02");
+
+        @Captor
+        private ArgumentCaptor<HttpRequest> requestCaptor;
+
+        @BeforeEach
+        void setUp() throws IOException, InterruptedException {
+            when(response.statusCode()).thenReturn(200);
+            final var body = """
+                    {
+                    "status": 201,
+                    "message": "success",
+                    "data": { "name":"John Wick","birthdate":"1964-09-02" }
+                    }
+                    """;
+            when(response.body()).thenReturn(body);
+            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        }
+
+        @Test
+        void shouldReturnAValidOutput() {
+            assertThat(sut.update(request))
+                    .isNotNull()
+                    .isInstanceOf(ContactResponse.class);
+        }
+
+        @Test
+        void shouldCallSendWithAValidRequest() throws IOException, InterruptedException {
+            sut.update(request);
+            verify(client).send(requestCaptor.capture(), any());
+            final var httpRequest = requestCaptor.getValue();
+            assertThat(httpRequest.method()).isEqualTo("PUT");
+            assertThat(httpRequest)
+                    .extracting(HttpRequest::uri)
+                    .extracting(URI::getPath)
+                    .isEqualTo("/contacts");
+            assertThat(httpRequest)
+                    .extracting(HttpRequest::bodyPublisher)
+                    .extracting(Optional::get)
+                    .extracting(HttpRequest.BodyPublisher::contentLength)
+                    .isEqualTo(45L);
         }
     }
 }

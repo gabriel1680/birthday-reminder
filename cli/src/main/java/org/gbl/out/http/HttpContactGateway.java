@@ -58,7 +58,10 @@ public class HttpContactGateway implements ContactsGateway {
 
     @Override
     public ContactResponse update(UpdateContactRequest request) {
-        return null;
+        final var httpRequest = baseRequest()
+                .PUT(BodyPublishers.ofString(JSON.stringify(request)))
+                .build();
+        return execute(httpRequest);
     }
 
     private ContactResponse execute(HttpRequest httpRequest) {
