@@ -1,7 +1,6 @@
-package org.gbl.contacts.usecase.get;
+package org.gbl.contacts.application.usecase.get;
 
-import org.gbl.contacts.application.usecase.get.GetContact;
-import org.gbl.contacts.application.usecase.get.GetContactInput;
+import org.gbl.contacts.application.usecase.fixture.ContactFixture;
 import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
 
 class GetContactTest {
 
@@ -20,7 +18,7 @@ class GetContactTest {
 
     @BeforeEach
     void setUp() {
-        contactRepository = new InMemoryContactRepository(List.of(JOHN_DOE));
+        contactRepository = new InMemoryContactRepository(List.of(ContactFixture.JOHN_DOE));
         sut = new GetContact(contactRepository);
     }
 
@@ -33,10 +31,10 @@ class GetContactTest {
 
     @Test
     void shouldGetAContact() {
-        final var request = new GetContactInput(JOHN_DOE.id());
+        final var request = new GetContactInput(ContactFixture.JOHN_DOE.id());
         final var output = sut.execute(request);
-        assertThat(output.name()).isEqualTo(JOHN_DOE.name());
-        assertThat(output.name()).isEqualTo(JOHN_DOE.name());
-        assertThat(output.birthdate()).isEqualTo(JOHN_DOE.birthdate());
+        assertThat(output.name()).isEqualTo(ContactFixture.JOHN_DOE.name());
+        assertThat(output.name()).isEqualTo(ContactFixture.JOHN_DOE.name());
+        assertThat(output.birthdate()).isEqualTo(ContactFixture.JOHN_DOE.birthdate());
     }
 }

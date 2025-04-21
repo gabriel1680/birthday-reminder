@@ -1,7 +1,5 @@
-package org.gbl.contacts.usecase.remove;
+package org.gbl.contacts.application.usecase.remove;
 
-import org.gbl.contacts.application.usecase.remove.RemoveContact;
-import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.JOHN_DOE;
 
 class RemoveContactTest {
 

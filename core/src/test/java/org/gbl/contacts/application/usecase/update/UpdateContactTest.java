@@ -1,7 +1,5 @@
-package org.gbl.contacts.usecase.update;
+package org.gbl.contacts.application.usecase.update;
 
-import org.gbl.contacts.application.usecase.update.UpdateContact;
-import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +9,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.toDate;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.JOHN_DOE;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.toDate;
 
 class UpdateContactTest {
 

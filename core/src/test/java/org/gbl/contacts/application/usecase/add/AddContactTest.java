@@ -1,10 +1,7 @@
-package org.gbl.contacts.usecase.add;
+package org.gbl.contacts.application.usecase.add;
 
-import org.gbl.contacts.application.usecase.add.AddContact;
-import org.gbl.contacts.application.usecase.add.AddContactInput;
-import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.infra.InMemoryContactRepository;
-import org.gbl.shared.fixture.SpyRandomIdProvider;
+import org.gbl.contacts.application.service.SpyRandomIdProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +9,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.toDate;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.JOHN_DOE;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.toDate;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddContactTest {

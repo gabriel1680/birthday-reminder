@@ -1,4 +1,4 @@
-package org.gbl.contacts.usecase.fixture;
+package org.gbl.contacts.application.usecase.fixture;
 
 import org.gbl.contacts.domain.Contact;
 

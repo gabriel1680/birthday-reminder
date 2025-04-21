@@ -5,7 +5,7 @@ import org.gbl.reminder.fixture.SpyEmailSender;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.toDate;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.toDate;
 
 class BirthdayReminderServiceTest {
 

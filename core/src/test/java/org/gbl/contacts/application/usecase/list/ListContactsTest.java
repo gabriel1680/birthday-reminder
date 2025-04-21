@@ -1,7 +1,5 @@
-package org.gbl.contacts.usecase.list;
+package org.gbl.contacts.application.usecase.list;
 
-import org.gbl.contacts.application.usecase.list.ContactFilter;
-import org.gbl.contacts.application.usecase.list.ListContacts;
 import org.gbl.contacts.infra.InMemoryContactQueryRepository;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
@@ -10,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.JOHN_DOE;
 
 class ListContactsTest {
 

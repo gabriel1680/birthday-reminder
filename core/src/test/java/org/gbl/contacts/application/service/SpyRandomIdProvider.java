@@ -1,6 +1,4 @@
-package org.gbl.shared.fixture;
-
-import org.gbl.contacts.application.service.IdProvider;
+package org.gbl.contacts.application.service;
 
 import java.util.Random;
 

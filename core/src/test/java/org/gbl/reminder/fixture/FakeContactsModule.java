@@ -13,7 +13,7 @@ import org.gbl.contacts.application.service.query.SearchInput;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.gbl.contacts.usecase.fixture.ContactFixture.JOHN_DOE;
+import static org.gbl.contacts.application.usecase.fixture.ContactFixture.JOHN_DOE;
 
 public class FakeContactsModule implements ContactsModule {
     @Override
