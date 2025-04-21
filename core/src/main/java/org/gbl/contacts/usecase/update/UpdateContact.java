@@ -1,12 +1,12 @@
 package org.gbl.contacts.usecase.update;
 
-import org.gbl.contacts.usecase.InMemoryContactRepository;
+import org.gbl.contacts.domain.ContactRepository;
 import org.gbl.contacts.usecase.shared.ContactNotFoundException;
 
 public class UpdateContact {
-    private final InMemoryContactRepository repository;
+    private final ContactRepository repository;
 
-    public UpdateContact(InMemoryContactRepository repository) {
+    public UpdateContact(ContactRepository repository) {
         this.repository = repository;
     }
 
