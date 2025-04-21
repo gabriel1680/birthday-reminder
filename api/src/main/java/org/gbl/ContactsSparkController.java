@@ -1,13 +1,13 @@
 package org.gbl;
 
 import org.gbl.contacts.ContactsModule;
-import org.gbl.contacts.usecase.add.AddContactInput;
-import org.gbl.contacts.usecase.add.ContactAlreadyExistsException;
-import org.gbl.contacts.usecase.get.ContactOutput;
-import org.gbl.contacts.usecase.get.GetContactInput;
-import org.gbl.contacts.usecase.remove.RemoveContactInput;
-import org.gbl.contacts.usecase.shared.ContactNotFoundException;
-import org.gbl.contacts.usecase.update.UpdateContactInput;
+import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
+import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.get.GetContactInput;
+import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
+import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;

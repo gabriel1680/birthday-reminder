@@ -1,5 +1,7 @@
 package org.gbl.contacts.usecase.list;
 
+import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.usecase.list.ListContacts;
 import org.gbl.contacts.infra.InMemoryContactQueryRepository;
 import org.gbl.shared.SearchInput;
 import org.gbl.shared.SortingOrder;

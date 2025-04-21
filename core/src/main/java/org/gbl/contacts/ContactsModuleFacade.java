@@ -1,16 +1,16 @@
 package org.gbl.contacts;
 
-import org.gbl.contacts.usecase.add.AddContact;
-import org.gbl.contacts.usecase.add.AddContactInput;
-import org.gbl.contacts.usecase.get.ContactOutput;
-import org.gbl.contacts.usecase.get.GetContact;
-import org.gbl.contacts.usecase.get.GetContactInput;
-import org.gbl.contacts.usecase.list.ContactFilter;
-import org.gbl.contacts.usecase.list.ListContacts;
-import org.gbl.contacts.usecase.remove.RemoveContact;
-import org.gbl.contacts.usecase.remove.RemoveContactInput;
-import org.gbl.contacts.usecase.update.UpdateContact;
-import org.gbl.contacts.usecase.update.UpdateContactInput;
+import org.gbl.contacts.application.usecase.add.AddContact;
+import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.get.GetContact;
+import org.gbl.contacts.application.usecase.get.GetContactInput;
+import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.usecase.list.ListContacts;
+import org.gbl.contacts.application.usecase.remove.RemoveContact;
+import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
+import org.gbl.contacts.application.usecase.update.UpdateContact;
+import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.gbl.shared.PaginationOutput;
 import org.gbl.shared.SearchInput;
 

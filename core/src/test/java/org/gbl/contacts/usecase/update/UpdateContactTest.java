@@ -1,7 +1,9 @@
 package org.gbl.contacts.usecase.update;
 
+import org.gbl.contacts.application.usecase.update.UpdateContact;
+import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.gbl.contacts.infra.InMemoryContactRepository;
-import org.gbl.contacts.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

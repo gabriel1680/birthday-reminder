@@ -7,8 +7,8 @@ import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import org.gbl.contacts.ContactsModule;
-import org.gbl.contacts.usecase.add.AddContactInput;
-import org.gbl.contacts.usecase.add.ContactAlreadyExistsException;
+import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 
 public class ContactsController {
     private final ObjectMapper objectMapper;

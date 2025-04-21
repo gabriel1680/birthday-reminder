@@ -1,4 +1,4 @@
-package org.gbl.contacts.usecase.add;
+package org.gbl.contacts.application.usecase.add;
 
 public class ContactAlreadyExistsException extends RuntimeException {
 

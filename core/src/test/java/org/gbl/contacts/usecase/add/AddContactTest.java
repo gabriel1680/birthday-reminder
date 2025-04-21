@@ -1,5 +1,8 @@
 package org.gbl.contacts.usecase.add;
 
+import org.gbl.contacts.application.usecase.add.AddContact;
+import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.shared.fixture.SpyRandomIdProvider;
 import org.junit.jupiter.api.BeforeEach;

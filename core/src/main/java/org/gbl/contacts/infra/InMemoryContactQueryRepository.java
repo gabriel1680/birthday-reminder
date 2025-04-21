@@ -1,9 +1,9 @@
 package org.gbl.contacts.infra;
 
 import org.gbl.contacts.domain.Contact;
-import org.gbl.contacts.usecase.get.ContactOutput;
-import org.gbl.contacts.usecase.list.ContactFilter;
-import org.gbl.contacts.usecase.shared.ContactQueryRepository;
+import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.usecase.shared.ContactQueryRepository;
 import org.gbl.shared.PaginationOutput;
 import org.gbl.shared.SearchInput;
 
