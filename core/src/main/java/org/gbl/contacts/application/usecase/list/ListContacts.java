@@ -1,9 +1,9 @@
 package org.gbl.contacts.application.usecase.list;
 
-import org.gbl.contacts.application.usecase.shared.ContactQueryRepository;
+import org.gbl.contacts.application.service.query.ContactQueryRepository;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
-import org.gbl.shared.PaginationOutput;
-import org.gbl.shared.SearchInput;
+import org.gbl.contacts.application.service.query.PaginationOutput;
+import org.gbl.contacts.application.service.query.SearchInput;
 
 public class ListContacts {
 

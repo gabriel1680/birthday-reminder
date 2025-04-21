@@ -2,7 +2,7 @@ package org.gbl.contacts.application.usecase.add;
 
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.domain.ContactRepository;
-import org.gbl.shared.IdProvider;
+import org.gbl.contacts.application.service.IdProvider;
 
 public class AddContact {
 

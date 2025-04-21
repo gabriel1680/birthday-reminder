@@ -6,8 +6,8 @@ import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
-import org.gbl.shared.PaginationOutput;
-import org.gbl.shared.SearchInput;
+import org.gbl.contacts.application.service.query.PaginationOutput;
+import org.gbl.contacts.application.service.query.SearchInput;
 
 public interface ContactsModule {
     void addContact(AddContactInput input);

@@ -1,4 +1,4 @@
-package org.gbl.shared;
+package org.gbl.contacts.application.service.query;
 
 public enum SortingOrder {
     ASC("asc"),

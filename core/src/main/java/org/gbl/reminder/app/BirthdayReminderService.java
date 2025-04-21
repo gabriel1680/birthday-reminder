@@ -5,9 +5,9 @@ import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.reminder.out.email.EmailSender;
 import org.gbl.reminder.out.email.SendEmailRequest;
-import org.gbl.shared.PaginationOutput;
-import org.gbl.shared.SearchInput;
-import org.gbl.shared.SortingOrder;
+import org.gbl.contacts.application.service.query.PaginationOutput;
+import org.gbl.contacts.application.service.query.SearchInput;
+import org.gbl.contacts.application.service.query.SortingOrder;
 
 import java.time.LocalDate;
 

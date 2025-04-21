@@ -1,6 +1,6 @@
 package org.gbl.contacts.infra;
 
-import org.gbl.shared.IdProvider;
+import org.gbl.contacts.application.service.IdProvider;
 
 import java.util.UUID;
 

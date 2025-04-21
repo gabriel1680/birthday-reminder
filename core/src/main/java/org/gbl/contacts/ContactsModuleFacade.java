@@ -11,8 +11,8 @@ import org.gbl.contacts.application.usecase.remove.RemoveContact;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.update.UpdateContact;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
-import org.gbl.shared.PaginationOutput;
-import org.gbl.shared.SearchInput;
+import org.gbl.contacts.application.service.query.PaginationOutput;
+import org.gbl.contacts.application.service.query.SearchInput;
 
 public class ContactsModuleFacade implements ContactsModule {
 
