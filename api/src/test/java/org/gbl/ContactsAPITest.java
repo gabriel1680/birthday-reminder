@@ -37,18 +37,22 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ContactsSparkControllerTest extends SparkControllerTest {
+class ContactsAPITest extends SparkControllerTest {
 
     @Mock
     ContactsModule contactsModule;
     @InjectMocks
-    ContactsSparkController sut;
+    ContactsAPI sut;
 
     @Nested
     class CreateContactShould {
 
-        private static final String VALID_PAYLOAD = "{\"name\": \"Maria\", \"birthdate\": " +
-                "\"2018-11-15T00:00:00\"}";
+        private static final String VALID_PAYLOAD = """
+                {
+                    "name": "Maria",
+                    "birthdate": "2018-11-15T00:00:00"
+                }
+                """;
 
         @Test
         void throwAParseError_whenReceiveAnInvalidPayload() {

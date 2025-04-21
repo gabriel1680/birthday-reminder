@@ -12,7 +12,7 @@ import static spark.Spark.put;
 
 public class APIRoutes {
 
-    private ContactsSparkController contactsAPI;
+    private ContactsAPI contactsAPI;
 
     public void init() {
         createAPIs();
@@ -22,7 +22,7 @@ public class APIRoutes {
 
     private void createAPIs() {
         var contactsModule = ContactsModuleFactory.createInMemory();
-        contactsAPI = new ContactsSparkController(contactsModule);
+        contactsAPI = new ContactsAPI(contactsModule);
     }
 
     private void configureRoutes() {

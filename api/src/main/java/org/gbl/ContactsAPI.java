@@ -22,11 +22,11 @@ import static org.eclipse.jetty.http.HttpStatus.Code.NO_CONTENT;
 import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 
-public class ContactsSparkController {
+public class ContactsAPI {
 
     private final ContactsModule contactsModule;
 
-    public ContactsSparkController(ContactsModule contactsModule) {
+    public ContactsAPI(ContactsModule contactsModule) {
         this.contactsModule = contactsModule;
     }
 
