@@ -35,7 +35,6 @@ public class API {
         return Integer.parseInt(port);
     }
 
-
     private void configureInternalServerError() {
         internalServerError((req, res) -> {
             res.status(INTERNAL_SERVER_ERROR_500);
