@@ -1,5 +1,6 @@
 package org.gbl.contacts.usecase.list;
 
+import org.gbl.contacts.infra.InMemoryContactQueryRepository;
 import org.gbl.shared.SearchInput;
 import org.gbl.shared.SortingOrder;
 import org.junit.jupiter.api.Test;

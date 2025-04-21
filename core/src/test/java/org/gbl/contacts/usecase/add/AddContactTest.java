@@ -1,6 +1,6 @@
 package org.gbl.contacts.usecase.add;
 
-import org.gbl.contacts.usecase.InMemoryContactRepository;
+import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.shared.fixture.SpyRandomIdProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

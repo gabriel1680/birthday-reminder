@@ -2,10 +2,10 @@ package org.gbl.contacts;
 
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.infra.UUIDIdProvider;
-import org.gbl.contacts.usecase.InMemoryContactRepository;
+import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.contacts.usecase.add.AddContact;
 import org.gbl.contacts.usecase.get.GetContact;
-import org.gbl.contacts.usecase.list.InMemoryContactQueryRepository;
+import org.gbl.contacts.infra.InMemoryContactQueryRepository;
 import org.gbl.contacts.usecase.list.ListContacts;
 import org.gbl.contacts.usecase.remove.RemoveContact;
 import org.gbl.contacts.usecase.update.UpdateContact;
