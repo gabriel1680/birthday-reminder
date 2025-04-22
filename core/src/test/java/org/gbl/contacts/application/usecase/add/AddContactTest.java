@@ -39,7 +39,12 @@ public class AddContactTest {
     @Test
     void shouldAddAContact() {
         final var input = new AddContactInput("Mary Ann", toDate("19/09/1999"));
-        sut.execute(input);
+        final var output = sut.execute(input);
+        assertThat(output)
+                .isNotNull()
+                .hasNoNullFieldsOrProperties()
+                .extracting(AddContactOutput::name)
+                .isEqualTo("Mary Ann");
         assertThat(contactRepository.size()).isEqualTo(2);
         assertTrue(contactRepository.getById(idProvider.lastIdProvided()).isPresent());
     }
