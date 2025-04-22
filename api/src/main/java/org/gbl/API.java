@@ -2,6 +2,7 @@ package org.gbl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Spark;
 
 import static org.eclipse.jetty.http.HttpStatus.INTERNAL_SERVER_ERROR_500;
 import static org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404;
@@ -27,6 +28,14 @@ public class API {
         routes.init();
         configureInternalServerError();
         configureNotImplemented();
+    }
+
+    public void awaitInitialization() {
+        Spark.awaitInitialization();
+    }
+
+    public void stop() {
+        Spark.stop();
     }
 
     private static int getPort() {
