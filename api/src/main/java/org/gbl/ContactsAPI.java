@@ -2,6 +2,7 @@ package org.gbl;
 
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
@@ -33,9 +34,9 @@ public class ContactsAPI {
     public HttpAPIResponse createContact(Request request, Response response) {
         response.type("application/json");
         try {
-            contactsModule.addContact(parseBodyFrom(request));
+            final var output = contactsModule.addContact(parseBodyFrom(request));
             response.status(CREATED.getCode());
-            return HttpAPIResponse.empty();
+            return HttpAPIResponse.ofSuccess(toJson(output));
         } catch (ContactAlreadyExistsException e) {
             response.status(UNPROCESSABLE_ENTITY.getCode());
             return HttpAPIResponse.ofError(e.getMessage());
@@ -43,6 +44,13 @@ public class ContactsAPI {
             response.status(BAD_REQUEST.getCode());
             return HttpAPIResponse.ofError(e.getMessage());
         }
+    }
+
+    private static JSONObject toJson(AddContactOutput output) {
+        return new JSONObject()
+                .put("id", output.id())
+                .put("name", output.name())
+                .put("birthdate", output.birthdate());
     }
 
     private static AddContactInput parseBodyFrom(Request request) {
