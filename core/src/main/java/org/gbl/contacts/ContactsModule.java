@@ -1,6 +1,7 @@
 package org.gbl.contacts;
 
 import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
@@ -10,7 +11,7 @@ import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 
 public interface ContactsModule {
-    void addContact(AddContactInput input);
+    AddContactOutput addContact(AddContactInput input);
 
     void updateContact(UpdateContactInput input);
 

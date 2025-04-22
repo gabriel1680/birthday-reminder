@@ -2,6 +2,7 @@ package org.gbl.contacts;
 
 import org.gbl.contacts.application.usecase.add.AddContact;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContact;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
@@ -33,8 +34,8 @@ public class ContactsModuleFacade implements ContactsModule {
     }
 
     @Override
-    public void addContact(AddContactInput input) {
-        addContact.execute(input);
+    public AddContactOutput addContact(AddContactInput input) {
+        return addContact.execute(input);
     }
 
     @Override

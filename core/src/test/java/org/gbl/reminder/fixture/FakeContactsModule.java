@@ -2,6 +2,7 @@ package org.gbl.reminder.fixture;
 
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
@@ -17,7 +18,8 @@ import static org.gbl.contacts.application.usecase.fixture.ContactFixture.JOHN_D
 
 public class FakeContactsModule implements ContactsModule {
     @Override
-    public void addContact(AddContactInput input) {
+    public AddContactOutput addContact(AddContactInput input) {
+        return null;
     }
 
     @Override
