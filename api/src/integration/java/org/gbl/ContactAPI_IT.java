@@ -73,6 +73,22 @@ public class ContactAPI_IT extends IntegrationTest {
                 .body(emptyString());
     }
 
+    @Test
+    void given_a_contact_should_delete_it() {
+        var response = given()
+                .body(withJson("Daniel Bernoulli", "1700-02-08T00:00:00Z"))
+                .when()
+                .post(RESOURCE_URL)
+                .andReturn();
+        var id = new JSONObject(response.body().print()).getJSONObject("data").getString("id");
+        when()
+                .delete(RESOURCE_URL + "/" + id)
+                .then()
+                .statusCode(204)
+                .contentType(ContentType.JSON)
+                .body(emptyString());
+    }
+
     private static String withJson(String name, String birthdate) {
         return new JSONObject()
                 .put("name", name)
