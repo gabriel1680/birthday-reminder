@@ -84,7 +84,7 @@ class HttpContactGatewayTest {
                     {
                     "status": "success",
                     "message": "contact created",
-                    "data": { "name":"Mary Ann","birthdate":"1959-08-14" }
+                    "data": { "id": 1, "name":"Mary Ann","birthdate":"1959-08-14" }
                     }
                     """;
             when(response.body()).thenReturn(body);
@@ -162,7 +162,7 @@ class HttpContactGatewayTest {
     class WhenUpdateAContact {
 
         private final UpdateContactRequest request =
-                new UpdateContactRequest("John Wick", "1964-09-02");
+                new UpdateContactRequest("2", "John Wick", "1964-09-02");
 
         @Captor
         private ArgumentCaptor<HttpRequest> requestCaptor;
@@ -174,7 +174,7 @@ class HttpContactGatewayTest {
                     {
                     "status": "success",
                     "message": "Contact updated",
-                    "data": { "name":"John Wick","birthdate":"1964-09-02" }
+                    "data": { "id":"2","name":"John Wick","birthdate":"1964-09-02" }
                     }
                     """;
             when(response.body()).thenReturn(body);
@@ -195,12 +195,12 @@ class HttpContactGatewayTest {
             assertThat(httpRequest)
                     .extracting(HttpRequest::uri)
                     .extracting(URI::getPath)
-                    .isEqualTo("/contacts");
+                    .isEqualTo("/contacts/2");
             assertThat(httpRequest)
                     .extracting(HttpRequest::bodyPublisher)
                     .extracting(Optional::get)
                     .extracting(HttpRequest.BodyPublisher::contentLength)
-                    .isEqualTo(45L);
+                    .isEqualTo(54L);
         }
     }
 

@@ -18,6 +18,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 public class HttpContactGateway implements ContactsGateway {
 
@@ -45,7 +46,7 @@ public class HttpContactGateway implements ContactsGateway {
         final var httpRequest = baseRequest()
                 .POST(BodyPublishers.ofString(JSON.stringify(request)))
                 .build();
-        return Try.of(() -> execute(httpRequest));
+        return Try.of(() -> execute(httpRequest).orElseThrow());
     }
 
     @Override
@@ -54,12 +55,13 @@ public class HttpContactGateway implements ContactsGateway {
                 .GET()
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .build();
-        return Try.of(() -> execute(httpRequest));
+        return Try.of(() -> execute(httpRequest).orElseThrow());
     }
 
     @Override
     public Try<Void> update(UpdateContactRequest request) {
         final var httpRequest = baseRequest()
+                .uri(URI.create(baseUrl + RESOURCE + "/" + request.id))
                 .PUT(BodyPublishers.ofString(JSON.stringify(request)))
                 .build();
         return Try.run(() -> execute(httpRequest));
@@ -74,17 +76,17 @@ public class HttpContactGateway implements ContactsGateway {
         return Try.run(() -> execute(httpRequest));
     }
 
-    private ContactResponse execute(HttpRequest httpRequest) {
+    private Optional<ContactResponse> execute(HttpRequest httpRequest) {
         try {
             final var response = client.send(httpRequest, BodyHandlers.ofString());
             var type = new TypeToken<ApiResponse<ContactResponse>>() {}.getType();
             ApiResponse<ContactResponse> apiResponse = JSON.parse(response.body(), type);
             if (!OK_RESPONSES.contains(response.statusCode())) {
-                throw new RuntimeException(apiResponse.message());
+                throw new HttpApiException(apiResponse.message());
             }
-            return apiResponse.data();
+            return Optional.ofNullable(apiResponse).map(ApiResponse::data);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Error during request", e);
+            throw new RuntimeException("Error during request: %s".formatted(e.getMessage()), e);
         }
     }
 }

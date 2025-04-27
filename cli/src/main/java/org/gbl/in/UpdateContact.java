@@ -43,7 +43,8 @@ public class UpdateContact implements Callable<Integer> {
         public UpdateContactRequest() {
         }
 
-        public UpdateContactRequest(String name, String birthdate) {
+        public UpdateContactRequest(String id, String name, String birthdate) {
+            this.id = id;
             this.name = name;
             this.birthdate = birthdate;
         }

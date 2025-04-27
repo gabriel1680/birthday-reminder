@@ -34,7 +34,9 @@ public class GetContact implements Callable<Integer> {
     }
 
     private void onSuccess(ContactResponse contact) {
-        System.out.printf("Contact found => id: %s, name: %s, birthdate: %s%n", contact.id(),
-                          contact.name(), contact.birthdate());
+        System.out.printf("Contact found => id: %s, name: %s, birthdate: %s%n",
+                          contact.id(),
+                          contact.name(),
+                          contact.birthdate());
     }
 }
