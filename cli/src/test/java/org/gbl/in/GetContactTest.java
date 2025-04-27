@@ -32,7 +32,7 @@ class GetContactTest extends CLITest {
         when(gateway.get(anyString())).thenReturn(Try.success(new ContactResponse("1", "Bella", "13/09/1987")));
         int exitCode = commandLine.execute("1");
         assertThat(exitCode).isEqualTo(0);
-        var output = "Contact => id: 1, name: Bella, birthdate: 13/09/1987\n";
+        var output = "Contact found => id: 1, name: Bella, birthdate: 13/09/1987\n";
         assertThat(out.toString()).isEqualTo(output);
     }
 

@@ -28,7 +28,7 @@ class UpdateContactTest extends CLITest {
     @Test
     void ok() {
         when(gateway.update(any())).thenReturn(Try.success(null));
-        var args = new String[]{"--name=John", "--birthdate=27/02/1998"};
+        var args = new String[]{"1", "--name=John", "--birthdate=27/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
         var output = "Contact updated ✅\n";
@@ -38,7 +38,7 @@ class UpdateContactTest extends CLITest {
     @Test
     void clientError() {
         when(gateway.update(any())).thenReturn(Try.failure(new Throwable("Err")));
-        var args = new String[]{"--name=John", "--birthdate=27/02/1998"};
+        var args = new String[]{"1", "--name=John", "--birthdate=27/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(1);
         var output = "Err\n";
@@ -46,8 +46,16 @@ class UpdateContactTest extends CLITest {
     }
 
     @Test
-    void invalidPayload() {
+    void invalidId() {
         int exitCode = commandLine.execute();
+        assertThat(exitCode).isEqualTo(2);
+        var output = "Missing required parameter: '<id>'";
+        assertThat(err.toString()).contains(output);
+    }
+
+    @Test
+    void invalidPayload() {
+        int exitCode = commandLine.execute("1");
         assertThat(exitCode).isEqualTo(2);
         var output = "Error: Missing one of arguments: --name=<name> --birthdate=<birthdate>";
         assertThat(err.toString()).isEqualTo(output);

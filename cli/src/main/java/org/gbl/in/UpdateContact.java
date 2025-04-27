@@ -5,6 +5,7 @@ import org.gbl.out.ContactsGateway;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
 
@@ -16,6 +17,9 @@ public class UpdateContact implements Callable<Integer> {
 
     private final ContactsGateway gateway;
 
+    @Parameters(index = "0", description = "The contact id to update.")
+    private String id;
+
     @ArgGroup(exclusive = false, heading = "Optional flags\n")
     private UpdateContactRequest request;
 
@@ -25,6 +29,8 @@ public class UpdateContact implements Callable<Integer> {
     }
 
     public static class UpdateContactRequest {
+        public String id;
+
         @Option(names = {"-n", "--name"},
                 description = "The name of the contact.")
         public String name;
@@ -50,6 +56,7 @@ public class UpdateContact implements Callable<Integer> {
             System.err.print(errMsg);
             return 2;
         }
+        request.id = id;
         final var response = gateway.update(request)
                 .onSuccess(v -> {
                     System.out.println("Contact updated ✅");

@@ -30,11 +30,11 @@ public class GetContact implements Callable<Integer> {
     }
 
     private void onFailure(Throwable error) {
-        System.out.printf("Error on get contact: %s%n", error.getMessage());
+        System.out.println(error.getMessage());
     }
 
     private void onSuccess(ContactResponse contact) {
-        System.out.printf("Contact => id: %s, name: %s, birthdate: %s%n", contact.id(),
+        System.out.printf("Contact found => id: %s, name: %s, birthdate: %s%n", contact.id(),
                           contact.name(), contact.birthdate());
     }
 }
