@@ -28,7 +28,7 @@ public class DeleteContact implements Callable<Integer> {
                 .onSuccess(it -> {
                     System.out.println("Contact deleted ✅");
                 }).onFailure(error -> {
-                    System.err.println(error.getMessage());
+                    System.err.printf("Error: %s%n", error.getMessage());
                 });
         return response.isFailure() ? 1 : 0;
     }

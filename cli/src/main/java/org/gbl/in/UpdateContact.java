@@ -62,7 +62,7 @@ public class UpdateContact implements Callable<Integer> {
                 .onSuccess(v -> {
                     System.out.println("Contact updated ✅");
                 }).onFailure(error -> {
-                    System.err.println(error.getMessage());
+                    System.err.printf("Error: %s%n", error.getMessage());
                 });
         return response.isFailure() ? 1 : 0;
     }

@@ -37,11 +37,11 @@ class UpdateContactTest extends CLITest {
 
     @Test
     void clientError() {
-        when(gateway.update(any())).thenReturn(Try.failure(new Throwable("Err")));
+        when(gateway.update(any())).thenReturn(Try.failure(new Throwable("some problem")));
         var args = new String[]{"1", "--name=John", "--birthdate=27/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(1);
-        var output = "Err\n";
+        var output = "Error: some problem\n";
         assertThat(err.toString()).isEqualTo(output);
     }
 

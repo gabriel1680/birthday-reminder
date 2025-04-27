@@ -30,7 +30,7 @@ public class GetContact implements Callable<Integer> {
     }
 
     private void onFailure(Throwable error) {
-        System.out.println(error.getMessage());
+        System.err.printf("Error: %s%n", error.getMessage());
     }
 
     private void onSuccess(ContactResponse contact) {

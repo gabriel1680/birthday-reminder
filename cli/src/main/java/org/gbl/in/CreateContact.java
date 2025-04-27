@@ -54,7 +54,7 @@ public class CreateContact implements Callable<Integer> {
     }
 
     private static void onFailure(Throwable error) {
-        System.err.println(error.getMessage());
+        System.err.printf("Error: %s%n", error.getMessage());
     }
 
     private static void onSuccess(ContactResponse contact) {
