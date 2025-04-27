@@ -58,7 +58,7 @@ public class CreateContact implements Callable<Integer> {
     }
 
     private static void onSuccess(ContactResponse contact) {
-        final var msg = "Create contact with id: %s, name: %s and birthdate: %s";
+        final var msg = "Create contact with id: %s, name: %s and birthdate: %s%n";
         System.out.printf(msg, contact.id(), contact.name(), contact.birthdate());
     }
 }

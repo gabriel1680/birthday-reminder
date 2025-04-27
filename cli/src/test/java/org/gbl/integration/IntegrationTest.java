@@ -18,7 +18,7 @@ public class IntegrationTest extends CLITest {
         var args = new String[]{"create", "--name=Gabriel", "--birthdate=12/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
-        var output = "Create contact with id: 1, name: Gabriel and birthdate: 12/02/1998";
+        var output = "Create contact with id: 1, name: Gabriel and birthdate: 12/02/1998\n";
         assertThat(out.toString()).isEqualTo(output);
     }
 
