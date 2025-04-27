@@ -1,6 +1,7 @@
 package org.gbl.in;
 
 import jakarta.inject.Inject;
+import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
@@ -46,9 +47,18 @@ public class CreateContact implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        final var response = contactsGateway.create(request);
+        final var response = contactsGateway.create(request)
+                .onSuccess(CreateContact::onSuccess)
+                .onFailure(CreateContact::onFailure);
+        return response.isFailure() ? 1 : 0;
+    }
+
+    private static void onFailure(Throwable error) {
+        System.err.println(error.getMessage());
+    }
+
+    private static void onSuccess(ContactResponse contact) {
         final var msg = "Create contact with name: %s and birthdate: %s";
-        System.out.printf(msg, response.name(), response.birthdate());
-        return 0;
+        System.out.printf(msg, contact.name(), contact.birthdate());
     }
 }

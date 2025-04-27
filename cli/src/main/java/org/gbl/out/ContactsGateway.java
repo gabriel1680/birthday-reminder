@@ -1,14 +1,15 @@
 package org.gbl.out;
 
+import io.vavr.control.Try;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
 
 public interface ContactsGateway {
-    ContactResponse create(CreateContactRequest request);
+    Try<ContactResponse> create(CreateContactRequest request);
 
-    ContactResponse get(String contactId);
+    Try<ContactResponse> get(String contactId);
 
-    ContactResponse update(UpdateContactRequest request);
+    Try<Void> update(UpdateContactRequest request);
 
-    void delete(String contactId);
+    Try<Void> delete(String contactId);
 }

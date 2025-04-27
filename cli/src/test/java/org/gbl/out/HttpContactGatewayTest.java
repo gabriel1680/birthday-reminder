@@ -23,8 +23,6 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,13 +48,16 @@ class HttpContactGatewayTest {
     @Test
     void responseError() throws IOException, InterruptedException {
         when(response.statusCode()).thenReturn(400);
-        when(response.body()).thenReturn(JSON.stringify(new ApiResponse<String>("error", "invalid " +
+        when(response.body()).thenReturn(JSON.stringify(new ApiResponse<String>("error", "invalid" +
+                " " +
                 "name", null)));
         when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
         var request = new CreateContactRequest("John", "1957-04-14");
-        assertThatThrownBy(() -> sut.create(request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("invalid name");
+        final var output = sut.create(request);
+        assertThat(output.isFailure()).isTrue();
+        assertThat(output.failed().get())
+                .extracting(Throwable::getMessage)
+                .isEqualTo("invalid name");
     }
 
     @Test
@@ -64,10 +65,7 @@ class HttpContactGatewayTest {
         final var error = new IOException("invalid error");
         when(client.send(any(), any())).thenThrow(error);
         var request = new CreateContactRequest("John", "1957-04-14");
-        assertThatThrownBy(() -> sut.create(request))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Error during request")
-                .hasCause(error);
+        assertThat(sut.create(request).isFailure()).isTrue();
     }
 
     @Nested
@@ -95,7 +93,7 @@ class HttpContactGatewayTest {
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.create(request))
+            assertThat(sut.create(request).get())
                     .isNotNull()
                     .isInstanceOf(ContactResponse.class);
         }
@@ -142,7 +140,7 @@ class HttpContactGatewayTest {
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.get(request))
+            assertThat(sut.get(request).get())
                     .isNotNull()
                     .isInstanceOf(ContactResponse.class);
         }
@@ -185,9 +183,7 @@ class HttpContactGatewayTest {
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.update(request))
-                    .isNotNull()
-                    .isInstanceOf(ContactResponse.class);
+            assertThat(sut.update(request).get()).isNull();
         }
 
         @Test
@@ -232,7 +228,7 @@ class HttpContactGatewayTest {
 
         @Test
         void success() {
-            assertDoesNotThrow(() -> sut.delete(request));
+            assertThat(sut.delete(request).isSuccess()).isTrue();
         }
 
         @Test

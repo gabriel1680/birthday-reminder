@@ -1,10 +1,11 @@
 package org.gbl.out.http;
 
 import com.google.gson.reflect.TypeToken;
+import io.vavr.control.Try;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
-import org.gbl.out.ContactsGateway;
 import org.gbl.out.ContactResponse;
+import org.gbl.out.ContactsGateway;
 import org.gbl.utils.JSON;
 
 import java.io.IOException;
@@ -40,37 +41,37 @@ public class HttpContactGateway implements ContactsGateway {
     }
 
     @Override
-    public ContactResponse create(CreateContactRequest request) {
+    public Try<ContactResponse> create(CreateContactRequest request) {
         final var httpRequest = baseRequest()
                 .POST(BodyPublishers.ofString(JSON.stringify(request)))
                 .build();
-        return execute(httpRequest);
+        return Try.of(() -> execute(httpRequest));
     }
 
     @Override
-    public ContactResponse get(String contactId) {
+    public Try<ContactResponse> get(String contactId) {
         final var httpRequest = baseRequest()
                 .GET()
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .build();
-        return execute(httpRequest);
+        return Try.of(() -> execute(httpRequest));
     }
 
     @Override
-    public ContactResponse update(UpdateContactRequest request) {
+    public Try<Void> update(UpdateContactRequest request) {
         final var httpRequest = baseRequest()
                 .PUT(BodyPublishers.ofString(JSON.stringify(request)))
                 .build();
-        return execute(httpRequest);
+        return Try.run(() -> execute(httpRequest));
     }
 
     @Override
-    public void delete(String contactId) {
+    public Try<Void> delete(String contactId) {
         final var httpRequest = baseRequest()
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .DELETE()
                 .build();
-        execute(httpRequest);
+        return Try.run(() -> execute(httpRequest));
     }
 
     private ContactResponse execute(HttpRequest httpRequest) {

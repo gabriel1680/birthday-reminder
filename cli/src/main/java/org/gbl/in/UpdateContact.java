@@ -50,9 +50,12 @@ public class UpdateContact implements Callable<Integer> {
             System.err.print(errMsg);
             return 2;
         }
-        final var response = gateway.update(request);
-        final var msg = "Update contact with name: %s and birthdate: %s";
-        System.out.printf(msg, response.name(), response.birthdate());
-        return 0;
+        final var response = gateway.update(request)
+                .onSuccess(v -> {
+                    System.out.println("Contact updated ✅");
+                }).onFailure(error -> {
+                    System.err.println(error.getMessage());
+                });
+        return response.isFailure() ? 1 : 0;
     }
 }

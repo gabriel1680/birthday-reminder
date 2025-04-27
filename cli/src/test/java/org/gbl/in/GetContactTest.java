@@ -1,5 +1,6 @@
 package org.gbl.in;
 
+import io.vavr.control.Try;
 import org.gbl.CLITest;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
@@ -28,10 +29,10 @@ class GetContactTest extends CLITest {
 
     @Test
     void ok() {
-        when(gateway.get(anyString())).thenReturn(new ContactResponse("1", "Bella", "13/09/1987"));
+        when(gateway.get(anyString())).thenReturn(Try.success(new ContactResponse("1", "Bella", "13/09/1987")));
         int exitCode = commandLine.execute("1");
         assertThat(exitCode).isEqualTo(0);
-        var output = "Contact => id: 1, name: Bella, birthdate: 13/09/1987";
+        var output = "Contact => id: 1, name: Bella, birthdate: 13/09/1987\n";
         assertThat(out.toString()).isEqualTo(output);
     }
 

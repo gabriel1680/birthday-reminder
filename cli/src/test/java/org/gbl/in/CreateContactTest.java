@@ -1,5 +1,6 @@
 package org.gbl.in;
 
+import io.vavr.control.Try;
 import org.gbl.CLITest;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
@@ -30,7 +31,7 @@ class CreateContactTest extends CLITest {
 
     @Test
     void ok() {
-        when(gateway.create(any())).thenReturn(new ContactResponse("1", "Gabriel", "12/02/1998"));
+        when(gateway.create(any())).thenReturn(Try.success(new ContactResponse("1", "Gabriel", "12/02/1998")));
         var args = new String[]{"--name=Gabriel", "--birthdate=12/02/1998"};
         var exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);

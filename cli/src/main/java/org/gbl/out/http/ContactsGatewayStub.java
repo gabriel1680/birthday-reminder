@@ -1,5 +1,6 @@
 package org.gbl.out.http;
 
+import io.vavr.control.Try;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.ContactResponse;
@@ -7,22 +8,22 @@ import org.gbl.out.ContactsGateway;
 
 public class ContactsGatewayStub implements ContactsGateway {
     @Override
-    public ContactResponse create(CreateContactRequest request) {
-        return new ContactResponse("1", request.name, request.birthdate);
+    public Try<ContactResponse> create(CreateContactRequest request) {
+        return Try.success(new ContactResponse("1", request.name, request.birthdate));
     }
 
     @Override
-    public ContactResponse get(String contactId) {
-        return new ContactResponse("1", "Bella", "13/09/1987");
+    public Try<ContactResponse> get(String contactId) {
+        return Try.success(new ContactResponse("1", "Bella", "13/09/1987"));
     }
 
     @Override
-    public ContactResponse update(UpdateContactRequest request) {
-        return new ContactResponse("1", "John", "27/02/1998");
+    public Try<Void> update(UpdateContactRequest request) {
+        return Try.success(null);
     }
 
     @Override
-    public void delete(String contactId) {
-        // noop
+    public Try<Void> delete(String contactId) {
+        return Try.success(null);
     }
 }
