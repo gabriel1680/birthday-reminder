@@ -86,7 +86,7 @@ public class HttpContactGateway implements ContactsGateway {
             }
             return Optional.ofNullable(apiResponse).map(ApiResponse::data);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Error during request: %s".formatted(e.getMessage()), e);
+            throw new RuntimeException("Error during request", e);
         }
     }
 }

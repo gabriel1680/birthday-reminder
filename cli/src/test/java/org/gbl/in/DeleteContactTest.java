@@ -33,7 +33,7 @@ class DeleteContactTest extends CLITest {
         when(gateway.delete(any())).thenReturn(Try.success(null));
         int exitCode = commandLine.execute("1");
         assertThat(exitCode).isEqualTo(0);
-        assertThat(out.toString()).contains("Contact of id 1 deleted\n");
+        assertThat(out.toString()).contains("Contact deleted ✅\n");
         verify(gateway, times(1)).delete("1");
     }
 
