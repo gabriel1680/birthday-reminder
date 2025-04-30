@@ -2,6 +2,7 @@ package org.gbl;
 
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
+import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
@@ -9,6 +10,7 @@ import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,6 +56,12 @@ class ContactsAPITest extends SparkControllerTest {
                     "birthdate": "2018-11-15T00:00:00"
                 }
                 """;
+
+        private static final AddContactOutput maria = new AddContactOutput("1", "Maria", toDate("2018-11-15"));
+
+        private static LocalDate toDate(String date) {
+            return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
+        }
 
         @Test
         void throwAParseError_whenReceiveAnInvalidPayload() {
@@ -92,16 +101,24 @@ class ContactsAPITest extends SparkControllerTest {
 
         @Test
         void createAContact() {
+            when(contactsModule.addContact(any())).thenReturn(maria);
             when(request.body()).thenReturn(VALID_PAYLOAD);
             final var output = sut.createContact(request, response);
             aAssertionFor(response)
                     .withStatusCode(CREATED)
-                    .forExpected(ResponseStatus.SUCCESS, "", new JSONObject())
+                    .forExpected(ResponseStatus.SUCCESS, "", toJson(maria))
                     .withActual(output)
                     .build();
             verify(contactsModule).addContact(captor.capture());
             assertThat(captor.getValue().name()).isEqualTo("Maria");
-            assertThat(captor.getValue().birthdate()).isEqualTo(LocalDate.of(2018, 11, 15));
+            assertThat(captor.getValue().birthdate()).isEqualTo(toDate("2018-11-15"));
+        }
+
+        private static JSONObject toJson(AddContactOutput maria) {
+            return new JSONObject()
+                    .put("id", maria.id())
+                    .put("name", maria.name())
+                    .put("birthdate", maria.birthdate());
         }
     }
 
