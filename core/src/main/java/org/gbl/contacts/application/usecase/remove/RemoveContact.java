@@ -14,6 +14,6 @@ public class RemoveContact {
     public void execute(RemoveContactInput input) {
         final var contact = repository.getById(input.id())
                 .orElseThrow(() -> new ContactNotFoundException(input.id()));
-        repository.remove(contact.id());
+        repository.remove(contact);
     }
 }

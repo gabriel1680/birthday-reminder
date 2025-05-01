@@ -22,8 +22,8 @@ public class InMemoryContactRepository implements ContactRepository {
     }
 
     @Override
-    public void remove(String anId) {
-        contacts.remove(anId, contacts.get(anId));
+    public void remove(Contact aContact) {
+        contacts.remove(aContact.id(), aContact);
     }
 
     @Override

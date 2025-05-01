@@ -5,7 +5,7 @@ import java.util.Optional;
 public interface ContactRepository {
     void add(Contact aContact);
 
-    void remove(String anId);
+    void remove(Contact aContact);
 
     Optional<Contact> getById(String anId);
 
