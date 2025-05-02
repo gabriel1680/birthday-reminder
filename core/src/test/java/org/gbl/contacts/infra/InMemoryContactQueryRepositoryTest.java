@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,12 +20,12 @@ class InMemoryContactQueryRepositoryTest {
 
     private final Contact HARRY = new Contact("1", "Joan", LocalDate.of(2000, 12, 22));
     private final Contact TOM = new Contact("2", "Tom", LocalDate.of(2002, 12, 22));
+    private final Collection<Contact> contacts = new ArrayList<>();
 
     private InMemoryContactQueryRepository sut;
 
     @BeforeEach
     void setUp() {
-        ArrayList<Contact> contacts = new ArrayList<>();
         sut = new InMemoryContactQueryRepository(contacts);
     }
 
@@ -36,7 +38,7 @@ class InMemoryContactQueryRepositoryTest {
 
     @Test
     void oneContact() {
-        sut.add(HARRY);
+        contacts.add(HARRY);
         var input = new SearchInput<ContactFilter>(1, 1, SortingOrder.ASC, null);
         var output = sut.search(input);
         assertThat(output.values()).hasSize(1);
@@ -48,8 +50,7 @@ class InMemoryContactQueryRepositoryTest {
 
         @BeforeEach
         void setUp() {
-            sut.add(HARRY);
-            sut.add(TOM);
+            contacts.addAll(List.of(HARRY, TOM));
         }
 
         @Test

@@ -3,43 +3,44 @@ package org.gbl.contacts.infra;
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.domain.ContactRepository;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class InMemoryContactRepository implements ContactRepository {
 
-    private final Map<String, Contact> contacts = new HashMap<>();
+    private final List<Contact> contacts;
 
     public InMemoryContactRepository(List<Contact> contacts) {
-        contacts.forEach(contact -> this.contacts.put(contact.id(), contact));
+        this.contacts = contacts;
     }
 
     @Override
     public void add(Contact aContact) {
-        contacts.put(aContact.id(), aContact);
+        contacts.add(aContact);
     }
 
     @Override
     public void remove(Contact aContact) {
-        contacts.remove(aContact.id(), aContact);
+        contacts.remove(aContact);
     }
 
     @Override
     public Optional<Contact> getById(String anId) {
-        return Optional.ofNullable(contacts.get(anId));
+        return contacts.stream().filter(c -> c.id().equals(anId)).findFirst();
     }
 
     @Override
     public boolean existsByName(String aName) {
-        return contacts.values().stream()
-                .anyMatch(contact -> contact.name().equals(aName));
+        return contacts.stream().anyMatch(contact -> contact.name().equals(aName));
     }
 
     @Override
     public void update(Contact aContact) {
-        contacts.put(aContact.id(), aContact);
+        final var idx = contacts.indexOf(aContact);
+        if (idx != -1) {
+            contacts.add(idx, aContact);
+        }
     }
 
     public int size() {
@@ -47,6 +48,6 @@ public class InMemoryContactRepository implements ContactRepository {
     }
 
     public List<Contact> contacts() {
-        return contacts.values().stream().toList();
+        return Collections.unmodifiableList(contacts);
     }
 }

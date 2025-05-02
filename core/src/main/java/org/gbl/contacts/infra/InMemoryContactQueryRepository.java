@@ -8,20 +8,19 @@ import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.domain.Contact;
 
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
-public class InMemoryContactQueryRepository
-        extends InMemoryContactRepository
-        implements ContactQueryRepository {
+public class InMemoryContactQueryRepository implements ContactQueryRepository {
 
-    public InMemoryContactQueryRepository(List<Contact> contacts) {
-        super(contacts);
+    private final Collection<Contact> contacts;
+
+    public InMemoryContactQueryRepository(Collection<Contact> contacts) {
+        this.contacts = contacts;
     }
 
     @Override
     public PaginationOutput<ContactOutput> search(SearchInput<ContactFilter> input) {
-        final var contacts = contacts();
         if (contacts.isEmpty()) {
             return PaginationOutput.emptyOf(input.page(), input.size());
         }
