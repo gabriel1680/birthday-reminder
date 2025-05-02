@@ -10,6 +10,15 @@ public enum SortingOrder {
         this.value = value;
     }
 
+    public static SortingOrder of(String s) {
+        for (var sortingOrder : values()) {
+            if (sortingOrder.value().equals(s)) {
+                return sortingOrder;
+            }
+        }
+        throw new IllegalArgumentException("Invalid SortingOrder string value");
+    }
+
     public String value() {
         return value;
     }

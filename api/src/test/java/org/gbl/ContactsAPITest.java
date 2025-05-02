@@ -1,16 +1,20 @@
 package org.gbl;
 
 import org.gbl.contacts.ContactsModule;
+import org.gbl.contacts.application.service.query.PaginationOutput;
+import org.gbl.contacts.application.service.query.SearchInput;
+import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
+import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,6 +49,7 @@ class ContactsAPITest extends SparkControllerTest {
 
     @Mock
     ContactsModule contactsModule;
+
     @InjectMocks
     ContactsAPI sut;
 
@@ -306,6 +312,103 @@ class ContactsAPITest extends SparkControllerTest {
             assertThat(input.id()).isEqualTo("123");
             assertThat(input.name()).isEqualTo("Maria");
             assertThat(input.birthdate()).isEqualTo("2018-11-15");
+        }
+    }
+
+    @Nested
+    class GetAllContactsShould {
+
+        @Test
+        void listEmptyContacts() {
+            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            var output = sut.getAllContracts(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(OK)
+                    .forExpected(ResponseStatus.SUCCESS, "", new JSONArray())
+                    .withActual(output)
+                    .build();
+        }
+
+        @Test
+        void notEmptyResponse() {
+            var results = List.of(new ContactOutput("1", "a", LocalDate.of(2018, 4, 9)));
+            when(contactsModule.listContacts(any())).thenReturn(new PaginationOutput<>(1, 1, 1, results));
+            var output = sut.getAllContracts(request, response);
+            var json = """
+                    [{"birthdate":"2018-04-09","name":"a","id":"1"}]""";
+            aAssertionFor(response)
+                    .withStatusCode(OK)
+                    .forExpected(ResponseStatus.SUCCESS, "", json)
+                    .withActual(output)
+                    .build();
+        }
+
+        @Captor
+        private ArgumentCaptor<SearchInput<ContactFilter>> inputArgumentCaptor;
+
+        @Test
+        void requestPagination() {
+            when(request.queryParamOrDefault("page", "1")).thenReturn("1");
+            when(request.queryParamOrDefault("size", "5")).thenReturn("5");
+            when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
+            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            sut.getAllContracts(request, response);
+            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            var input = inputArgumentCaptor.getValue();
+            assertThat(input)
+                    .extracting(SearchInput::page, SearchInput::size, SearchInput::order)
+                    .containsExactly(1, 5, SortingOrder.DESC);
+        }
+
+        @Test
+        void requestNameFilter() {
+            when(request.queryParams("filter_name")).thenReturn("a");
+            when(request.queryParams("filter_birthdate")).thenReturn(null);
+            when(request.queryParamOrDefault("page", "1")).thenReturn("1");
+            when(request.queryParamOrDefault("size", "5")).thenReturn("5");
+            when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
+            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            sut.getAllContracts(request, response);
+            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            var input = inputArgumentCaptor.getValue();
+            assertThat(input)
+                    .extracting(SearchInput::filter)
+                    .isInstanceOf(ContactFilter.class)
+                    .isEqualTo(ContactFilter.of("a"));
+        }
+
+        @Test
+        void requestBirthdateFilter() {
+            when(request.queryParams("filter_name")).thenReturn("a");
+            when(request.queryParams("filter_birthdate")).thenReturn("2018-11-15");
+            when(request.queryParamOrDefault("page", "1")).thenReturn("1");
+            when(request.queryParamOrDefault("size", "5")).thenReturn("5");
+            when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
+            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            sut.getAllContracts(request, response);
+            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            var input = inputArgumentCaptor.getValue();
+            assertThat(input)
+                    .extracting(SearchInput::filter)
+                    .isInstanceOf(ContactFilter.class)
+                    .isEqualTo(ContactFilter.of("a", LocalDate.of(2018, 11, 15)));
+        }
+
+        @Test
+        void requestNoFilter() {
+            when(request.queryParams("filter_name")).thenReturn(null);
+            when(request.queryParams("filter_birthdate")).thenReturn(null);
+            when(request.queryParamOrDefault("page", "1")).thenReturn("1");
+            when(request.queryParamOrDefault("size", "5")).thenReturn("5");
+            when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
+            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            sut.getAllContracts(request, response);
+            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            var input = inputArgumentCaptor.getValue();
+            assertThat(input)
+                    .extracting(SearchInput::filter)
+                    .isInstanceOf(ContactFilter.class)
+                    .isEqualTo(ContactFilter.of());
         }
     }
 }

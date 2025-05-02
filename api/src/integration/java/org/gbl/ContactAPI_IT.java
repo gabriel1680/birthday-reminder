@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import org.gbl.dsl.BirthdayReminderDSL;
 import org.gbl.dsl.ContactDSL;
 import org.gbl.dsl.ContactDSL.ITContact;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -23,18 +24,18 @@ public class ContactAPI_IT extends IntegrationTest {
     @Test
     void given_a_new_contact_should_create_it() {
         given()
-            .body(withJson("Carl Edward Sagan", "1934-11-09T00:00:00Z"))
-        .when()
-            .post(ContactDSL.RESOURCE_URL)
-        .then()
-            .statusCode(201)
-            .contentType(ContentType.JSON)
-            .body("status", equalTo("success"))
-            .body("message", emptyString())
-            .body("data", notNullValue())
-            .body("data.id", notNullValue())
-            .body("data.name", stringContainsInOrder("Carl"))
-            .body("data.birthdate", is("1934-11-09"));
+                .body(withJson("Carl Edward Sagan", "1934-11-09T00:00:00Z"))
+                .when()
+                .post(ContactDSL.RESOURCE_URL)
+                .then()
+                .statusCode(201)
+                .contentType(ContentType.JSON)
+                .body("status", equalTo("success"))
+                .body("message", emptyString())
+                .body("data", notNullValue())
+                .body("data.id", notNullValue())
+                .body("data.name", stringContainsInOrder("Carl"))
+                .body("data.birthdate", is("1934-11-09"));
     }
 
     @Nested
@@ -63,39 +64,53 @@ public class ContactAPI_IT extends IntegrationTest {
         @Test
         void should_retrieve_it() {
             when()
-                .get(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
-            .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo("success"))
-                .body("message", emptyString())
-                .body("data", notNullValue())
-                .body("data.id", equalTo(ISAAC_NEWTON.id()))
-                .body("data.name", stringContainsInOrder("Isaac"))
-                .body("data.birthdate", is("1643-01-04"));
+                    .get(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
+                    .then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("status", equalTo("success"))
+                    .body("message", emptyString())
+                    .body("data", notNullValue())
+                    .body("data.id", equalTo(ISAAC_NEWTON.id()))
+                    .body("data.name", stringContainsInOrder("Isaac"))
+                    .body("data.birthdate", is("1643-01-04"));
         }
 
         @Test
         void should_update_it() {
             given()
-                .body(withJson("Albert Einstein", "1879-03-14T00:00:00Z"))
-            .when()
-                .put(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
-            .then()
-                .statusCode(204)
-                .contentType(ContentType.JSON)
-                .body(emptyString());
+                    .body(withJson("Albert Einstein", "1879-03-14T00:00:00Z"))
+                    .when()
+                    .put(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
+                    .then()
+                    .statusCode(204)
+                    .contentType(ContentType.JSON)
+                    .body(emptyString());
         }
 
         @Test
         void given_a_contact_should_delete_it() {
             DANIEL_BERNOULLI = BirthdayReminderDSL.register(DANIEL_BERNOULLI);
             when()
-                .delete(ContactDSL.RESOURCE_URL + "/" + DANIEL_BERNOULLI.id())
-            .then()
-                .statusCode(204)
-                .contentType(ContentType.JSON)
-                .body(emptyString());
+                    .delete(ContactDSL.RESOURCE_URL + "/" + DANIEL_BERNOULLI.id())
+                    .then()
+                    .statusCode(204)
+                    .contentType(ContentType.JSON)
+                    .body(emptyString());
+        }
+
+        @Test
+        void given_two_contacts_should_retrieve_all() {
+            DANIEL_BERNOULLI = BirthdayReminderDSL.register(DANIEL_BERNOULLI);
+            when()
+                    .get(ContactDSL.RESOURCE_URL)
+                    .then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("status", equalTo("success"))
+                    .body("message", emptyString())
+                    .body("data", notNullValue())
+                    .body("data", Matchers.hasItem(DANIEL_BERNOULLI));
         }
     }
 }

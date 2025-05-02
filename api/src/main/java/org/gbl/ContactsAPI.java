@@ -1,14 +1,19 @@
 package org.gbl;
 
 import org.gbl.contacts.ContactsModule;
+import org.gbl.contacts.application.service.query.PaginationOutput;
+import org.gbl.contacts.application.service.query.SearchInput;
+import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
+import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -115,9 +120,7 @@ public class ContactsAPI {
     public HttpAPIResponse updateContact(Request request, Response response) {
         response.type("application/json");
         try {
-            final var id = getId(request);
-            final var input = parseBodyFrom(id, request);
-            contactsModule.updateContact(input);
+            contactsModule.updateContact(parseBodyFrom(getId(request), request));
             response.status(NO_CONTENT.getCode());
             return HttpAPIResponse.empty();
         } catch (InvalidPayloadException e) {
@@ -139,5 +142,46 @@ public class ContactsAPI {
         } catch (RuntimeException e) {
             throw new InvalidPayloadException(e);
         }
+    }
+
+    public HttpAPIResponse getAllContracts(Request request, Response response) {
+        response.type("application/json");
+        try {
+            final var output = contactsModule.listContacts(inputOf(request));
+            final var json = jsonFor(output);
+            response.status(OK.getCode());
+            return HttpAPIResponse.ofSuccess(json);
+        } catch (InvalidPayloadException e) {
+            response.status(BAD_REQUEST.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        } catch (ContactNotFoundException e) {
+            response.status(NOT_FOUND.getCode());
+            return HttpAPIResponse.ofError(e.getMessage());
+        }
+    }
+
+    private static SearchInput<ContactFilter> inputOf(Request request) {
+        final var page = Integer.parseInt(request.queryParamOrDefault("page", "1"));
+        final var size = Integer.parseInt(request.queryParamOrDefault("size", "5"));
+        final var order = SortingOrder.of(request.queryParamOrDefault("order", "asc"));
+        final var filter = contactFilterOf(request);
+        return new SearchInput<>(page, size, order, filter);
+    }
+
+    private static ContactFilter contactFilterOf(Request request) {
+        final var nameFilter = request.queryParams("filter_name");
+        var filter = ContactFilter.of(nameFilter);
+        final var birthdateFilter = request.queryParams("filter_birthdate");
+        if (birthdateFilter != null) {
+            filter = ContactFilter.of(nameFilter, LocalDate.parse(birthdateFilter));
+        }
+        return filter;
+    }
+
+    private static JSONArray jsonFor(PaginationOutput<ContactOutput> output) {
+        return output.values().stream()
+                .reduce(new JSONArray(),
+                        (acc, next) -> acc.put(toJson(next)),
+                        JSONArray::putAll);
     }
 }

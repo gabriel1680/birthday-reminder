@@ -2,12 +2,11 @@ package org.gbl;
 
 import org.json.JSONObject;
 
-public record HttpAPIResponse(ResponseStatus status, String message, JSONObject data) {
-
+public record HttpAPIResponse(ResponseStatus status, String message, Object data) {
     private static final String EMPTY_MESSAGE = "";
     private static final JSONObject EMPTY_DATA = new JSONObject();
 
-    public static HttpAPIResponse ofSuccess(JSONObject data) {
+    public static HttpAPIResponse ofSuccess(Object data) {
         return new HttpAPIResponse(ResponseStatus.SUCCESS, EMPTY_MESSAGE, data);
     }
 

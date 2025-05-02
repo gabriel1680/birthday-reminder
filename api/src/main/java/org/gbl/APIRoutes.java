@@ -28,6 +28,7 @@ public class APIRoutes {
     private void configureRoutes() {
         get("status", this::ok);
         post("/contacts", contactsAPI::createContact);
+        get("/contacts", contactsAPI::getAllContracts);
         get("/contacts/:id", contactsAPI::getContract);
         delete("/contacts/:id", contactsAPI::deleteContact);
         put("/contacts/:id", contactsAPI::updateContact);

@@ -1,6 +1,7 @@
 package org.gbl;
 
 import org.eclipse.jetty.http.HttpStatus.Code;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Response;
 
@@ -35,6 +36,18 @@ public class SparkResponseAssertionBuilder {
         return this;
     }
 
+    public SparkResponseAssertionBuilder forExpected(ResponseStatus status,
+                                                     String message, JSONArray data) {
+        this.expected = new HttpAPIResponse(status, message, data);
+        return this;
+    }
+
+    public SparkResponseAssertionBuilder forExpected(ResponseStatus status,
+                                                     String message, String data) {
+        this.expected = new HttpAPIResponse(status, message, data);
+        return this;
+    }
+
     public SparkResponseAssertionBuilder withActual(HttpAPIResponse actual) {
         this.actual = actual;
         return this;
@@ -45,6 +58,6 @@ public class SparkResponseAssertionBuilder {
         verify(response).status(statusCode.getCode());
         assertThat(actual.status()).isEqualTo(expected.status());
         assertThat(actual.message()).isEqualTo(expected.message());
-        assertThat(actual.data()).usingRecursiveComparison().isEqualTo(expected.data());
+        assertThat(actual.data().toString()).isEqualTo(expected.data().toString());
     }
 }
