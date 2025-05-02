@@ -53,6 +53,6 @@ public class FakeContactsModule implements ContactsModule {
                                                    JOHN_DOE.birthdate());
             contacts.addAll(List.of(contact1, contact2));
         }
-        return new PaginationOutput<>(input.page(), input.take(), contacts.size(), contacts);
+        return new PaginationOutput<>(input.page(), input.size(), contacts.size(), contacts);
     }
 }

@@ -29,7 +29,7 @@ public class BirthdayReminderService {
 
     private static SearchInput<ContactFilter> createSearchInput(LocalDate today) {
         final var filter = new ContactFilter(null, today);
-        return new SearchInput<>(1, 1, 0, SortingOrder.ASC, filter);
+        return new SearchInput<>(1, 1, SortingOrder.ASC, filter);
     }
 
     private void sendEmails(LocalDate today, PaginationOutput<ContactOutput> output) {
