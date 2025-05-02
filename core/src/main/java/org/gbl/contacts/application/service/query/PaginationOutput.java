@@ -8,4 +8,8 @@ public record PaginationOutput<T>(int page, int size, int total, List<T> values)
     public static <T> PaginationOutput<T> emptyOf(int page, int take) {
         return new PaginationOutput<>(page, take, 0, Collections.emptyList());
     }
+
+    public int lastPage() {
+        return Math.max(1, total / size);
+    }
 }
