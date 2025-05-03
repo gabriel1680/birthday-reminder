@@ -4,7 +4,6 @@ import io.restassured.http.ContentType;
 import org.gbl.dsl.BirthdayReminderDSL;
 import org.gbl.dsl.ContactDSL;
 import org.gbl.dsl.ContactDSL.ITContact;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -15,6 +14,7 @@ import static io.restassured.RestAssured.when;
 import static org.gbl.dsl.ContactDSL.ITContactBuilder.aContact;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.stringContainsInOrder;
@@ -101,7 +101,6 @@ public class ContactAPI_IT extends IntegrationTest {
 
         @Test
         void given_two_contacts_should_retrieve_all() {
-            DANIEL_BERNOULLI = BirthdayReminderDSL.register(DANIEL_BERNOULLI);
             when()
                     .get(ContactDSL.RESOURCE_URL)
                     .then()
@@ -109,8 +108,7 @@ public class ContactAPI_IT extends IntegrationTest {
                     .contentType(ContentType.JSON)
                     .body("status", equalTo("success"))
                     .body("message", emptyString())
-                    .body("data", notNullValue())
-                    .body("data", Matchers.hasItem(DANIEL_BERNOULLI));
+                    .body("data", hasSize(2));
         }
     }
 }

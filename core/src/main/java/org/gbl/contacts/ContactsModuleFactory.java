@@ -10,13 +10,14 @@ import org.gbl.contacts.application.usecase.list.ListContacts;
 import org.gbl.contacts.application.usecase.remove.RemoveContact;
 import org.gbl.contacts.application.usecase.update.UpdateContact;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ContactsModuleFactory {
 
     public static ContactsModule createInMemory() {
-        final List<Contact> contacts = Collections.emptyList();
+        final var contacts = new ArrayList<Contact>();
         final var repository = new InMemoryContactRepository(contacts);
         return new ContactsModuleFacade(
                 new AddContact(repository, new UUIDIdProvider()),
