@@ -5,6 +5,8 @@ import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
+import org.gbl.out.Pagination;
+import org.gbl.out.SearchRequest;
 
 public class ContactsGatewayStub implements ContactsGateway {
     @Override
@@ -24,6 +26,11 @@ public class ContactsGatewayStub implements ContactsGateway {
 
     @Override
     public Try<Void> delete(String contactId) {
+        return Try.success(null);
+    }
+
+    @Override
+    public Try<Pagination<ContactResponse>> search(SearchRequest request) {
         return Try.success(null);
     }
 }

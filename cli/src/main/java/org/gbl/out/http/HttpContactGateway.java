@@ -6,9 +6,12 @@ import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
+import org.gbl.out.Pagination;
+import org.gbl.out.SearchRequest;
 import org.gbl.utils.JSON;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
@@ -25,8 +28,13 @@ public class HttpContactGateway implements ContactsGateway {
     private static final List<Integer> OK_RESPONSES = List.of(200, 201, 204);
     private static final String RESOURCE = "/contacts";
 
+    private static final Type CONTACT_RESPONSE_TYPE = ContactResponse.class;
+    private static final Type PAGINATION_RESPONSE_TYPE =
+            TypeToken.getParameterized(Pagination.class, ContactResponse.class).getType();
+
     private final HttpClient client;
     private final String baseUrl;
+
 
     public HttpContactGateway(HttpClient client, String baseUrl) {
         this.client = client;
@@ -46,7 +54,7 @@ public class HttpContactGateway implements ContactsGateway {
         final var httpRequest = baseRequest()
                 .POST(BodyPublishers.ofString(JSON.stringify(request)))
                 .build();
-        return Try.of(() -> execute(httpRequest).orElseThrow());
+        return Try.of(() -> (ContactResponse) execute(httpRequest, CONTACT_RESPONSE_TYPE).orElseThrow());
     }
 
     @Override
@@ -55,7 +63,7 @@ public class HttpContactGateway implements ContactsGateway {
                 .GET()
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .build();
-        return Try.of(() -> execute(httpRequest).orElseThrow());
+        return Try.of(() -> (ContactResponse) execute(httpRequest, CONTACT_RESPONSE_TYPE).orElseThrow());
     }
 
     @Override
@@ -64,7 +72,7 @@ public class HttpContactGateway implements ContactsGateway {
                 .uri(URI.create(baseUrl + RESOURCE + "/" + request.id))
                 .PUT(BodyPublishers.ofString(JSON.stringify(request)))
                 .build();
-        return Try.run(() -> execute(httpRequest));
+        return Try.run(() -> execute(httpRequest, CONTACT_RESPONSE_TYPE));
     }
 
     @Override
@@ -73,14 +81,24 @@ public class HttpContactGateway implements ContactsGateway {
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .DELETE()
                 .build();
-        return Try.run(() -> execute(httpRequest));
+        return Try.run(() -> execute(httpRequest, CONTACT_RESPONSE_TYPE));
     }
 
-    private Optional<ContactResponse> execute(HttpRequest httpRequest) {
+    @Override
+    public Try<Pagination<ContactResponse>> search(SearchRequest searchRequest) {
+        final var httpRequest = baseRequest()
+                .uri(URI.create(baseUrl + RESOURCE))
+                .GET()
+                .build();
+        return Try.of(
+                () -> (Pagination<ContactResponse>) execute(httpRequest, PAGINATION_RESPONSE_TYPE)
+                        .orElseThrow());
+    }
+
+    private <T> Optional<T> execute(HttpRequest httpRequest, Type type) {
         try {
             final var response = client.send(httpRequest, BodyHandlers.ofString());
-            var type = new TypeToken<ApiResponse<ContactResponse>>() {}.getType();
-            ApiResponse<ContactResponse> apiResponse = JSON.parse(response.body(), type);
+            ApiResponse<T> apiResponse = JSON.parse(response.body(), toParameterizedOf(type));
             if (!OK_RESPONSES.contains(response.statusCode())) {
                 throw new HttpApiException(apiResponse.message());
             }
@@ -88,5 +106,9 @@ public class HttpContactGateway implements ContactsGateway {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Error: request failed", e);
         }
+    }
+
+    private static Type toParameterizedOf(Type type) {
+        return TypeToken.getParameterized(ApiResponse.class, type).getType();
     }
 }

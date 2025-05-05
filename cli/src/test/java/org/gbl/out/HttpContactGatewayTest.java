@@ -243,4 +243,52 @@ class HttpContactGatewayTest {
                     .isEqualTo("/contacts/1");
         }
     }
+
+    @Nested
+    class WhenSearchContacts {
+
+        private final SearchRequest request = new SearchRequest(1, 1, SortingOrder.ASC, null);
+
+        @Captor
+        private ArgumentCaptor<HttpRequest> requestCaptor;
+
+        @BeforeEach
+        void setUp() throws IOException, InterruptedException {
+            when(response.statusCode()).thenReturn(200);
+            final var body = """
+                    {
+                    "status": "success",
+                    "message": "",
+                    "data": {
+                        "page": 1,
+                        "size": 5,
+                        "lastPage": 5,
+                        "total": 20,
+                        "values": [{"id":"1", "name":"Mary Ann","birthdate":"1959-08-14" }]
+                    }
+                    }
+                    """;
+            when(response.body()).thenReturn(body);
+            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        }
+
+        @Test
+        void shouldReturnAValidOutput() {
+            assertThat(sut.search(request).get())
+                    .isNotNull()
+                    .isInstanceOf(Pagination.class);
+        }
+
+        @Test
+        void shouldCallSendWithAValidRequest() throws IOException, InterruptedException {
+            sut.search(request);
+            verify(client).send(requestCaptor.capture(), any());
+            final var httpRequest = requestCaptor.getValue();
+            assertThat(httpRequest.method()).isEqualTo("GET");
+            assertThat(httpRequest)
+                    .extracting(HttpRequest::uri)
+                    .extracting(URI::getPath)
+                    .isEqualTo("/contacts");
+        }
+    }
 }
