@@ -8,7 +8,12 @@ import org.gbl.out.ContactsGateway;
 import org.gbl.out.Pagination;
 import org.gbl.out.SearchRequest;
 
+import java.util.List;
+
 public class ContactsGatewayStub implements ContactsGateway {
+
+    private static final ContactResponse BELLA = new ContactResponse("1", "Bella", "13/09/1987");
+
     @Override
     public Try<ContactResponse> create(CreateContactRequest request) {
         return Try.success(new ContactResponse("1", request.name, request.birthdate));
@@ -16,7 +21,7 @@ public class ContactsGatewayStub implements ContactsGateway {
 
     @Override
     public Try<ContactResponse> get(String contactId) {
-        return Try.success(new ContactResponse("1", "Bella", "13/09/1987"));
+        return Try.success(BELLA);
     }
 
     @Override
@@ -31,6 +36,6 @@ public class ContactsGatewayStub implements ContactsGateway {
 
     @Override
     public Try<Pagination<ContactResponse>> search(SearchRequest request) {
-        return Try.success(null);
+        return Try.success(new Pagination<>(request.page(), request.size(), 1, 1, List.of(BELLA)));
     }
 }
