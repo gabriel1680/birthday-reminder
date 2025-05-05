@@ -12,6 +12,7 @@ import picocli.CommandLine.Command;
                 GetContact.class,
                 DeleteContact.class,
                 UpdateContact.class,
+                SearchContacts.class,
         })
 public class BReminder implements Runnable {
 
