@@ -51,12 +51,15 @@ public class IntegrationTest extends CLITest {
         var args = new String[]{"search"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
-        assertThat(out.toString()).contains("Contacts retrieved\n" +
-                                                     "\n" +
-                                                     "_____________________________________________________________________\n" +
-                                                     "id | name | birthdate\n" +
-                                                     "1 | Bella | 13/09/1987\n" +
-                                                     "_____________________________________________________________________\n" +
-                                                     "current_page: 1 | last_page: 1 | total: 1");
+        String message = """
+                Contacts retrieved
+                
+                _____________________________________________________________________
+                id | name | birthdate
+                1 | Bella | 13/09/1987
+                _____________________________________________________________________
+                current_page: 1 | last_page: 1 | total: 1
+                """;
+        assertThat(out.toString()).isEqualTo(message);
     }
 }
