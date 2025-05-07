@@ -1,6 +1,7 @@
 package org.gbl;
 
 import org.gbl.contacts.ContactsModule;
+import org.gbl.contacts.application.service.query.InvalidSearchInputException;
 import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
@@ -144,14 +145,14 @@ public class ContactsAPI {
         }
     }
 
-    public HttpAPIResponse getAllContracts(Request request, Response response) {
+    public HttpAPIResponse searchContacts(Request request, Response response) {
         response.type("application/json");
         try {
             final var output = contactsModule.listContacts(inputOf(request));
             final var json = jsonFor(output);
             response.status(OK.getCode());
             return HttpAPIResponse.ofSuccess(json);
-        } catch (InvalidPayloadException e) {
+        } catch (InvalidPayloadException | InvalidSearchInputException e) {
             response.status(BAD_REQUEST.getCode());
             return HttpAPIResponse.ofError(e.getMessage());
         } catch (ContactNotFoundException e) {

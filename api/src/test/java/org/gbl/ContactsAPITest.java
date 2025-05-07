@@ -42,6 +42,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -325,7 +326,7 @@ class ContactsAPITest extends SparkControllerTest {
                     .when(request)
                     .queryParamOrDefault(anyString(), anyString());
             when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 15));
-            var output = sut.getAllContracts(request, response);
+            var output = sut.searchContacts(request, response);
             var json = """
                     {"total":0,"size":15,"last_page":1,"values":[],"current_page":1}""";
             aAssertionFor(response)
@@ -342,7 +343,7 @@ class ContactsAPITest extends SparkControllerTest {
                     .queryParamOrDefault(anyString(), anyString());
             var results = List.of(new ContactOutput("1", "a", LocalDate.of(2018, 4, 9)));
             when(contactsModule.listContacts(any())).thenReturn(new PaginationOutput<>(1, 1, 1, results));
-            var output = sut.getAllContracts(request, response);
+            var output = sut.searchContacts(request, response);
             var json = """
                     {"total":1,"size":1,"last_page":1,"values":[{"birthdate":"2018-04-09","name":"a","id":"1"}],"current_page":1}""";
             aAssertionFor(response)
@@ -361,7 +362,7 @@ class ContactsAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
             when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
-            sut.getAllContracts(request, response);
+            sut.searchContacts(request, response);
             verify(contactsModule).listContacts(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
@@ -377,7 +378,7 @@ class ContactsAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
             when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
-            sut.getAllContracts(request, response);
+            sut.searchContacts(request, response);
             verify(contactsModule).listContacts(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
@@ -394,7 +395,7 @@ class ContactsAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
             when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
-            sut.getAllContracts(request, response);
+            sut.searchContacts(request, response);
             verify(contactsModule).listContacts(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
@@ -411,13 +412,27 @@ class ContactsAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
             when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
-            sut.getAllContracts(request, response);
+            sut.searchContacts(request, response);
             verify(contactsModule).listContacts(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
                     .extracting(SearchInput::filter)
                     .isInstanceOf(ContactFilter.class)
                     .isEqualTo(ContactFilter.of());
+        }
+
+        @Test
+        void invalidSearchPayload() {
+            when(request.queryParamOrDefault("page", "1")).thenReturn("0");
+            when(request.queryParamOrDefault("size", "5")).thenReturn("0");
+            when(request.queryParamOrDefault("order", "asc")).thenReturn("asc");
+            final var output = sut.searchContacts(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(BAD_REQUEST)
+                    .forExpected(ResponseStatus.ERROR, "invalid page: value should be greater than 0", new JSONObject())
+                    .withActual(output)
+                    .build();
+            verify(contactsModule, never()).listContacts(any());
         }
     }
 }
