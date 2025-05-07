@@ -178,10 +178,16 @@ public class ContactsAPI {
         return filter;
     }
 
-    private static JSONArray jsonFor(PaginationOutput<ContactOutput> output) {
-        return output.values().stream()
+    private static JSONObject jsonFor(PaginationOutput<ContactOutput> output) {
+        final var values = output.values().stream()
                 .reduce(new JSONArray(),
                         (acc, next) -> acc.put(toJson(next)),
                         JSONArray::putAll);
+        return new JSONObject()
+                .put("current_page", output.page())
+                .put("size", output.size())
+                .put("total", output.total())
+                .put("last_page", output.lastPage())
+                .put("values", values);
     }
 }

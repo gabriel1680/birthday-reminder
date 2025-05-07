@@ -13,7 +13,6 @@ import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,6 +39,8 @@ import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 import static org.gbl.SparkResponseAssertionBuilder.aAssertionFor;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -320,22 +321,30 @@ class ContactsAPITest extends SparkControllerTest {
 
         @Test
         void listEmptyContacts() {
-            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            doAnswer(invocationOnMock -> invocationOnMock.getArgument(1))
+                    .when(request)
+                    .queryParamOrDefault(anyString(), anyString());
+            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 15));
             var output = sut.getAllContracts(request, response);
+            var json = """
+                    {"total":0,"size":15,"last_page":1,"values":[],"current_page":1}""";
             aAssertionFor(response)
                     .withStatusCode(OK)
-                    .forExpected(ResponseStatus.SUCCESS, "", new JSONArray())
+                    .forExpected(ResponseStatus.SUCCESS, "", json)
                     .withActual(output)
                     .build();
         }
 
         @Test
         void notEmptyResponse() {
+            doAnswer(invocationOnMock -> invocationOnMock.getArgument(1))
+                    .when(request)
+                    .queryParamOrDefault(anyString(), anyString());
             var results = List.of(new ContactOutput("1", "a", LocalDate.of(2018, 4, 9)));
             when(contactsModule.listContacts(any())).thenReturn(new PaginationOutput<>(1, 1, 1, results));
             var output = sut.getAllContracts(request, response);
             var json = """
-                    [{"birthdate":"2018-04-09","name":"a","id":"1"}]""";
+                    {"total":1,"size":1,"last_page":1,"values":[{"birthdate":"2018-04-09","name":"a","id":"1"}],"current_page":1}""";
             aAssertionFor(response)
                     .withStatusCode(OK)
                     .forExpected(ResponseStatus.SUCCESS, "", json)
