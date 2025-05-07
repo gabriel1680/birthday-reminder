@@ -102,13 +102,18 @@ public class ContactAPI_IT extends IntegrationTest {
         @Test
         void given_two_contacts_should_retrieve_all() {
             when()
-                    .get(ContactDSL.RESOURCE_URL)
+                    .get(ContactDSL.RESOURCE_URL + "?page=1&size=15")
                     .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
                     .body("status", equalTo("success"))
                     .body("message", emptyString())
-                    .body("data", hasSize(2));
+                    .body("data", notNullValue())
+                    .body("data.current_page", is(1))
+                    .body("data.size", is(15))
+                    .body("data.total", is(1))
+                    .body("data.last_page", is(1))
+                    .body("data.values", hasSize(1));
         }
     }
 }
