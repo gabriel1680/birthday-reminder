@@ -152,7 +152,7 @@ public class ContactsAPI {
             final var json = jsonFor(output);
             response.status(OK.getCode());
             return HttpAPIResponse.ofSuccess(json);
-        } catch (InvalidPayloadException | InvalidSearchInputException e) {
+        } catch (InvalidPayloadException | InvalidSearchInputException | IllegalArgumentException e) {
             response.status(BAD_REQUEST.getCode());
             return HttpAPIResponse.ofError(e.getMessage());
         } catch (ContactNotFoundException e) {

@@ -434,5 +434,19 @@ class ContactsAPITest extends SparkControllerTest {
                     .build();
             verify(contactsModule, never()).listContacts(any());
         }
+
+        @Test
+        void invalidSearchOrder() {
+            when(request.queryParamOrDefault("page", "1")).thenReturn("1");
+            when(request.queryParamOrDefault("size", "5")).thenReturn("1");
+            when(request.queryParamOrDefault("order", "asc")).thenReturn("asd");
+            final var output = sut.searchContacts(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(BAD_REQUEST)
+                    .forExpected(ResponseStatus.ERROR, "Invalid SortingOrder string value", new JSONObject())
+                    .withActual(output)
+                    .build();
+            verify(contactsModule, never()).listContacts(any());
+        }
     }
 }
