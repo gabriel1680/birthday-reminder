@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import io.vavr.control.Try;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
+import org.gbl.out.ContactFilter;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
 import org.gbl.out.Pagination;
@@ -20,6 +21,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,14 +87,22 @@ public class HttpContactGateway implements ContactsGateway {
     }
 
     @Override
-    public Try<Pagination<ContactResponse>> search(SearchRequest searchRequest) {
+    public Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> searchRequest) {
         final var httpRequest = baseRequest()
-                .uri(URI.create(baseUrl + RESOURCE))
+                .uri(URI.create(baseUrl + RESOURCE + "?" + toString(searchRequest)))
                 .GET()
                 .build();
         return Try.of(
                 () -> (Pagination<ContactResponse>) execute(httpRequest, PAGINATION_RESPONSE_TYPE)
                         .orElseThrow());
+    }
+
+    private String toString(SearchRequest<ContactFilter> searchRequest) {
+        final var paginationParams = List.of("page=" + searchRequest.page(),
+                                    "size=" + searchRequest.size(),
+                                    "order=" + searchRequest.order());
+        var params = new ArrayList<>(paginationParams);
+        return String.join("&", params);
     }
 
     private <T> Optional<T> execute(HttpRequest httpRequest, Type type) {

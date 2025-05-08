@@ -13,5 +13,5 @@ public interface ContactsGateway {
 
     Try<Void> delete(String contactId);
 
-    Try<Pagination<ContactResponse>> search(SearchRequest request);
+    Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> request);
 }

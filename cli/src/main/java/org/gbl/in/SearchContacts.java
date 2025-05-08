@@ -1,6 +1,7 @@
 package org.gbl.in;
 
 import jakarta.inject.Inject;
+import org.gbl.out.ContactFilter;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
 import org.gbl.out.Pagination;
@@ -47,7 +48,7 @@ public class SearchContacts implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        final var searchRequest = new SearchRequest(page, size, order, null);
+        final var searchRequest = new SearchRequest<ContactFilter>(page, size, order, null);
         final var response = gateway.search(searchRequest)
                 .onSuccess(this::onSuccess)
                 .onFailure(this::onFailure);

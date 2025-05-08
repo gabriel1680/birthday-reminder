@@ -2,6 +2,7 @@ package org.gbl.in;
 
 import io.vavr.control.Try;
 import org.gbl.CLITest;
+import org.gbl.out.ContactFilter;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
 import org.gbl.out.Pagination;
@@ -57,7 +58,7 @@ class SearchContactsTest extends CLITest {
     }
 
     @Captor
-    private ArgumentCaptor<SearchRequest> requestArgumentCaptor;
+    private ArgumentCaptor<SearchRequest<ContactFilter>> requestArgumentCaptor;
 
     @Test
     void defaultSearchValues() {
