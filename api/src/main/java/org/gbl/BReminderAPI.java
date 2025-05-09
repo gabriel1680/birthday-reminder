@@ -15,10 +15,10 @@ public class BReminderAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(BReminderAPI.class);
 
-    private final APIRoutes routes;
+    private final Routes routes;
 
     public BReminderAPI() {
-        routes = new APIRoutes();
+        routes = new Routes();
     }
 
     public void start() {

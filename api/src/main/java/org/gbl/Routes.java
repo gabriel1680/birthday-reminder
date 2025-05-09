@@ -10,7 +10,7 @@ import static spark.Spark.options;
 import static spark.Spark.post;
 import static spark.Spark.put;
 
-public class APIRoutes {
+public class Routes {
 
     private ContactsAPI contactsAPI;
 
