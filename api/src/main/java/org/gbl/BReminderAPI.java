@@ -11,13 +11,13 @@ import static spark.Spark.internalServerError;
 import static spark.Spark.notFound;
 import static spark.Spark.port;
 
-public class API {
+public class BReminderAPI {
 
-    private static final Logger logger = LoggerFactory.getLogger(API.class);
+    private static final Logger logger = LoggerFactory.getLogger(BReminderAPI.class);
 
     private final APIRoutes routes;
 
-    public API() {
+    public BReminderAPI() {
         routes = new APIRoutes();
     }
 

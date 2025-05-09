@@ -6,11 +6,11 @@ import org.junit.jupiter.api.BeforeAll;
 
 public class IntegrationTest {
 
-    private static API api;
+    private static BReminderAPI api;
 
     @BeforeAll
     public static void init() {
-        api = new API();
+        api = new BReminderAPI();
         api.start();
         api.awaitInitialization();
     }

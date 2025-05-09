@@ -47,7 +47,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ContactsAPITest extends SparkControllerTest {
+class ContactsBReminderAPITest extends SparkControllerTest {
 
     @Mock
     ContactsModule contactsModule;

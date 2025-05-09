@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 
-public class ContactAPI_IT extends IntegrationTest {
+public class ContactBReminderAPI_IT extends IntegrationTest {
 
     @Test
     void given_a_new_contact_should_create_it() {
