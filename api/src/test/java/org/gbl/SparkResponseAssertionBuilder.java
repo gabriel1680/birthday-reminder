@@ -1,6 +1,8 @@
 package org.gbl;
 
 import org.eclipse.jetty.http.HttpStatus.Code;
+import org.gbl.controller.HttpAPIResponse;
+import org.gbl.controller.ResponseStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Response;

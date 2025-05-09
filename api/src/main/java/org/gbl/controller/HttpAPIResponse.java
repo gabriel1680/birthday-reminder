@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.controller;
 
 import org.json.JSONObject;
 

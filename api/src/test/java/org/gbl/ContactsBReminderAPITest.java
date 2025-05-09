@@ -13,7 +13,7 @@ import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
-import org.gbl.controller.contacts.ContactsAPI;
+import org.gbl.controller.ResponseStatus;
 import org.gbl.controller.contacts.ContactsAPIProxy;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Nested;

@@ -1,6 +1,6 @@
 package org.gbl.controller.contacts;
 
-import org.gbl.HttpAPIResponse;
+import org.gbl.controller.HttpAPIResponse;
 import spark.Request;
 import spark.Response;
 

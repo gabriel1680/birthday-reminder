@@ -1,10 +1,11 @@
 package org.gbl.controller.contacts;
 
-import org.gbl.HttpAPIResponse;
+import org.gbl.controller.HttpAPIResponse;
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.service.query.InvalidSearchInputException;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
+import org.gbl.controller.exceptions.InvalidPayloadException;
 import spark.Request;
 import spark.Response;
 

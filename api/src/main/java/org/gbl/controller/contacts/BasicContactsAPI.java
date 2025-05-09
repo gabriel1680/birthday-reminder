@@ -1,6 +1,6 @@
 package org.gbl.controller.contacts;
 
-import org.gbl.HttpAPIResponse;
+import org.gbl.controller.HttpAPIResponse;
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
@@ -12,6 +12,7 @@ import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
+import org.gbl.controller.exceptions.InvalidPayloadException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
