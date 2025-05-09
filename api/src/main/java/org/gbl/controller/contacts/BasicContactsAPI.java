@@ -24,11 +24,11 @@ import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
 import static org.eclipse.jetty.http.HttpStatus.Code.NO_CONTENT;
 import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 
-class ContactsAPIImpl implements ContactsAPI {
+class BasicContactsAPI implements ContactsAPI {
 
     private final ContactsModule contactsModule;
 
-    public ContactsAPIImpl(ContactsModule contactsModule) {
+    public BasicContactsAPI(ContactsModule contactsModule) {
         this.contactsModule = contactsModule;
     }
 

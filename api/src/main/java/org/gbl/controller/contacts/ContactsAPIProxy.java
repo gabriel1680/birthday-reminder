@@ -14,7 +14,7 @@ import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
 import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 
-public class ContactsAPIProxy extends ContactsAPIImpl implements ContactsAPI {
+public class ContactsAPIProxy extends BasicContactsAPI implements ContactsAPI {
 
     public ContactsAPIProxy(ContactsModule contactsModule) {
         super(contactsModule);
