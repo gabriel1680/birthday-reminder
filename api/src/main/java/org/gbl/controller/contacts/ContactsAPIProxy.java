@@ -22,31 +22,31 @@ public class ContactsAPIProxy extends ContactsAPIImpl implements ContactsAPI {
 
     @Override
     public HttpAPIResponse createContact(Request request, Response response) {
-        return handle(request, response, () -> super.createContact(request, response));
+        return wrap(request, response, () -> super.createContact(request, response));
     }
 
     @Override
     public HttpAPIResponse getContract(Request request, Response response) {
-        return handle(request, response, () -> super.getContract(request, response));
+        return wrap(request, response, () -> super.getContract(request, response));
     }
 
     @Override
     public HttpAPIResponse deleteContact(Request request, Response response) {
-        return handle(request, response, () -> super.deleteContact(request, response));
+        return wrap(request, response, () -> super.deleteContact(request, response));
     }
 
     @Override
     public HttpAPIResponse updateContact(Request request, Response response) {
-        return handle(request, response, () -> super.updateContact(request, response));
+        return wrap(request, response, () -> super.updateContact(request, response));
     }
 
     @Override
     public HttpAPIResponse searchContacts(Request request, Response response) {
-        return handle(request, response, () -> super.searchContacts(request, response));
+        return wrap(request, response, () -> super.searchContacts(request, response));
     }
 
-    private HttpAPIResponse handle(Request request, Response response,
-                                   Supplier<HttpAPIResponse> supplier) {
+    private HttpAPIResponse wrap(Request request, Response response,
+                                 Supplier<HttpAPIResponse> supplier) {
         response.type("application/json");
         try {
             return supplier.get();
