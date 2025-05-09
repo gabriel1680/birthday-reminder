@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.controller.contacts;
 
 public class InvalidPayloadException extends RuntimeException {
 

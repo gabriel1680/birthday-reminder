@@ -1,6 +1,8 @@
 package org.gbl;
 
 import org.gbl.contacts.ContactsModuleFactory;
+import org.gbl.controller.contacts.ContactsAPI;
+import org.gbl.controller.contacts.ContactsAPIProxy;
 import spark.Request;
 import spark.Response;
 
@@ -22,7 +24,7 @@ public class Routes {
 
     private void createAPIs() {
         var contactsModule = ContactsModuleFactory.createInMemory();
-        contactsAPI = new ContactsAPI(contactsModule);
+        contactsAPI = new ContactsAPIProxy(contactsModule);
     }
 
     private void configureRoutes() {

@@ -13,6 +13,8 @@ import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
+import org.gbl.controller.contacts.ContactsAPI;
+import org.gbl.controller.contacts.ContactsAPIProxy;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -53,7 +55,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
     ContactsModule contactsModule;
 
     @InjectMocks
-    ContactsAPI sut;
+    ContactsAPIProxy sut;
 
     @Nested
     class CreateContactShould {

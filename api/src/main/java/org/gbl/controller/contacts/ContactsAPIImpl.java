@@ -1,18 +1,16 @@
-package org.gbl;
+package org.gbl.controller.contacts;
 
+import org.gbl.HttpAPIResponse;
 import org.gbl.contacts.ContactsModule;
-import org.gbl.contacts.application.service.query.InvalidSearchInputException;
 import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.add.AddContactOutput;
-import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
-import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,47 +19,23 @@ import spark.Response;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Supplier;
 
-import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
-import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
 import static org.eclipse.jetty.http.HttpStatus.Code.NO_CONTENT;
 import static org.eclipse.jetty.http.HttpStatus.Code.OK;
-import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 
-public class ContactsAPI {
+class ContactsAPIImpl implements ContactsAPI {
 
     private final ContactsModule contactsModule;
 
-    public ContactsAPI(ContactsModule contactsModule) {
+    public ContactsAPIImpl(ContactsModule contactsModule) {
         this.contactsModule = contactsModule;
     }
 
     public HttpAPIResponse createContact(Request request, Response response) {
-        return handle(request, response, () -> {
-            final var output = contactsModule.addContact(parseBodyFrom(request));
-            response.status(CREATED.getCode());
-            return HttpAPIResponse.ofSuccess(toJson(output));
-        });
-    }
-
-    private HttpAPIResponse handle(Request request, Response response,
-                                   Supplier<HttpAPIResponse> supplier) {
-        response.type("application/json");
-        try {
-            return supplier.get();
-        } catch (ContactAlreadyExistsException e) {
-            response.status(UNPROCESSABLE_ENTITY.getCode());
-            return HttpAPIResponse.ofError(e.getMessage());
-        } catch (InvalidPayloadException | InvalidSearchInputException |
-                 IllegalArgumentException e) {
-            response.status(BAD_REQUEST.getCode());
-            return HttpAPIResponse.ofError(e.getMessage());
-        } catch (ContactNotFoundException e) {
-            response.status(NOT_FOUND.getCode());
-            return HttpAPIResponse.ofError(e.getMessage());
-        }
+        final var output = contactsModule.addContact(parseBodyFrom(request));
+        response.status(CREATED.getCode());
+        return HttpAPIResponse.ofSuccess(toJson(output));
     }
 
     private static JSONObject toJson(AddContactOutput output) {
@@ -84,12 +58,10 @@ public class ContactsAPI {
     }
 
     public HttpAPIResponse getContract(Request request, Response response) {
-        return handle(request, response, () -> {
-            final var input = new GetContactInput(getId(request));
-            final var contact = contactsModule.getContact(input);
-            response.status(OK.getCode());
-            return HttpAPIResponse.ofSuccess(toJson(contact));
-        });
+        final var input = new GetContactInput(getId(request));
+        final var contact = contactsModule.getContact(input);
+        response.status(OK.getCode());
+        return HttpAPIResponse.ofSuccess(toJson(contact));
     }
 
     private static String getId(Request request) {
@@ -107,21 +79,17 @@ public class ContactsAPI {
     }
 
     public HttpAPIResponse deleteContact(Request request, Response response) {
-        return handle(request, response, () -> {
-            final var id = getId(request);
-            final var input = new RemoveContactInput(id);
-            contactsModule.removeContact(input);
-            response.status(NO_CONTENT.getCode());
-            return HttpAPIResponse.empty();
-        });
+        final var id = getId(request);
+        final var input = new RemoveContactInput(id);
+        contactsModule.removeContact(input);
+        response.status(NO_CONTENT.getCode());
+        return HttpAPIResponse.empty();
     }
 
     public HttpAPIResponse updateContact(Request request, Response response) {
-        return handle(request, response, () -> {
-            contactsModule.updateContact(parseBodyFrom(getId(request), request));
-            response.status(NO_CONTENT.getCode());
-            return HttpAPIResponse.empty();
-        });
+        contactsModule.updateContact(parseBodyFrom(getId(request), request));
+        response.status(NO_CONTENT.getCode());
+        return HttpAPIResponse.empty();
     }
 
     private static UpdateContactInput parseBodyFrom(String id, Request request) {
@@ -137,12 +105,10 @@ public class ContactsAPI {
     }
 
     public HttpAPIResponse searchContacts(Request request, Response response) {
-        return handle(request, response, () -> {
-            final var output = contactsModule.listContacts(inputOf(request));
-            final var json = jsonFor(output);
-            response.status(OK.getCode());
-            return HttpAPIResponse.ofSuccess(json);
-        });
+        final var output = contactsModule.listContacts(inputOf(request));
+        final var json = jsonFor(output);
+        response.status(OK.getCode());
+        return HttpAPIResponse.ofSuccess(json);
     }
 
     private static SearchInput<ContactFilter> inputOf(Request request) {
