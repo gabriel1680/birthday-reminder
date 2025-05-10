@@ -111,9 +111,9 @@ public class ContactBReminderAPI_IT extends IntegrationTest {
                     .body("data", notNullValue())
                     .body("data.current_page", is(1))
                     .body("data.size", is(15))
-                    .body("data.total", is(1))
+                    .body("data.total", is(2))
                     .body("data.last_page", is(1))
-                    .body("data.values", hasSize(1));
+                    .body("data.values", hasSize(2));
         }
     }
 }
