@@ -28,22 +28,17 @@ import static org.eclipse.jetty.http.HttpStatus.Code.OK;
 class BasicContactsAPI implements ContactsAPI {
 
     private final ContactsModule contactsModule;
+    private final ContactsJSONMapper jsonMapper;
 
     public BasicContactsAPI(ContactsModule contactsModule) {
         this.contactsModule = contactsModule;
+        this.jsonMapper = new ContactsJSONMapper();
     }
 
     public HttpAPIResponse createContact(Request request, Response response) {
         final var output = contactsModule.addContact(parseBodyFrom(request));
         response.status(CREATED.getCode());
-        return HttpAPIResponse.ofSuccess(toJson(output));
-    }
-
-    private static JSONObject toJson(AddContactOutput output) {
-        return new JSONObject()
-                .put("id", output.id())
-                .put("name", output.name())
-                .put("birthdate", output.birthdate());
+        return HttpAPIResponse.ofSuccess(jsonMapper.toJson(output));
     }
 
     private static AddContactInput parseBodyFrom(Request request) {
@@ -62,7 +57,7 @@ class BasicContactsAPI implements ContactsAPI {
         final var input = new GetContactInput(getId(request));
         final var contact = contactsModule.getContact(input);
         response.status(OK.getCode());
-        return HttpAPIResponse.ofSuccess(toJson(contact));
+        return HttpAPIResponse.ofSuccess(jsonMapper.toJson(contact));
     }
 
     private static String getId(Request request) {
@@ -70,13 +65,6 @@ class BasicContactsAPI implements ContactsAPI {
         if (id == null || id.isEmpty())
             throw new InvalidPayloadException("invalid id");
         return id;
-    }
-
-    private static JSONObject toJson(ContactOutput contact) {
-        return new JSONObject()
-                .put("id", contact.id())
-                .put("name", contact.name())
-                .put("birthdate", contact.birthdate());
     }
 
     public HttpAPIResponse deleteContact(Request request, Response response) {
@@ -107,9 +95,8 @@ class BasicContactsAPI implements ContactsAPI {
 
     public HttpAPIResponse searchContacts(Request request, Response response) {
         final var output = contactsModule.listContacts(inputOf(request));
-        final var json = jsonFor(output);
         response.status(OK.getCode());
-        return HttpAPIResponse.ofSuccess(json);
+        return HttpAPIResponse.ofSuccess(jsonMapper.toJson(output));
     }
 
     private static SearchInput<ContactFilter> inputOf(Request request) {
@@ -128,18 +115,5 @@ class BasicContactsAPI implements ContactsAPI {
             filter = ContactFilter.of(nameFilter, LocalDate.parse(birthdateFilter));
         }
         return filter;
-    }
-
-    private static JSONObject jsonFor(PaginationOutput<ContactOutput> output) {
-        final var values = output.values().stream()
-                .reduce(new JSONArray(),
-                        (acc, next) -> acc.put(toJson(next)),
-                        JSONArray::putAll);
-        return new JSONObject()
-                .put("current_page", output.page())
-                .put("size", output.size())
-                .put("total", output.total())
-                .put("last_page", output.lastPage())
-                .put("values", values);
     }
 }
