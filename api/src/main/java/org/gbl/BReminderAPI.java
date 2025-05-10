@@ -46,6 +46,7 @@ public class BReminderAPI {
 
     private void configureInternalServerError() {
         internalServerError((req, res) -> {
+            res.type("text/plain");
             res.status(INTERNAL_SERVER_ERROR_500);
             logger.error("Internal Server Error: {}", req.pathInfo());
             return "Internal Server Error.";
@@ -54,6 +55,7 @@ public class BReminderAPI {
 
     private void configureNotImplemented() {
         notFound((req, res) -> {
+            res.type("text/plain");
             res.status(NOT_FOUND_404);
             logger.error("Not found: {}", req.pathInfo());
             return "Not Found.";
