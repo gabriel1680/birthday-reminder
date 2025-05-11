@@ -1,4 +1,4 @@
-package org.gbl.out;
+package org.gbl.common;
 
 import java.util.Collection;
 

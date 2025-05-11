@@ -1,12 +1,12 @@
 package org.gbl.in;
 
 import jakarta.inject.Inject;
-import org.gbl.out.ContactFilter;
+import org.gbl.common.ContactFilter;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
-import org.gbl.out.Pagination;
-import org.gbl.out.SearchRequest;
-import org.gbl.out.SortingOrder;
+import org.gbl.common.Pagination;
+import org.gbl.common.SearchRequest;
+import org.gbl.common.SortingOrder;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Help.Visibility;
 import picocli.CommandLine.ITypeConverter;
