@@ -1,12 +1,13 @@
 package org.gbl.out.http;
 
 import io.vavr.control.Try;
+import org.gbl.common.search.ContactFilter;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
-import org.gbl.common.Pagination;
-import org.gbl.common.SearchRequest;
+import org.gbl.common.search.Pagination;
+import org.gbl.common.search.SearchRequest;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class ContactsGatewayStub implements ContactsGateway {
     }
 
     @Override
-    public Try<Pagination<ContactResponse>> search(SearchRequest request) {
+    public Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> request) {
         return Try.success(new Pagination<>(request.page(), request.size(), 1, 1, List.of(BELLA)));
     }
 }

@@ -2,14 +2,14 @@ package org.gbl.out.http;
 
 import com.google.gson.reflect.TypeToken;
 import io.vavr.control.Try;
+import org.gbl.common.search.ContactFilter;
+import org.gbl.common.search.Pagination;
+import org.gbl.common.search.SearchRequest;
+import org.gbl.common.service.json.JsonParser;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
-import org.gbl.common.ContactFilter;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
-import org.gbl.common.Pagination;
-import org.gbl.common.SearchRequest;
-import org.gbl.utils.JSON;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -34,11 +34,13 @@ public class HttpContactGateway implements ContactsGateway {
     private static final Type PAGINATION_RESPONSE_TYPE =
             TypeToken.getParameterized(Pagination.class, ContactResponse.class).getType();
 
+    private final JsonParser jsonParser;
     private final HttpClient client;
     private final String baseUrl;
 
 
-    public HttpContactGateway(HttpClient client, String baseUrl) {
+    public HttpContactGateway(JsonParser jsonParser, HttpClient client, String baseUrl) {
+        this.jsonParser = jsonParser;
         this.client = client;
         this.baseUrl = baseUrl;
     }
@@ -54,7 +56,7 @@ public class HttpContactGateway implements ContactsGateway {
     @Override
     public Try<ContactResponse> create(CreateContactRequest request) {
         final var httpRequest = baseRequest()
-                .POST(BodyPublishers.ofString(JSON.stringify(request)))
+                .POST(BodyPublishers.ofString(jsonParser.stringify(request)))
                 .build();
         return Try.of(() -> (ContactResponse) execute(httpRequest, CONTACT_RESPONSE_TYPE).orElseThrow());
     }
@@ -72,7 +74,7 @@ public class HttpContactGateway implements ContactsGateway {
     public Try<Void> update(UpdateContactRequest request) {
         final var httpRequest = baseRequest()
                 .uri(URI.create(baseUrl + RESOURCE + "/" + request.id))
-                .PUT(BodyPublishers.ofString(JSON.stringify(request)))
+                .PUT(BodyPublishers.ofString(jsonParser.stringify(request)))
                 .build();
         return Try.run(() -> execute(httpRequest, CONTACT_RESPONSE_TYPE));
     }
@@ -99,8 +101,8 @@ public class HttpContactGateway implements ContactsGateway {
 
     private String toString(SearchRequest<ContactFilter> searchRequest) {
         final var paginationParams = List.of("page=" + searchRequest.page(),
-                                    "size=" + searchRequest.size(),
-                                    "order=" + searchRequest.order());
+                                             "size=" + searchRequest.size(),
+                                             "order=" + searchRequest.order());
         var params = new ArrayList<>(paginationParams);
         return String.join("&", params);
     }
@@ -108,7 +110,7 @@ public class HttpContactGateway implements ContactsGateway {
     private <T> Optional<T> execute(HttpRequest httpRequest, Type type) {
         try {
             final var response = client.send(httpRequest, BodyHandlers.ofString());
-            ApiResponse<T> apiResponse = JSON.parse(response.body(), toParameterizedOf(type));
+            ApiResponse<T> apiResponse = jsonParser.parse(response.body(), toParameterizedOf(type));
             if (!OK_RESPONSES.contains(response.statusCode())) {
                 throw new HttpApiException(apiResponse.message());
             }

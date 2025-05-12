@@ -1,13 +1,13 @@
 package org.gbl.out;
 
-import org.gbl.common.Pagination;
-import org.gbl.common.SearchRequest;
-import org.gbl.common.SortingOrder;
+import org.gbl.common.search.Pagination;
+import org.gbl.common.search.SearchRequest;
+import org.gbl.common.search.SortingOrder;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
 import org.gbl.out.http.ApiResponse;
 import org.gbl.out.http.HttpContactGateway;
-import org.gbl.utils.JSON;
+import org.gbl.common.service.json.GsonJsonParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,6 +35,8 @@ class HttpContactGatewayTest {
 
     private static final String BASE_URL = "https://localhost:8000";
 
+    private final GsonJsonParser jsonParser = new GsonJsonParser();
+
     @Mock
     private HttpResponse<String> response;
 
@@ -45,13 +47,13 @@ class HttpContactGatewayTest {
 
     @BeforeEach
     void setUp() {
-        sut = new HttpContactGateway(client, BASE_URL);
+        sut = new HttpContactGateway(jsonParser, client, BASE_URL);
     }
 
     @Test
     void responseError() throws IOException, InterruptedException {
         when(response.statusCode()).thenReturn(400);
-        when(response.body()).thenReturn(JSON.stringify(new ApiResponse<String>("error", "invalid" +
+        when(response.body()).thenReturn(jsonParser.stringify(new ApiResponse<String>("error", "invalid" +
                 " " +
                 "name", null)));
         when(client.send(any(), any(BodyHandler.class))).thenReturn(response);

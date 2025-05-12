@@ -1,4 +1,4 @@
-package org.gbl.common;
+package org.gbl.common.search;
 
 public enum SortingOrder {
     ASC("asc"),

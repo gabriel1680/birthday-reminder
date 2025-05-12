@@ -1,9 +1,9 @@
 package org.gbl.out;
 
 import io.vavr.control.Try;
-import org.gbl.common.ContactFilter;
-import org.gbl.common.Pagination;
-import org.gbl.common.SearchRequest;
+import org.gbl.common.search.ContactFilter;
+import org.gbl.common.search.Pagination;
+import org.gbl.common.search.SearchRequest;
 import org.gbl.in.CreateContact.CreateContactRequest;
 import org.gbl.in.UpdateContact.UpdateContactRequest;
 

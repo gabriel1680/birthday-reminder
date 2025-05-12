@@ -2,12 +2,12 @@ package org.gbl.in;
 
 import io.vavr.control.Try;
 import org.gbl.CLITest;
-import org.gbl.common.ContactFilter;
+import org.gbl.common.search.ContactFilter;
 import org.gbl.out.ContactResponse;
 import org.gbl.out.ContactsGateway;
-import org.gbl.common.Pagination;
-import org.gbl.common.SearchRequest;
-import org.gbl.common.SortingOrder;
+import org.gbl.common.search.Pagination;
+import org.gbl.common.search.SearchRequest;
+import org.gbl.common.search.SortingOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

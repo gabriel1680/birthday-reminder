@@ -1,4 +1,4 @@
-package org.gbl.common;
+package org.gbl.common.search;
 
 import java.util.Collection;
 

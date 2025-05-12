@@ -1,18 +1,18 @@
-package org.gbl.utils;
+package org.gbl.common.service.json;
 
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 
-public class JSON {
+public class GsonJsonParser implements JsonParser {
 
     private static final Gson parser = new Gson();
 
-    public static String stringify(Object object) {
+    public String stringify(Object object) {
         return parser.toJson(object);
     }
 
-    public static <T> T parse(String json, Type typeOf) {
+    public <T> T parse(String json, Type typeOf) {
         return parser.fromJson(json, typeOf);
     }
 }
