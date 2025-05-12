@@ -1,4 +1,4 @@
-package org.gbl.reminder.app;
+package org.gbl.reminder.app.domain;
 
 import java.util.Objects;
 
@@ -6,9 +6,16 @@ public class NotificationMethod {
     private final NotificationType notificationType;
     private final String notificationValue;
 
-    public NotificationMethod(NotificationType notificationType, String notificationValue) {
+    protected NotificationMethod(NotificationType notificationType, String notificationValue) {
         this.notificationType = notificationType;
         this.notificationValue = notificationValue;
+    }
+
+    public static NotificationMethod create(String notificationType, String notificationValue) {
+        var type = NotificationType.of(notificationType);
+        return switch (type) {
+            case EMAIL -> new EmailNotification(notificationValue);
+        };
     }
 
     @Override

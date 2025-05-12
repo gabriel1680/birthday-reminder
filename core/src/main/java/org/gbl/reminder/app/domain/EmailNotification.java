@@ -1,12 +1,12 @@
-package org.gbl.reminder.app;
+package org.gbl.reminder.app.domain;
 
 import java.util.regex.Pattern;
 
-public class EmailNotificationMethod extends NotificationMethod {
+class EmailNotification extends NotificationMethod {
 
     private static final String emailPattern = "^(.+)@(\\S+)$";
 
-    public EmailNotificationMethod(String notificationValue) {
+    public EmailNotification(String notificationValue) {
         super(NotificationType.EMAIL, notificationValue);
         if (!isValidEmail(notificationValue))
             throw new IllegalArgumentException("invalid email");

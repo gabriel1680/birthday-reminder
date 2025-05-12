@@ -1,4 +1,4 @@
-package org.gbl.reminder.app;
+package org.gbl.reminder.app.domain;
 
 import java.util.List;
 

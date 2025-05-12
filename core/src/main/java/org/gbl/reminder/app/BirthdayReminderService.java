@@ -6,6 +6,8 @@ import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.reminder.app.domain.NotificationMethod;
+import org.gbl.reminder.app.domain.NotificationRepository;
 import org.gbl.reminder.out.email.EmailSender;
 import org.gbl.reminder.out.email.SendEmailRequest;
 
@@ -16,17 +18,15 @@ public class BirthdayReminderService {
     private final ContactsModule contactsModule;
     private final EmailSender emailSender;
     private final NotificationRepository notificationRepository;
-    private final NotificationMethodFactory notificationMethodFactory;
 
     public BirthdayReminderService(ContactsModule contactsModule, EmailSender emailSender,
                                    NotificationRepository notificationRepository) {
         this.contactsModule = contactsModule;
         this.emailSender = emailSender;
         this.notificationRepository = notificationRepository;
-        notificationMethodFactory = new NotificationMethodFactory();
     }
 
-    public void remindOf(LocalDate today) {
+    public void remindOf(final LocalDate today) {
         final var output = contactsModule.listContacts(createSearchInput(today));
         if (output.total() == 0) return;
         sendEmails(today, output);
@@ -48,9 +48,10 @@ public class BirthdayReminderService {
                 ("Today %s is birthday of %s").formatted(today, contact.name()));
     }
 
-    public void addNotificationMethod(String notificationType, String notificationValue) {
-        final var notificationMethod = notificationMethodFactory.create(notificationType,
-                                                                        notificationValue);
+    public void addNotificationMethod(final String notificationType,
+                                      final String notificationValue) {
+        final var notificationMethod = NotificationMethod.create(notificationType,
+                                                                 notificationValue);
         notificationRepository.add(notificationMethod);
     }
 }

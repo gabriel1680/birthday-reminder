@@ -1,4 +1,7 @@
-package org.gbl.reminder.app;
+package org.gbl.reminder.out.notification;
+
+import org.gbl.reminder.app.domain.NotificationMethod;
+import org.gbl.reminder.app.domain.NotificationRepository;
 
 import java.util.ArrayList;
 import java.util.List;

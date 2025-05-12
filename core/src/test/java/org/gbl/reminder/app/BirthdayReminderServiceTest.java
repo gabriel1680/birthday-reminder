@@ -1,7 +1,9 @@
 package org.gbl.reminder.app;
 
+import org.gbl.reminder.app.domain.NotificationRepository;
 import org.gbl.reminder.fixture.FakeContactsModule;
 import org.gbl.reminder.fixture.SpyEmailSender;
+import org.gbl.reminder.out.notification.InMemoryNotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
