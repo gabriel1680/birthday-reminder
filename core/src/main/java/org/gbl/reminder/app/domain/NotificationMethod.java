@@ -3,12 +3,12 @@ package org.gbl.reminder.app.domain;
 import java.util.Objects;
 
 public class NotificationMethod {
-    private final NotificationType notificationType;
-    private final String notificationValue;
+    private final NotificationType type;
+    private final String value;
 
-    protected NotificationMethod(NotificationType notificationType, String notificationValue) {
-        this.notificationType = notificationType;
-        this.notificationValue = notificationValue;
+    protected NotificationMethod(NotificationType type, String value) {
+        this.type = type;
+        this.value = value;
     }
 
     public static NotificationMethod create(String notificationType, String notificationValue) {
@@ -23,11 +23,11 @@ public class NotificationMethod {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NotificationMethod that = (NotificationMethod) o;
-        return notificationType == that.notificationType && Objects.equals(notificationValue, that.notificationValue);
+        return type == that.type && Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(notificationType, notificationValue);
+        return Objects.hash(type, value);
     }
 }
