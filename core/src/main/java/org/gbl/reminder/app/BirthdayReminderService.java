@@ -6,8 +6,7 @@ import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.list.ContactFilter;
-import org.gbl.reminder.app.domain.NotificationMethod;
-import org.gbl.reminder.app.domain.NotificationRepository;
+import org.gbl.notification.NotificationModule;
 import org.gbl.reminder.out.email.EmailSender;
 import org.gbl.reminder.out.email.SendEmailRequest;
 
@@ -17,19 +16,24 @@ public class BirthdayReminderService {
 
     private final ContactsModule contactsModule;
     private final EmailSender emailSender;
-    private final NotificationRepository notificationRepository;
+    private final NotificationModule notificationModule;
 
     public BirthdayReminderService(ContactsModule contactsModule, EmailSender emailSender,
-                                   NotificationRepository notificationRepository) {
+                                   NotificationModule notificationModule) {
         this.contactsModule = contactsModule;
         this.emailSender = emailSender;
-        this.notificationRepository = notificationRepository;
+        this.notificationModule = notificationModule;
     }
 
     public void remindOf(final LocalDate today) {
         final var output = contactsModule.listContacts(createSearchInput(today));
-        if (output.total() == 0) return;
-        sendEmails(today, output);
+        if (output.total() == 0) {
+            return;
+        }
+        final var notificationMethods = notificationModule.all();
+        if (notificationMethods.stream().anyMatch(n -> n.type().equals("email"))) {
+            sendEmails(today, output);
+        }
     }
 
     private static SearchInput<ContactFilter> createSearchInput(LocalDate today) {
@@ -46,12 +50,5 @@ public class BirthdayReminderService {
         return new SendEmailRequest(
                 "Send Happy Birthday To A Friend!",
                 ("Today %s is birthday of %s").formatted(today, contact.name()));
-    }
-
-    public void addNotificationMethod(final String notificationType,
-                                      final String notificationValue) {
-        final var notificationMethod = NotificationMethod.create(notificationType,
-                                                                 notificationValue);
-        notificationRepository.add(notificationMethod);
     }
 }
