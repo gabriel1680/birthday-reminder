@@ -1,4 +1,4 @@
-package org.gbl.reminder.app.domain;
+package org.gbl.notification.domain;
 
 public enum NotificationType {
     EMAIL("email");
