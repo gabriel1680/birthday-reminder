@@ -22,4 +22,9 @@ public enum SortingOrder {
         }
         throw new IllegalArgumentException("invalid SortingOrder.class enum type");
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }
