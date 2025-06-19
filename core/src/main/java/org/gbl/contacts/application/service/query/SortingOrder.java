@@ -16,7 +16,7 @@ public enum SortingOrder {
                 return sortingOrder;
             }
         }
-        throw new IllegalArgumentException("Invalid SortingOrder string value");
+        throw new IllegalArgumentException("Invalid SortingOrder string value \"%s\"".formatted(s));
     }
 
     public String value() {
