@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import org.gbl.dsl.BirthdayReminderDSL;
 import org.gbl.dsl.ContactDSL;
 import org.gbl.dsl.ContactDSL.ITContact;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -19,15 +20,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 
-public class ContactBReminderAPI_IT extends IntegrationTest {
+public class ContactBReminderAPI_IT {
 
     @Test
     void given_a_new_contact_should_create_it() {
         given()
-                .body(withJson("Carl Edward Sagan", "1934-11-09T00:00:00Z"))
-                .when()
+                .body(withJSON("Carl Edward Sagan", "1934-11-09T00:00:00Z"))
+        .when()
                 .post(ContactDSL.RESOURCE_URL)
-                .then()
+        .then()
                 .statusCode(201)
                 .contentType(ContentType.JSON)
                 .body("status", equalTo("success"))
@@ -65,7 +66,7 @@ public class ContactBReminderAPI_IT extends IntegrationTest {
         void should_retrieve_it() {
             when()
                     .get(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
-                    .then()
+            .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
                     .body("status", equalTo("success"))
@@ -79,10 +80,10 @@ public class ContactBReminderAPI_IT extends IntegrationTest {
         @Test
         void should_update_it() {
             given()
-                    .body(withJson("Albert Einstein", "1879-03-14T00:00:00Z"))
-                    .when()
+                    .body(withJSON("Albert Einstein", "1879-03-14T00:00:00Z"))
+            .when()
                     .put(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
-                    .then()
+            .then()
                     .statusCode(204)
                     .contentType(ContentType.JSON)
                     .body(emptyString());
@@ -93,7 +94,7 @@ public class ContactBReminderAPI_IT extends IntegrationTest {
             DANIEL_BERNOULLI = BirthdayReminderDSL.register(DANIEL_BERNOULLI);
             when()
                     .delete(ContactDSL.RESOURCE_URL + "/" + DANIEL_BERNOULLI.id())
-                    .then()
+            .then()
                     .statusCode(204)
                     .contentType(ContentType.JSON)
                     .body(emptyString());
@@ -103,7 +104,7 @@ public class ContactBReminderAPI_IT extends IntegrationTest {
         void given_two_contacts_should_retrieve_all() {
             when()
                     .get(ContactDSL.RESOURCE_URL + "?page=1&size=15")
-                    .then()
+            .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
                     .body("status", equalTo("success"))
@@ -115,5 +116,12 @@ public class ContactBReminderAPI_IT extends IntegrationTest {
                     .body("data.last_page", is(1))
                     .body("data.values", hasSize(2));
         }
+    }
+
+    private static String withJSON(String name, String birthdate) {
+        return new JSONObject()
+                .put("name", name)
+                .put("birthdate", birthdate)
+                .toString();
     }
 }

@@ -57,5 +57,8 @@ tasks.register<Test>("integrationTest") {
     useJUnitPlatform()
     testClassesDirs = integrationTest.output.classesDirs
     classpath = integrationTest.runtimeClasspath
+    filter {
+        includeTestsMatching("org.gbl.BirthdayReminderSuite")
+    }
     shouldRunAfter(tasks.test)
 }

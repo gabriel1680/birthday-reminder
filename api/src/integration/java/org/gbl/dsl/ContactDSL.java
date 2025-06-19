@@ -11,7 +11,7 @@ public class ContactDSL {
     public static final String RESOURCE_URL = BASE_URL + RESOURCE;
 
     public static class ITContactBuilder {
-        private String id = UUID.randomUUID().toString();
+        private final String id = UUID.randomUUID().toString();
         private String name = "John Doe";
         private String birthdate = "1959-14-08T00:00:00Z";
 
@@ -24,11 +24,6 @@ public class ContactDSL {
 
         public ITContactBuilder withName(String aName) {
             name = aName;
-            return this;
-        }
-
-        public ITContactBuilder withId(String anId) {
-            id = anId;
             return this;
         }
 
