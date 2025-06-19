@@ -5,6 +5,7 @@ import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +20,7 @@ class UpdateContactTest {
 
     @BeforeEach
     void setUp() {
-        final var contacts = List.of(JOHN_DOE);
+        final var contacts = new ArrayList<>(List.of(JOHN_DOE));
         contactRepository = new InMemoryContactRepository(contacts);
         sut = new UpdateContact(contactRepository);
     }

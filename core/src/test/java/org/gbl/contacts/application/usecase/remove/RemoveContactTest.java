@@ -1,10 +1,12 @@
 package org.gbl.contacts.application.usecase.remove;
 
+import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +20,8 @@ class RemoveContactTest {
 
     @BeforeEach
     void setUp() {
-        contactRepository = new InMemoryContactRepository(List.of(JOHN_DOE));
+        final var contacts = new ArrayList<>(List.of(JOHN_DOE));
+        contactRepository = new InMemoryContactRepository(contacts);
         sut = new RemoveContact(contactRepository);
     }
 
