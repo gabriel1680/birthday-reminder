@@ -445,7 +445,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             final var output = sut.searchContacts(request, response);
             aAssertionFor(response)
                     .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "Invalid SortingOrder string value", new JSONObject())
+                    .forExpected(ResponseStatus.ERROR, "Invalid SortingOrder string value \"asd\"", new JSONObject())
                     .withActual(output)
                     .build();
             verify(contactsModule, never()).listContacts(any());
