@@ -37,7 +37,7 @@ public class BirthdayReminderService {
     }
 
     private static SearchInput<ContactFilter> createSearchInput(LocalDate today) {
-        final var filter = new ContactFilter(null, today);
+        final var filter = ContactFilter.of(today);
         return new SearchInput<>(1, 1, SortingOrder.ASC, filter);
     }
 
