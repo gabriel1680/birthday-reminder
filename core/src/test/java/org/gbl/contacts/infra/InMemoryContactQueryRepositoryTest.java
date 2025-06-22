@@ -3,7 +3,7 @@ package org.gbl.contacts.infra;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
-import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.domain.Contact;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

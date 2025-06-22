@@ -4,7 +4,7 @@ import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
-import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.gbl.contacts.application.service.query.PaginationOutput;
@@ -19,5 +19,5 @@ public interface ContactsModule {
 
     ContactOutput getContact(GetContactInput input);
 
-    PaginationOutput<ContactOutput> listContacts(SearchInput<ContactFilter> input);
+    PaginationOutput<ContactOutput> search(SearchInput<ContactFilter> input);
 }

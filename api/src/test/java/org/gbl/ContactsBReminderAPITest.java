@@ -9,7 +9,7 @@ import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
-import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
@@ -327,7 +327,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             doAnswer(invocationOnMock -> invocationOnMock.getArgument(1))
                     .when(request)
                     .queryParamOrDefault(anyString(), anyString());
-            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 15));
+            when(contactsModule.search(any())).thenReturn(PaginationOutput.emptyOf(1, 15));
             var output = sut.searchContacts(request, response);
             var json = """
                     {"total":0,"size":15,"last_page":1,"values":[],"current_page":1}""";
@@ -344,7 +344,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
                     .when(request)
                     .queryParamOrDefault(anyString(), anyString());
             var results = List.of(new ContactOutput("1", "a", LocalDate.of(2018, 4, 9)));
-            when(contactsModule.listContacts(any())).thenReturn(new PaginationOutput<>(1, 1, 1, results));
+            when(contactsModule.search(any())).thenReturn(new PaginationOutput<>(1, 1, 1, results));
             var output = sut.searchContacts(request, response);
             var json = """
                     {"total":1,"size":1,"last_page":1,"values":[{"birthdate":"2018-04-09","name":"a","id":"1"}],"current_page":1}""";
@@ -363,9 +363,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
-            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            when(contactsModule.search(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
             sut.searchContacts(request, response);
-            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            verify(contactsModule).search(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
                     .extracting(SearchInput::page, SearchInput::size, SearchInput::order)
@@ -379,9 +379,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
-            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            when(contactsModule.search(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
             sut.searchContacts(request, response);
-            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            verify(contactsModule).search(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
                     .extracting(SearchInput::filter)
@@ -396,9 +396,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
-            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            when(contactsModule.search(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
             sut.searchContacts(request, response);
-            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            verify(contactsModule).search(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
                     .extracting(SearchInput::filter)
@@ -413,9 +413,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
-            when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+            when(contactsModule.search(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
             sut.searchContacts(request, response);
-            verify(contactsModule).listContacts(inputArgumentCaptor.capture());
+            verify(contactsModule).search(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
             assertThat(input)
                     .extracting(SearchInput::filter)
@@ -434,7 +434,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
                     .forExpected(ResponseStatus.ERROR, "invalid page: value should be greater than 0", new JSONObject())
                     .withActual(output)
                     .build();
-            verify(contactsModule, never()).listContacts(any());
+            verify(contactsModule, never()).search(any());
         }
 
         @Test
@@ -448,7 +448,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
                     .forExpected(ResponseStatus.ERROR, "Invalid SortingOrder string value \"asd\"", new JSONObject())
                     .withActual(output)
                     .build();
-            verify(contactsModule, never()).listContacts(any());
+            verify(contactsModule, never()).search(any());
         }
     }
 }

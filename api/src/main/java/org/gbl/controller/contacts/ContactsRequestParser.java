@@ -3,7 +3,7 @@ package org.gbl.controller.contacts;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
-import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.gbl.controller.exceptions.InvalidPayloadException;
 import org.json.JSONObject;

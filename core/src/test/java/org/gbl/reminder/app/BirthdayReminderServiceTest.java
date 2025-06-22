@@ -44,13 +44,13 @@ class BirthdayReminderServiceTest {
 
     private void givenContacts(List<ContactOutput> contacts) {
         final var output = new PaginationOutput<>(1, 1, contacts.size(), contacts);
-        when(contactsModule.listContacts(any())).thenReturn(output);
+        when(contactsModule.search(any())).thenReturn(output);
         when(notificationModule.all()).thenReturn(List.of(NOTIFICATION_RESPONSE));
     }
 
     @Test
     void noUsersBirthday() {
-        when(contactsModule.listContacts(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
+        when(contactsModule.search(any())).thenReturn(PaginationOutput.emptyOf(1, 1));
         sut.remindOf(toDate("19/09/1999"));
         verify(sender, never()).send(any());
     }

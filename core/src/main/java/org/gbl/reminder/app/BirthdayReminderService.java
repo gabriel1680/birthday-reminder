@@ -5,7 +5,7 @@ import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
-import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.notification.NotificationModule;
 import org.gbl.reminder.out.email.EmailSender;
 import org.gbl.reminder.out.email.SendEmailRequest;
@@ -26,7 +26,7 @@ public class BirthdayReminderService {
     }
 
     public void remindOf(final LocalDate today) {
-        final var output = contactsModule.listContacts(createSearchInput(today));
+        final var output = contactsModule.search(createSearchInput(today));
         if (output.total() == 0) {
             return;
         }

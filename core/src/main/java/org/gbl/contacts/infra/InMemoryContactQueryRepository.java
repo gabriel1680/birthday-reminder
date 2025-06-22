@@ -5,7 +5,7 @@ import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
-import org.gbl.contacts.application.usecase.list.ContactFilter;
+import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.domain.Contact;
 
 import java.util.Collection;

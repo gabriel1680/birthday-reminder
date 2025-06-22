@@ -1,18 +1,15 @@
 package org.gbl.contacts;
 
-import org.gbl.contacts.domain.Contact;
-import org.gbl.contacts.infra.UUIDIdProvider;
-import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.contacts.application.usecase.add.AddContact;
 import org.gbl.contacts.application.usecase.get.GetContact;
-import org.gbl.contacts.infra.InMemoryContactQueryRepository;
-import org.gbl.contacts.application.usecase.list.ListContacts;
 import org.gbl.contacts.application.usecase.remove.RemoveContact;
 import org.gbl.contacts.application.usecase.update.UpdateContact;
+import org.gbl.contacts.domain.Contact;
+import org.gbl.contacts.infra.InMemoryContactQueryRepository;
+import org.gbl.contacts.infra.InMemoryContactRepository;
+import org.gbl.contacts.infra.UUIDIdProvider;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ContactsModuleFactory {
 
@@ -24,7 +21,7 @@ public class ContactsModuleFactory {
                 new UpdateContact(repository),
                 new RemoveContact(repository),
                 new GetContact(repository),
-                new ListContacts(new InMemoryContactQueryRepository(contacts))
+                new InMemoryContactQueryRepository(contacts)
         );
     }
 }

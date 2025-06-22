@@ -51,7 +51,7 @@ class BasicContactsAPI implements ContactsAPI {
     }
 
     public HttpAPIResponse searchContacts(Request request, Response response) {
-        final var output = contactsModule.listContacts(requestParser.parseSearchInput(request));
+        final var output = contactsModule.search(requestParser.parseSearchInput(request));
         response.status(OK.getCode());
         return HttpAPIResponse.ofSuccess(jsonMapper.toJson(output));
     }

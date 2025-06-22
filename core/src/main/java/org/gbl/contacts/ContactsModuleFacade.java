@@ -1,19 +1,19 @@
 package org.gbl.contacts;
 
+import org.gbl.contacts.application.service.query.ContactFilter;
+import org.gbl.contacts.application.service.query.ContactQueryRepository;
+import org.gbl.contacts.application.service.query.PaginationOutput;
+import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.usecase.add.AddContact;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.get.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContact;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
-import org.gbl.contacts.application.usecase.list.ContactFilter;
-import org.gbl.contacts.application.usecase.list.ListContacts;
 import org.gbl.contacts.application.usecase.remove.RemoveContact;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.update.UpdateContact;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
-import org.gbl.contacts.application.service.query.PaginationOutput;
-import org.gbl.contacts.application.service.query.SearchInput;
 
 public class ContactsModuleFacade implements ContactsModule {
 
@@ -21,16 +21,16 @@ public class ContactsModuleFacade implements ContactsModule {
     private final UpdateContact updateContact;
     private final RemoveContact removeContact;
     private final GetContact getContact;
-    private final ListContacts listContacts;
+    private final ContactQueryRepository queryRepository;
 
     public ContactsModuleFacade(AddContact addContact, UpdateContact updateContact,
                                 RemoveContact removeContact,
-                                GetContact getContact, ListContacts listContacts) {
+                                GetContact getContact, ContactQueryRepository queryRepository) {
         this.addContact = addContact;
         this.updateContact = updateContact;
         this.removeContact = removeContact;
         this.getContact = getContact;
-        this.listContacts = listContacts;
+        this.queryRepository = queryRepository;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ContactsModuleFacade implements ContactsModule {
     }
 
     @Override
-    public PaginationOutput<ContactOutput> listContacts(SearchInput<ContactFilter> input) {
-        return listContacts.execute(input);
+    public PaginationOutput<ContactOutput> search(SearchInput<ContactFilter> input) {
+        return queryRepository.search(input);
     }
 }
