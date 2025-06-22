@@ -1,6 +1,6 @@
 package org.gbl.reminder;
 
-import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
 
 import java.time.LocalDate;
 

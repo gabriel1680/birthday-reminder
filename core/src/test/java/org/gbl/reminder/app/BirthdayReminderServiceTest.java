@@ -2,7 +2,7 @@ package org.gbl.reminder.app;
 
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.service.query.PaginationOutput;
-import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.notification.NotificationModule;
 import org.gbl.notification.application.NotificationResponse;
 import org.gbl.reminder.out.email.EmailSender;

@@ -1,23 +1,18 @@
 package org.gbl.contacts.application.usecase.get;
 
-import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
+import org.gbl.contacts.application.usecase.shared.ContactOutputMapper;
+import org.gbl.contacts.application.usecase.shared.ContactUseCaseService;
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.domain.ContactRepository;
 
-public class GetContact {
-    private final ContactRepository repository;
+public class GetContact extends ContactUseCaseService {
 
     public GetContact(ContactRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
     public ContactOutput execute(GetContactInput input) {
-        final var contact = repository.getById(input.id())
-                .orElseThrow(() -> new ContactNotFoundException(input.id()));
-        return toOutput(contact);
-    }
-
-    private ContactOutput toOutput(Contact contact) {
-        return new ContactOutput(contact.id(), contact.name(), contact.birthdate());
+        return ContactOutputMapper.toOutput(getOf(input.id()));
     }
 }

@@ -5,9 +5,8 @@ import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
-import org.gbl.contacts.application.usecase.add.AddContactOutput;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
-import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
@@ -67,7 +66,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
                 }
                 """;
 
-        private static final AddContactOutput maria = new AddContactOutput("1", "Maria", toDate("2018-11-15"));
+        private static final ContactOutput maria = new ContactOutput("1", "Maria", toDate("2018-11-15"));
 
         private static LocalDate toDate(String date) {
             return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
@@ -124,7 +123,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             assertThat(captor.getValue().birthdate()).isEqualTo(toDate("2018-11-15"));
         }
 
-        private static JSONObject toJson(AddContactOutput maria) {
+        private static JSONObject toJson(ContactOutput maria) {
             return new JSONObject()
                     .put("id", maria.id())
                     .put("name", maria.name())

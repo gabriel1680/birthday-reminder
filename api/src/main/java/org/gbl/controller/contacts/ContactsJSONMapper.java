@@ -1,19 +1,11 @@
 package org.gbl.controller.contacts;
 
 import org.gbl.contacts.application.service.query.PaginationOutput;
-import org.gbl.contacts.application.usecase.add.AddContactOutput;
-import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ContactsJSONMapper {
-
-    public JSONObject toJson(AddContactOutput output) {
-        return new JSONObject()
-                .put("id", output.id())
-                .put("name", output.name())
-                .put("birthdate", output.birthdate());
-    }
 
     public JSONObject toJson(ContactOutput contact) {
         return new JSONObject()

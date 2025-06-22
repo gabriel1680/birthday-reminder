@@ -1,5 +1,6 @@
 package org.gbl.contacts.application.usecase.add;
 
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.infra.InMemoryContactRepository;
 import org.gbl.contacts.application.service.SpyRandomIdProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,7 @@ public class AddContactTest {
         assertThat(output)
                 .isNotNull()
                 .hasNoNullFieldsOrProperties()
-                .extracting(AddContactOutput::name)
+                .extracting(ContactOutput::name)
                 .isEqualTo("Mary Ann");
         assertThat(contactRepository.size()).isEqualTo(2);
         assertTrue(contactRepository.getById(idProvider.lastIdProvided()).isPresent());

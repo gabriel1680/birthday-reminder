@@ -4,7 +4,7 @@ import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
-import org.gbl.contacts.application.usecase.get.ContactOutput;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.notification.NotificationModule;
 import org.gbl.reminder.out.email.EmailSender;

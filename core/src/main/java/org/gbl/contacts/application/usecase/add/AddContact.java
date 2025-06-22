@@ -1,6 +1,8 @@
 package org.gbl.contacts.application.usecase.add;
 
 import org.gbl.contacts.application.service.IdProvider;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
+import org.gbl.contacts.application.usecase.shared.ContactOutputMapper;
 import org.gbl.contacts.domain.Contact;
 import org.gbl.contacts.domain.ContactRepository;
 
@@ -14,15 +16,19 @@ public class AddContact {
         this.provider = provider;
     }
 
-    public AddContactOutput execute(AddContactInput input) {
-        if (repository.existsByName(input.name()))
-            throw new ContactAlreadyExistsException(input.name());
-        final var contact = new Contact(provider.provideId(), input.name(), input.birthdate());
+    public ContactOutput execute(AddContactInput input) {
+        validateIfNameAlreadyTaken(input);
+        final var contact = createContactFrom(input);
         repository.add(contact);
-        return toOutput(contact);
+        return ContactOutputMapper.toOutput(contact);
     }
 
-    private static AddContactOutput toOutput(Contact contact) {
-        return new AddContactOutput(contact.id(), contact.name(), contact.birthdate());
+    private void validateIfNameAlreadyTaken(AddContactInput input) {
+        if (repository.existsByName(input.name()))
+            throw new ContactAlreadyExistsException(input.name());
+    }
+
+    private Contact createContactFrom(AddContactInput input) {
+        return new Contact(provider.provideId(), input.name(), input.birthdate());
     }
 }

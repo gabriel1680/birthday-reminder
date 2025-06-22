@@ -1,18 +1,16 @@
 package org.gbl.contacts.application.usecase.update;
 
-import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.application.usecase.shared.ContactUseCaseService;
 import org.gbl.contacts.domain.ContactRepository;
 
-public class UpdateContact {
-    private final ContactRepository repository;
+public class UpdateContact extends ContactUseCaseService {
 
     public UpdateContact(ContactRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
     public void execute(UpdateContactInput input) {
-        final var contact = repository.getById(input.id())
-                .orElseThrow(() -> new ContactNotFoundException(input.id()));
+        final var contact = getOf(input.id());
         if (input.name() != null && !input.name().isEmpty())
             contact.setName(input.name());
         if (input.birthdate() != null)
