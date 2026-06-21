@@ -89,7 +89,7 @@ class HttpContactGatewayTest {
                     {
                     "status": "success",
                     "message": "contact created",
-                    "data": { "id": 1, "name":"Mary Ann","birthdate":"1959-08-14" }
+                    "data": { "values": [{ "id": 1, "name":"Mary Ann","birthdate":"1959-08-14" }] }
                     }
                     """;
             when(response.body()).thenReturn(body);
@@ -136,7 +136,7 @@ class HttpContactGatewayTest {
                     {
                     "status": "success",
                     "message": "",
-                    "data": { "name":"Mary Ann","birthdate":"1959-08-14" }
+                    "data": { "values": [{ "id": 1, "name":"Mary Ann","birthdate":"1959-08-14" }] }
                     }
                     """;
             when(response.body()).thenReturn(body);
@@ -179,7 +179,7 @@ class HttpContactGatewayTest {
                     {
                     "status": "success",
                     "message": "Contact updated",
-                    "data": { "id":"2","name":"John Wick","birthdate":"1964-09-02" }
+                    "data": { "values": [{ "id":"2","name":"John Wick","birthdate":"1964-09-02" }] }
                     }
                     """;
             when(response.body()).thenReturn(body);
@@ -265,9 +265,9 @@ class HttpContactGatewayTest {
                     "status": "success",
                     "message": "",
                     "data": {
-                        "page": 1,
+                        "current_page": 1,
                         "size": 5,
-                        "lastPage": 5,
+                        "last_page": 5,
                         "total": 20,
                         "values": [{"id":"1", "name":"Mary Ann","birthdate":"1959-08-14" }]
                     }

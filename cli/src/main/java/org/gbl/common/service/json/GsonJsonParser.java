@@ -1,12 +1,22 @@
 package org.gbl.common.service.json;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import org.gbl.common.search.GsonPaginationDeserializer;
+import org.gbl.common.search.Pagination;
+import org.gbl.out.ContactResponse;
 
 import java.lang.reflect.Type;
 
 public class GsonJsonParser implements JsonParser {
 
-    private static final Gson parser = new Gson();
+    private static final Gson parser = new GsonBuilder()
+            .registerTypeAdapter(
+                    new TypeToken<Pagination<ContactResponse>>() {}.getType(),
+                    new GsonPaginationDeserializer<ContactResponse>()
+            )
+            .create();
 
     public String stringify(Object object) {
         return parser.toJson(object);
