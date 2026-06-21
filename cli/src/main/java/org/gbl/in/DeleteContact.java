@@ -25,11 +25,8 @@ public class DeleteContact implements Callable<Integer> {
     @Override
     public Integer call() {
         final var response = gateway.delete(id)
-                .onSuccess(it -> {
-                    System.out.println("Contact deleted ✅");
-                }).onFailure(error -> {
-                    System.err.printf("Error: %s%n", error.getMessage());
-                });
+                .onSuccess(it -> System.out.println("Contact deleted ✅"))
+                .onFailure(error -> System.err.printf("Error: %s%n", error.getMessage()));
         return response.isFailure() ? 1 : 0;
     }
 }

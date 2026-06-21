@@ -1,7 +1,7 @@
 package org.gbl;
 
 import org.gbl.in.BReminder;
-import org.gbl.in.di.GuiceFactory;
+import org.gbl.config.di.GuiceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import picocli.CommandLine;

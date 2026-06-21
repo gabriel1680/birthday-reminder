@@ -1,4 +1,4 @@
-package org.gbl.in.di;
+package org.gbl.config.di;
 
 import com.google.inject.AbstractModule;
 import org.gbl.common.service.json.GsonJsonParser;

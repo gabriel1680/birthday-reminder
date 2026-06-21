@@ -1,6 +1,6 @@
 package org.gbl;
 
-import org.gbl.in.di.GuiceFactory;
+import org.gbl.config.di.GuiceFactory;
 import org.gbl.in.BReminder;
 import picocli.CommandLine;
 import picocli.CommandLine.Help.Ansi.Style;

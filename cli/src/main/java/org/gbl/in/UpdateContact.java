@@ -59,11 +59,16 @@ public class UpdateContact implements Callable<Integer> {
         }
         request.id = id;
         final var response = gateway.update(request)
-                .onSuccess(v -> {
-                    System.out.println("Contact updated ✅");
-                }).onFailure(error -> {
-                    System.err.printf("Error: %s%n", error.getMessage());
-                });
+                .onSuccess(UpdateContact::onSuccess)
+                .onFailure(UpdateContact::onError);
         return response.isFailure() ? 1 : 0;
+    }
+
+    private static void onSuccess(Void v) {
+        System.out.println("Contact updated ✅");
+    }
+
+    private static void onError(Throwable error) {
+        System.err.printf("Error: %s%n", error.getMessage());
     }
 }
