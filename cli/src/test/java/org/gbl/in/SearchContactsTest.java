@@ -31,6 +31,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SearchContactsTest extends CLITest {
 
+    private final Pagination<ContactResponse> emptyPagination = new Pagination<>(1, 5, 0, 1, emptyList());
+
     @Mock
     private ContactsGateway gateway;
 
@@ -41,8 +43,7 @@ class SearchContactsTest extends CLITest {
 
     @Test
     void success() {
-        final var pagination = new Pagination<ContactResponse>(1, 5, 1, 1, emptyList());
-        when(gateway.search(any())).thenReturn(Try.success(pagination));
+        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
         int statusCode = commandLine.execute();
         assertThat(statusCode).isEqualTo(0);
     }
@@ -60,8 +61,7 @@ class SearchContactsTest extends CLITest {
 
     @Test
     void defaultSearchValues() {
-        final var pagination = new Pagination<ContactResponse>(1, 5, 1, 1, emptyList());
-        when(gateway.search(any())).thenReturn(Try.success(pagination));
+        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
         int statusCode = commandLine.execute();
         assertThat(statusCode).isEqualTo(0);
         verify(gateway).search(requestArgumentCaptor.capture());
@@ -76,8 +76,7 @@ class SearchContactsTest extends CLITest {
     @ParameterizedTest
     @MethodSource("searchWithParamsProvider")
     void searchWithParams(String[] args) {
-        final var pagination = new Pagination<ContactResponse>(1, 5, 1, 1, emptyList());
-        when(gateway.search(any())).thenReturn(Try.success(pagination));
+        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
         int statusCode = commandLine.execute(args);
         assertThat(statusCode).isEqualTo(0);
         verify(gateway).search(requestArgumentCaptor.capture());
