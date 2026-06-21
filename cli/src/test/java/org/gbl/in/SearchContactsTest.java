@@ -3,11 +3,11 @@ package org.gbl.in;
 import io.vavr.control.Try;
 import org.gbl.CLITest;
 import org.gbl.common.search.ContactFilter;
-import org.gbl.out.ContactResponse;
-import org.gbl.out.ContactsGateway;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
+import org.gbl.out.ContactResponse;
+import org.gbl.out.ContactsGateway;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import picocli.CommandLine;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
@@ -44,9 +45,6 @@ class SearchContactsTest extends CLITest {
         when(gateway.search(any())).thenReturn(Try.success(pagination));
         int statusCode = commandLine.execute();
         assertThat(statusCode).isEqualTo(0);
-        assertThat(out.toString()).contains("Contacts retrieved");
-        assertThat(out.toString()).contains("id | name | birthdate");
-        assertThat(out.toString()).contains("current_page: 1 | last_page: 1 | total: 1");
     }
 
     @Test
@@ -95,5 +93,25 @@ class SearchContactsTest extends CLITest {
         return Stream.of(
                 Arguments.of((Object) new String[]{"--page=2", "--size=9", "--order=desc"}),
                 Arguments.of((Object) new String[]{"-p", "2", "-s", "9", "-o", "desc"}));
+    }
+
+    @Test
+    void tableRender() {
+        final var johnDoe = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e7", "John Doe", "1990-09-10");
+        final var maryAnn = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e8", "Mary Ann", "1991-09-10");
+        final var pagination = new Pagination<>(1, 5, 2, 1, List.of(johnDoe, maryAnn));
+        when(gateway.search(any())).thenReturn(Try.success(pagination));
+        commandLine.execute();
+        final var expected = """
+                Contacts retrieved
+                                                                    
+                _____________________________________________________________________
+                id | name | birthdate
+                85527e63-86f2-4ea8-8cea-7112b0a792e7 | John Doe | 1990-09-10
+                85527e63-86f2-4ea8-8cea-7112b0a792e8 | Mary Ann | 1991-09-10
+                _____________________________________________________________________
+                current_page: 1 | last_page: 1 | total: 2
+                 """;
+        assertThat(out.toString()).isEqualTo(expected);
     }
 }
