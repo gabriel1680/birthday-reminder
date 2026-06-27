@@ -1,36 +1,53 @@
 package org.gbl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.javalin.http.ContentType;
 import io.javalin.http.Context;
-import io.javalin.http.HttpStatus;
-import org.gbl.contacts.ContactsModule;
-import org.gbl.contacts.application.usecase.add.AddContactInput;
-import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
+import org.gbl.common.search.ContactFilter;
+import org.gbl.common.search.Pagination;
+import org.gbl.common.search.SearchRequest;
+import org.gbl.common.search.SortingOrder;
+import org.gbl.out.ContactResponse;
+import org.gbl.out.ContactsGateway;
+
+import java.util.Map;
+import java.util.Optional;
+
+import static java.lang.Integer.parseInt;
 
 public class ContactsController {
-    private final ObjectMapper objectMapper;
-    private final ContactsModule contactsModule;
 
-    public ContactsController(ContactsModule contactsModule) {
-        this.contactsModule = contactsModule;
-        this.objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+    private final ContactsGateway contactsGateway;
+
+    public ContactsController(ContactsGateway contactsGateway) {
+        this.contactsGateway = contactsGateway;
     }
 
-    public void create(Context context) throws JsonProcessingException {
-        context.contentType(ContentType.APPLICATION_JSON);
-        try {
-            final var request = objectMapper
-                    .readValue(context.body(), CreateContactRequest.class);
-            final var input = new AddContactInput(request.name(), request.birthdate());
-            contactsModule.addContact(input);
-            context.status(HttpStatus.CREATED);
-        } catch (ContactAlreadyExistsException e) {
-            context.status(HttpStatus.UNPROCESSABLE_CONTENT);
-            context.result(e.getMessage());
-        }
+    public void searchPage(Context context) {
+        final var request = createSearchRequestFrom(context);
+        contactsGateway.search(request)
+                .onSuccess(pagination -> createSearchPage(context, pagination))
+                .onFailure(error -> internalServerErrorPage(context));
+    }
+
+    private static void internalServerErrorPage(Context context) {
+        context.status(500);
+        context.render("internal-server-error.jte");
+    }
+
+    private static void createSearchPage(Context context, Pagination<ContactResponse> pagination) {
+        context.render("contacts.jte", Map.of("data", new SearchPageData(pagination)));
+    }
+
+    private static SearchRequest<ContactFilter> createSearchRequestFrom(Context context) {
+        final var page = parseInt(queryParamOrDefault(context, "page", "1"));
+        final var size = parseInt(queryParamOrDefault(context, "size", "1"));
+        final var order = SortingOrder.of(queryParamOrDefault(context, "order", "asc"));
+        return new SearchRequest<>(page, size, order, null);
+    }
+
+    private static String queryParamOrDefault(Context context,
+                                              String queryParam,
+                                              String defaultValue) {
+        final var paramOrNull = context.queryParam(queryParam);
+        return Optional.ofNullable(paramOrNull).orElse(defaultValue);
     }
 }
