@@ -2,6 +2,8 @@ plugins {
     id("buildlogic.java-application-conventions")
 }
 
+val mainClassName = "Main"
+
 group = "org.gbl"
 version = "unspecified"
 
@@ -25,6 +27,10 @@ dependencies {
 
     // test
     testImplementation("io.javalin:javalin-testtools:6.5.0")
+}
+
+application {
+    mainClass = "${project.group}.$mainClassName"
 }
 
 tasks.test {

@@ -39,7 +39,7 @@ public class ContactsController {
 
     private static SearchRequest<ContactFilter> createSearchRequestFrom(Context context) {
         final var page = parseInt(queryParamOrDefault(context, "page", "1"));
-        final var size = parseInt(queryParamOrDefault(context, "size", "1"));
+        final var size = parseInt(queryParamOrDefault(context, "size", "15"));
         final var order = SortingOrder.of(queryParamOrDefault(context, "order", "asc"));
         return new SearchRequest<>(page, size, order, null);
     }
