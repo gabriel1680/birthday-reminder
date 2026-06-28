@@ -46,9 +46,19 @@ public class SearchContacts implements Callable<Integer> {
         }
     }
 
+    @Option(names = {"-n", "--name"}, description = "The name of contact to filter for." )
+    public String name;
+
+    @Option(names = {"-bf", "--birthdateFrom"}, description = "The birthdate start range to filter for." )
+    public String birthdateFrom;
+
+    @Option(names = {"-bt", "--birthdateTo"}, description = "The birthdate end range to filter for." )
+    public String birthdateTo;
+
     @Override
     public Integer call() {
-        final var searchRequest = new SearchRequest<ContactFilter>(page, size, order, null);
+        final var filter = new ContactFilter(name, birthdateFrom, birthdateTo);
+        final var searchRequest = new SearchRequest<>(page, size, order, filter);
         final var response = gateway.search(searchRequest)
                 .onSuccess(this::onSuccess)
                 .onFailure(this::onFailure);

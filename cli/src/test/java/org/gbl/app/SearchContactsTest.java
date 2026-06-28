@@ -95,6 +95,21 @@ class SearchContactsTest extends CLITest {
     }
 
     @Test
+    void searchWithFilter() {
+        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
+        int statusCode = commandLine.execute("-n=Claudio", "-bf=12/12/1900", "-bt=12/12/1990");
+        assertThat(statusCode).isEqualTo(0);
+        verify(gateway).search(requestArgumentCaptor.capture());
+        var searchRequest = requestArgumentCaptor.getValue();
+        assertThat(searchRequest)
+                .isNotNull()
+                .extracting(SearchRequest::filter)
+                .isInstanceOf(ContactFilter.class)
+                .extracting(ContactFilter::name, ContactFilter::birthdateFrom, ContactFilter::birthdateTo)
+                .containsExactly("Claudio", "12/12/1900", "12/12/1990");
+    }
+
+    @Test
     void tableRender() {
         final var johnDoe = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e7", "John Doe", "1990-09-10");
         final var maryAnn = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e8", "Mary Ann", "1991-09-10");
