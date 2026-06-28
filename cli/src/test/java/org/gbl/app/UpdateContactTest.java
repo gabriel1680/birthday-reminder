@@ -1,8 +1,7 @@
-package org.gbl.in;
+package org.gbl.app;
 
 import io.vavr.control.Try;
 import org.gbl.CLITest;
-import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

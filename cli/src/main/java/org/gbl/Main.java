@@ -1,7 +1,7 @@
 package org.gbl;
 
-import org.gbl.config.di.GuiceFactory;
-import org.gbl.in.BReminder;
+import org.gbl.config.GuiceFactory;
+import org.gbl.app.BReminder;
 import picocli.CommandLine;
 import picocli.CommandLine.Help.Ansi.Style;
 import picocli.CommandLine.Help.ColorScheme;

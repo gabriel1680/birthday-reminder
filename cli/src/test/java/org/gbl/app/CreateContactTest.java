@@ -1,4 +1,4 @@
-package org.gbl.in;
+package org.gbl.app;
 
 import io.vavr.control.Try;
 import org.gbl.CLITest;

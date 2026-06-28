@@ -1,9 +1,8 @@
-package org.gbl.in;
+package org.gbl.app;
 
 import jakarta.inject.Inject;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
-import org.gbl.common.gateway.CreateContactRequest;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

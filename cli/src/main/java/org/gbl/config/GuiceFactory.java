@@ -1,4 +1,4 @@
-package org.gbl.config.di;
+package org.gbl.config;
 
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;

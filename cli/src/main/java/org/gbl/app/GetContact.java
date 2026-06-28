@@ -1,4 +1,4 @@
-package org.gbl.in;
+package org.gbl.app;
 
 import jakarta.inject.Inject;
 import org.gbl.common.gateway.ContactResponse;
