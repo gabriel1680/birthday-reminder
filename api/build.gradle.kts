@@ -12,7 +12,6 @@ repositories {
 }
 
 application {
-    mainModule = "${project.group}"
     mainClass = "${project.group}.$mainClassName"
 }
 
