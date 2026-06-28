@@ -10,9 +10,9 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.bundles.client)
+    implementation(project(":shared"))
     implementation("info.picocli:picocli:4.7.0")
-    implementation("io.vavr:vavr:0.9.0")
-    implementation("com.google.code.gson:gson:2.12.1")
     implementation("com.google.inject:guice:7.0.0")
 }
 

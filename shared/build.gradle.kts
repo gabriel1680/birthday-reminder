@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    id("buildlogic.java-library-conventions")
 }
 
 group = "org.gbl"
@@ -10,8 +10,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(project(":core"))
+    implementation(libs.bundles.client)
 }
 
 tasks.test {
