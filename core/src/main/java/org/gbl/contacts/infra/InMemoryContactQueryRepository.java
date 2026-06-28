@@ -42,7 +42,9 @@ public class InMemoryContactQueryRepository implements ContactQueryRepository {
             return true;
         }
         return (filter.name() == null || c.name().equals(filter.name()))
-                && (filter.birthdate() == null || c.birthdate().equals(filter.birthdate()));
+                && (filter.birthdateFilter() == null ||
+                filter.birthdateFilter().isInValid() ||
+                filter.birthdateFilter().contains(c.birthdate()));
     }
 
     private static Comparator<Contact> getComparator(SortingOrder order) {

@@ -54,12 +54,17 @@ public class ContactsRequestParser {
     }
 
     private static ContactFilter contactFilterOf(Request request) {
-        final var nameFilter = request.queryParams("filter_name");
+        final var nameFilter = request.queryParams("name");
         var filter = ContactFilter.of(nameFilter);
-        final var birthdateFilter = request.queryParams("filter_birthdate");
-        if (birthdateFilter != null) {
-            filter = ContactFilter.of(nameFilter, LocalDate.parse(birthdateFilter));
+        final var birthdateFromFilter = request.queryParams("birthdateFrom");
+        final var birthdateToFilter = request.queryParams("birthdateTo");
+        if (birthdateFromFilter != null && birthdateToFilter != null) {
+            filter = ContactFilter.of(nameFilter, toDate(birthdateFromFilter), toDate(birthdateToFilter));
         }
         return filter;
+    }
+
+    private static LocalDate toDate(String aDate) {
+        return LocalDate.parse(aDate);
     }
 }

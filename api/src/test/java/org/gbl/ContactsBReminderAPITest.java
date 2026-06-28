@@ -373,8 +373,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
 
         @Test
         void requestNameFilter() {
-            when(request.queryParams("filter_name")).thenReturn("a");
-            when(request.queryParams("filter_birthdate")).thenReturn(null);
+            when(request.queryParams("name")).thenReturn("a");
+            when(request.queryParams("birthdateFrom")).thenReturn(null);
+            when(request.queryParams("birthdateTo")).thenReturn(null);
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
@@ -390,8 +391,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
 
         @Test
         void requestBirthdateFilter() {
-            when(request.queryParams("filter_name")).thenReturn("a");
-            when(request.queryParams("filter_birthdate")).thenReturn("2018-11-15");
+            when(request.queryParams("name")).thenReturn("a");
+            when(request.queryParams("birthdateFrom")).thenReturn("2018-11-15");
+            when(request.queryParams("birthdateTo")).thenReturn("2018-11-15");
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
@@ -399,16 +401,18 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             sut.searchContacts(request, response);
             verify(contactsModule).search(inputArgumentCaptor.capture());
             var input = inputArgumentCaptor.getValue();
+            final var birthdate = LocalDate.of(2018, 11, 15);
             assertThat(input)
                     .extracting(SearchInput::filter)
                     .isInstanceOf(ContactFilter.class)
-                    .isEqualTo(ContactFilter.of("a", LocalDate.of(2018, 11, 15)));
+                    .isEqualTo(ContactFilter.of("a", birthdate, birthdate));
         }
 
         @Test
         void requestNoFilter() {
-            when(request.queryParams("filter_name")).thenReturn(null);
-            when(request.queryParams("filter_birthdate")).thenReturn(null);
+            when(request.queryParams("name")).thenReturn(null);
+            when(request.queryParams("birthdateFrom")).thenReturn(null);
+            when(request.queryParams("birthdateTo")).thenReturn(null);
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("5");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("desc");
