@@ -10,6 +10,6 @@ public record PaginationOutput<T>(int page, int size, int total, List<T> values)
     }
 
     public int lastPage() {
-        return Math.max(1, total / size);
+        return Math.max(1, (total + size - 1) / size);
     }
 }

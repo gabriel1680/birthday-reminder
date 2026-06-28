@@ -1,0 +1,428 @@
+:root {
+    --background: #f6f8fa;
+    --surface: #ffffff;
+    --border: #d0d7de;
+
+    --text: #24292f;
+    --muted: #656d76;
+
+    --primary: #0969da;
+    --primary-hover: #0550ae;
+
+    --success: #1a7f37;
+
+    --radius: 10px;
+    --shadow: 0 1px 2px rgba(27, 31, 36, .06);
+
+    --transition: .18s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    background: var(--background);
+
+    color: var(--text);
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height: 1.5;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 24px 48px;
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.hero__content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 24px;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.hero p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: .95rem;
+}
+/* ---------- Cards ---------- */
+
+.card {
+    margin-bottom: 24px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+.card__header {
+    padding: 18px 22px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.card__header h2 {
+    margin: 0;
+
+    font-size: 1.15rem;
+}
+
+/* ---------- Form ---------- */
+
+.search-form {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+
+    padding: 22px;
+}
+
+.form-field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.form-field--full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-weight: 600;
+
+    font-size: .9rem;
+}
+
+input {
+    padding: 10px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    font: inherit;
+}
+
+input:focus {
+    outline: none;
+
+    border-color: var(--primary);
+}
+
+.search-form__actions {
+    grid-column: 1 / -1;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+}
+
+.btn {
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background var(--transition);
+}
+
+.btn--primary {
+    border: none;
+
+    background: var(--primary);
+
+    color: white;
+}
+
+.btn--primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn--secondary {
+    border: 1px solid var(--border);
+
+    background: white;
+}
+
+/* ---------- Upcoming birthdays ---------- */
+
+.birthday-grid {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+
+    gap: 18px;
+
+    padding: 22px;
+}
+
+.birthday-card {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 20px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.birthday-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 18px rgba(27, 31, 36, .08);
+}
+
+.birthday-card__icon {
+    font-size: 2rem;
+}
+
+.birthday-card__name {
+    font-weight: 700;
+}
+
+.birthday-card__date {
+    color: var(--muted);
+}
+
+.birthday-card__badge {
+    padding: 4px 10px;
+
+    border-radius: 999px;
+
+    background: #e8f5eb;
+
+    color: var(--success);
+
+    font-size: .82rem;
+}
+
+/* ---------- Contacts ---------- */
+
+.contacts__header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 18px 22px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.contacts__header h2 {
+    margin: 0;
+}
+
+.contacts__count {
+    color: var(--muted);
+
+    font-size: .9rem;
+}
+
+.contacts-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.contacts-table th,
+.contacts-table td {
+    padding: 16px 22px;
+
+    text-align: left;
+}
+
+.contacts-table thead {
+    background: #f9fafb;
+}
+
+.contacts-table tbody tr {
+    transition: background var(--transition);
+}
+
+.contacts-table tbody tr:hover {
+    background: #f6f8fa;
+}
+
+.contacts-table tbody tr:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+}
+
+.contacts-table__link {
+    display: block;
+
+    font-weight: 600;
+}
+
+.contacts-table__arrow {
+    width: 1%;
+
+    text-align: right;
+
+    color: var(--muted);
+}
+
+/* ---------- Pagination ---------- */
+
+.pagination {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 32px 0;
+}
+
+.pagination a,
+.pagination span {
+    min-width: 38px;
+
+    padding: 8px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    text-align: center;
+}
+
+.pagination a:hover {
+    background: #f3f4f6;
+}
+
+.pagination__current {
+    background: var(--primary);
+
+    border-color: var(--primary);
+
+    color: white;
+}
+
+.pagination__disabled {
+    opacity: .45;
+}
+
+.pagination__ellipsis {
+    border: none !important;
+
+    background: transparent !important;
+}
+
+/* ---------- Empty state ---------- */
+
+.empty-state {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 48px 24px;
+
+    text-align: center;
+}
+
+.empty-state__icon {
+    font-size: 2.4rem;
+}
+
+.empty-state__message {
+    color: var(--muted);
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+    padding: 32px 24px;
+
+    color: var(--muted);
+
+    text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+
+    .search-form {
+        grid-template-columns: 1fr;
+    }
+
+    .form-field--full,
+    .search-form__actions {
+        grid-column: auto;
+    }
+
+    .contacts-table th:nth-child(3),
+    .contacts-table td:nth-child(3) {
+        display: none;
+    }
+
+    .contacts__header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 8px;
+    }
+}

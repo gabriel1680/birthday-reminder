@@ -81,7 +81,21 @@ public class WebTest {
             assertThat(value.page()).isEqualTo(2);
             assertThat(value.size()).isEqualTo(1);
             assertThat(value.order()).isEqualTo(SortingOrder.ASC);
-            assertThat(value.filter()).isNull();
+        });
+    }
+
+    @Test
+    void contacts_page_filter() {
+        JavalinTest.test(server, (server, httpClient) -> {
+            final var pagination = new Pagination<>(2, 1, 2, 2, List.of(AYRTON_SENNA));
+            when(contactsGateway.search(any())).thenReturn(Try.success(pagination));
+            httpClient.get("/?name=xyz&birthdateFrom=12/12/1900&birthdateTo=12/12/1999");
+            verify(contactsGateway, times(1)).search(requestCaptor.capture());
+            final var value = requestCaptor.getValue();
+            assertThat(value.filter())
+                    .isNotNull()
+                    .extracting(ContactFilter::name, ContactFilter::birthdateFrom, ContactFilter::birthdateTo)
+                    .containsExactly("xyz", "12/12/1900", "12/12/1999");
         });
     }
 
