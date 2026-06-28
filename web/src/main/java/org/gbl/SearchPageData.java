@@ -1,7 +1,7 @@
 package org.gbl;
 
 import org.gbl.common.search.Pagination;
-import org.gbl.out.ContactResponse;
+import org.gbl.common.gateway.ContactResponse;
 
 public record SearchPageData(Pagination<ContactResponse> pagination) {
 }

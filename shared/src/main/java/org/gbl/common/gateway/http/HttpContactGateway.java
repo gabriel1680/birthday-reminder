@@ -1,4 +1,4 @@
-package org.gbl.out.http;
+package org.gbl.common.gateway.http;
 
 import com.google.gson.reflect.TypeToken;
 import io.vavr.control.Try;
@@ -6,10 +6,10 @@ import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.service.json.JsonParser;
-import org.gbl.in.CreateContact.CreateContactRequest;
-import org.gbl.in.UpdateContact.UpdateContactRequest;
-import org.gbl.out.ContactResponse;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.CreateContactRequest;
+import org.gbl.common.gateway.UpdateContactRequest;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -73,7 +73,7 @@ public class HttpContactGateway implements ContactsGateway {
     @Override
     public Try<Void> update(UpdateContactRequest request) {
         final var httpRequest = baseRequest()
-                .uri(URI.create(baseUrl + RESOURCE + "/" + request.id))
+                .uri(URI.create(baseUrl + RESOURCE + "/" + request.id()))
                 .PUT(BodyPublishers.ofString(jsonParser.stringify(request)))
                 .build();
         return Try.run(() -> execute(httpRequest, CONTACT_RESPONSE_TYPE));

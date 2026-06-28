@@ -5,8 +5,8 @@ import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
-import org.gbl.out.ContactResponse;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
 
 import java.util.Map;
 import java.util.Optional;

@@ -1,13 +1,13 @@
-package org.gbl.out.http;
+package org.gbl.common.gateway.memory;
 
 import io.vavr.control.Try;
 import org.gbl.common.search.ContactFilter;
-import org.gbl.in.CreateContact.CreateContactRequest;
-import org.gbl.in.UpdateContact.UpdateContactRequest;
-import org.gbl.out.ContactResponse;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
+import org.gbl.common.gateway.CreateContactRequest;
+import org.gbl.common.gateway.UpdateContactRequest;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class ContactsGatewayStub implements ContactsGateway {
 
     @Override
     public Try<ContactResponse> create(CreateContactRequest request) {
-        return Try.success(new ContactResponse("1", request.name, request.birthdate));
+        return Try.success(new ContactResponse("1", request.name(), request.birthdate()));
     }
 
     @Override

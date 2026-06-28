@@ -2,9 +2,9 @@ package org.gbl.config.di;
 
 import com.google.inject.AbstractModule;
 import org.gbl.common.service.json.GsonJsonParser;
-import org.gbl.out.ContactsGateway;
-import org.gbl.out.http.ContactsGatewayStub;
-import org.gbl.out.http.HttpContactGateway;
+import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.memory.ContactsGatewayStub;
+import org.gbl.common.gateway.http.HttpContactGateway;
 import org.gbl.common.service.env.EnvManager;
 
 import java.net.http.HttpClient;

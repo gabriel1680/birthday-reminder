@@ -1,7 +1,8 @@
 package org.gbl.in;
 
 import jakarta.inject.Inject;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.UpdateContactRequest;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -21,16 +22,14 @@ public class UpdateContact implements Callable<Integer> {
     private String id;
 
     @ArgGroup(exclusive = false, heading = "Optional flags\n")
-    private UpdateContactRequest request;
+    private UpdateContactData data;
 
     @Inject
     public UpdateContact(ContactsGateway gateway) {
         this.gateway = gateway;
     }
 
-    public static class UpdateContactRequest {
-        public String id;
-
+    public static class UpdateContactData {
         @Option(names = {"-n", "--name"},
                 description = "The name of the contact.")
         public String name;
@@ -39,25 +38,16 @@ public class UpdateContact implements Callable<Integer> {
                 description = "The birthdate of the contact in ISO format (Eg.: " +
                         "2018-11-15T00:00:00Z).")
         public String birthdate;
-
-        public UpdateContactRequest() {
-        }
-
-        public UpdateContactRequest(String id, String name, String birthdate) {
-            this.id = id;
-            this.name = name;
-            this.birthdate = birthdate;
-        }
     }
 
     @Override
     public Integer call() {
-        if (request == null) {
+        if (data == null) {
             var errMsg = "Error: Missing one of arguments: --name=<name> --birthdate=<birthdate>";
             System.err.print(errMsg);
             return 2;
         }
-        request.id = id;
+        final var request = new UpdateContactRequest(id, data.name, data.birthdate);
         final var response = gateway.update(request)
                 .onSuccess(UpdateContact::onSuccess)
                 .onFailure(UpdateContact::onError);

@@ -3,7 +3,7 @@ package org.gbl;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.rendering.template.JavalinJte;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactsGateway;
 
 public class Web {
 

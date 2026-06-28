@@ -2,8 +2,8 @@ package org.gbl.in;
 
 import io.vavr.control.Try;
 import org.gbl.CLITest;
-import org.gbl.out.ContactResponse;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

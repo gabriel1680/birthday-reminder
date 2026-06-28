@@ -1,11 +1,9 @@
-package org.gbl.out;
+package org.gbl.common.gateway;
 
 import io.vavr.control.Try;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
-import org.gbl.in.CreateContact.CreateContactRequest;
-import org.gbl.in.UpdateContact.UpdateContactRequest;
 
 public interface ContactsGateway {
     Try<ContactResponse> create(CreateContactRequest request);

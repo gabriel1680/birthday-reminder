@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.gbl.common.search.GsonPaginationDeserializer;
 import org.gbl.common.search.Pagination;
-import org.gbl.out.ContactResponse;
+import org.gbl.common.gateway.ContactResponse;
 
 import java.lang.reflect.Type;
 

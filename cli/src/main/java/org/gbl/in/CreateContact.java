@@ -1,8 +1,9 @@
 package org.gbl.in;
 
 import jakarta.inject.Inject;
-import org.gbl.out.ContactResponse;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.CreateContactRequest;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -16,7 +17,7 @@ import java.util.concurrent.Callable;
 public class CreateContact implements Callable<Integer> {
 
     @ArgGroup(exclusive = false, heading = "Required flags\n")
-    private CreateContactRequest request;
+    private CreateContactRequest data;
 
     private final ContactsGateway contactsGateway;
 
@@ -34,19 +35,11 @@ public class CreateContact implements Callable<Integer> {
                 description = "The birthdate of the contact in ISO format (Eg.: " +
                         "2018-11-15T00:00:00Z).")
         public String birthdate;
-
-        // needed in order to the framework to instantiate the class
-        public CreateContactRequest() {
-        }
-
-        public CreateContactRequest(String name, String birthdate) {
-            this.name = name;
-            this.birthdate = birthdate;
-        }
     }
 
     @Override
     public Integer call() {
+        final var request = new org.gbl.common.gateway.CreateContactRequest(data.name, data.birthdate);
         final var response = contactsGateway.create(request)
                 .onSuccess(CreateContact::onSuccess)
                 .onFailure(CreateContact::onFailure);

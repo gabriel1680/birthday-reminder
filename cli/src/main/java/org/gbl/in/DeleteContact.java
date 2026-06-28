@@ -1,7 +1,7 @@
 package org.gbl.in;
 
 import jakarta.inject.Inject;
-import org.gbl.out.ContactsGateway;
+import org.gbl.common.gateway.ContactsGateway;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 

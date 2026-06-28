@@ -10,7 +10,7 @@
     <title>Document</title>
 </head>
 <body>
-@for(org.gbl.out.ContactResponse contact : data.pagination().values())
+@for(org.gbl.common.gateway.ContactResponse contact : data.pagination().values())
     <li data-contact-id="${contact.id()}">${contact.name()} | ${contact.birthdate()}</li>
 @endfor
 <style>

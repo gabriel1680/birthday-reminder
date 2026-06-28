@@ -1,7 +1,7 @@
 package org.gbl;
 
 import org.gbl.common.service.json.GsonJsonParser;
-import org.gbl.out.http.HttpContactGateway;
+import org.gbl.common.gateway.http.HttpContactGateway;
 
 import java.net.http.HttpClient;
 
