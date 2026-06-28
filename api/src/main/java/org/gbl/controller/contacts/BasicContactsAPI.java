@@ -29,7 +29,7 @@ class BasicContactsAPI implements ContactsAPI {
         return HttpAPIResponse.ofSuccess(jsonMapper.toJson(output));
     }
 
-    public HttpAPIResponse getContract(Request request, Response response) {
+    public HttpAPIResponse getContact(Request request, Response response) {
         final var input = new GetContactInput(requestParser.getId(request));
         final var contact = contactsModule.getContact(input);
         response.status(OK.getCode());

@@ -31,7 +31,7 @@ public class Routes {
         get("status", this::ok);
         post("/contacts", contactsAPI::createContact);
         get("/contacts", contactsAPI::searchContacts);
-        get("/contacts/:id", contactsAPI::getContract);
+        get("/contacts/:id", contactsAPI::getContact);
         delete("/contacts/:id", contactsAPI::deleteContact);
         put("/contacts/:id", contactsAPI::updateContact);
     }

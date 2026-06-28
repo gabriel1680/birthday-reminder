@@ -137,7 +137,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
         @Test
         void throwAParseError_whenReceiveAnInvalidId() {
             when(request.params("id")).thenReturn("");
-            final var output = sut.getContract(request, response);
+            final var output = sut.getContact(request, response);
             aAssertionFor(response)
                     .withStatusCode(BAD_REQUEST)
                     .forExpected(ResponseStatus.ERROR, "invalid id", new JSONObject())
@@ -149,7 +149,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
         void throwTheUnknownError() {
             when(request.params("id")).thenReturn("123");
             doThrow(new RuntimeException("Internal error")).when(contactsModule).getContact(any());
-            assertThatThrownBy(() -> sut.getContract(request, response))
+            assertThatThrownBy(() -> sut.getContact(request, response))
                     .hasMessage("Internal error")
                     .isInstanceOf(RuntimeException.class);
         }
@@ -159,7 +159,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.params("id")).thenReturn("123");
             final var exception = new ContactNotFoundException("123");
             doThrow(exception).when(contactsModule).getContact(any());
-            final var output = sut.getContract(request, response);
+            final var output = sut.getContact(request, response);
             aAssertionFor(response)
                     .withStatusCode(NOT_FOUND)
                     .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
@@ -175,7 +175,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.params("id")).thenReturn("123");
             final var contact = new ContactOutput("123", "Mary", LocalDate.now());
             when(contactsModule.getContact(any())).thenReturn(contact);
-            final var output = sut.getContract(request, response);
+            final var output = sut.getContact(request, response);
             final var data = new JSONObject()
                     .put("id", contact.id())
                     .put("name", contact.name())

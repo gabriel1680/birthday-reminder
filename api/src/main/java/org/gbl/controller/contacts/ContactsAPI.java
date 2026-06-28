@@ -7,7 +7,7 @@ import spark.Response;
 public interface ContactsAPI {
     HttpAPIResponse createContact(Request request, Response response);
 
-    HttpAPIResponse getContract(Request request, Response response);
+    HttpAPIResponse getContact(Request request, Response response);
 
     HttpAPIResponse deleteContact(Request request, Response response);
 

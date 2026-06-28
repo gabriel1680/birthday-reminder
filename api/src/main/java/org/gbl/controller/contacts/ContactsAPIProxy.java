@@ -27,8 +27,8 @@ public class ContactsAPIProxy extends BasicContactsAPI implements ContactsAPI {
     }
 
     @Override
-    public HttpAPIResponse getContract(Request request, Response response) {
-        return wrap(request, response, () -> super.getContract(request, response));
+    public HttpAPIResponse getContact(Request request, Response response) {
+        return wrap(request, response, () -> super.getContact(request, response));
     }
 
     @Override
