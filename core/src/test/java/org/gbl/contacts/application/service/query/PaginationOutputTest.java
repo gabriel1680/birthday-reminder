@@ -33,6 +33,6 @@ class PaginationOutputTest {
     void odd_pagination() {
         var values = new ArrayList<>(Collections.nCopies(5, "test"));
         final var pagination = new PaginationOutput<>(1, 5, 22, values);
-        assertThat(pagination.lastPage()).isEqualTo(4);
+        assertThat(pagination.lastPage()).isEqualTo(5);
     }
 }

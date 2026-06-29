@@ -11,8 +11,12 @@ import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.remove.RemoveContact;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactOutput;
+import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdays;
+import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdaysInput;
 import org.gbl.contacts.application.usecase.update.UpdateContact;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
+
+import java.util.Collection;
 
 public class ContactsModuleFacade implements ContactsModule {
 
@@ -20,15 +24,20 @@ public class ContactsModuleFacade implements ContactsModule {
     private final UpdateContact updateContact;
     private final RemoveContact removeContact;
     private final GetContact getContact;
+    private final GetUpcomingBirthdays getUpcomingBirthdays;
     private final ContactQueryRepository queryRepository;
 
-    public ContactsModuleFacade(AddContact addContact, UpdateContact updateContact,
+    public ContactsModuleFacade(AddContact addContact,
+                                UpdateContact updateContact,
                                 RemoveContact removeContact,
-                                GetContact getContact, ContactQueryRepository queryRepository) {
+                                GetContact getContact,
+                                GetUpcomingBirthdays getUpcomingBirthdays,
+                                ContactQueryRepository queryRepository) {
         this.addContact = addContact;
         this.updateContact = updateContact;
         this.removeContact = removeContact;
         this.getContact = getContact;
+        this.getUpcomingBirthdays = getUpcomingBirthdays;
         this.queryRepository = queryRepository;
     }
 
@@ -55,5 +64,10 @@ public class ContactsModuleFacade implements ContactsModule {
     @Override
     public PaginationOutput<ContactOutput> search(SearchInput<ContactFilter> input) {
         return queryRepository.search(input);
+    }
+
+    @Override
+    public Collection<ContactOutput> upcomingBirthdays(GetUpcomingBirthdaysInput input) {
+        return getUpcomingBirthdays.execute(input);
     }
 }

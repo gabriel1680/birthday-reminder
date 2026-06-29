@@ -7,7 +7,10 @@ import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
+import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdaysInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
+
+import java.util.Collection;
 
 public interface ContactsModule {
     ContactOutput addContact(AddContactInput input);
@@ -19,4 +22,6 @@ public interface ContactsModule {
     ContactOutput getContact(GetContactInput input);
 
     PaginationOutput<ContactOutput> search(SearchInput<ContactFilter> input);
+
+    Collection<ContactOutput> upcomingBirthdays(GetUpcomingBirthdaysInput input);
 }

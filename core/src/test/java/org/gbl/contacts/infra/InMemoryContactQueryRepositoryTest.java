@@ -108,7 +108,7 @@ class InMemoryContactQueryRepositoryTest {
 
         @Test
         void filtering_by_birthdate() {
-            var input = new SearchInput<>(1, 2, SortingOrder.ASC, ContactFilter.of(TOM.birthdate()));
+            var input = new SearchInput<>(1, 2, SortingOrder.ASC, ContactFilter.of(TOM.birthdate(), TOM.birthdate()));
             var output = sut.search(input);
             assertThat(output.values())
                     .hasSize(1)
@@ -119,9 +119,37 @@ class InMemoryContactQueryRepositoryTest {
 
         @Test
         void filtering_non_match() {
-            var input = new SearchInput<>(1, 2, SortingOrder.ASC, ContactFilter.of(HARRY.name(), TOM.birthdate()));
+            var input = new SearchInput<>(1, 2, SortingOrder.ASC, ContactFilter.of(HARRY.name(), TOM.birthdate(), TOM.birthdate()));
             var output = sut.search(input);
             assertThat(output.values()).hasSize(0);
+        }
+
+        @Test
+        void upcoming_birthdays_non_match() {
+            var date = LocalDate.parse("2010-12-12");
+            var size = 1;
+            var output = sut.upcomingBirthdaysFor(date, size);
+            assertThat(output).isEmpty();
+        }
+
+        @Test
+        void upcoming_birthdays_matches_one() {
+            var date = LocalDate.parse("2001-12-12");
+            var size = 1;
+            var output = sut.upcomingBirthdaysFor(date, size);
+            assertThat(output).hasSize(1)
+                    .first()
+                    .extracting(ContactOutput::id).isEqualTo(TOM.id());
+        }
+
+        @Test
+        void upcoming_birthdays_matches_all_return_asc_ordered() {
+            var date = LocalDate.parse("2000-12-12");
+            var size = 2;
+            var output = sut.upcomingBirthdaysFor(date, size);
+            assertThat(output).hasSize(2)
+                    .first()
+                    .extracting(ContactOutput::id).isEqualTo(HARRY.id());
         }
     }
 }

@@ -14,4 +14,6 @@ public interface ContactsAPI {
     HttpAPIResponse updateContact(Request request, Response response);
 
     HttpAPIResponse searchContacts(Request request, Response response);
+
+    HttpAPIResponse upcomingBirthdays(Request request, Response response);
 }

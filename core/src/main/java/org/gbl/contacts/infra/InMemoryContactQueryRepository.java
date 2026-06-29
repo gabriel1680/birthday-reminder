@@ -8,8 +8,13 @@ import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.domain.Contact;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+
+import static java.util.Collections.*;
 
 public class InMemoryContactQueryRepository implements ContactQueryRepository {
 
@@ -57,5 +62,19 @@ public class InMemoryContactQueryRepository implements ContactQueryRepository {
 
     private static ContactOutput toOutput(Contact c) {
         return new ContactOutput(c.id(), c.name(), c.birthdate());
+    }
+
+    @Override
+    public Collection<ContactOutput> upcomingBirthdaysFor(LocalDate date, int size) {
+        if (contacts.isEmpty()) {
+            return emptyList();
+        }
+        return contacts
+                .stream()
+                .filter(c -> c.birthdate().isAfter(date))
+                .sorted(Comparator.comparing(Contact::birthdate))
+                .limit(size)
+                .map(InMemoryContactQueryRepository::toOutput)
+                .toList();
     }
 }
