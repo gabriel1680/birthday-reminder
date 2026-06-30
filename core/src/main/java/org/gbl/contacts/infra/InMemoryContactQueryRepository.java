@@ -71,10 +71,17 @@ public class InMemoryContactQueryRepository implements ContactQueryRepository {
         }
         return contacts
                 .stream()
-                .filter(c -> c.birthdate().isAfter(date))
-                .sorted(Comparator.comparing(Contact::birthdate))
+                .sorted(Comparator.comparing(c -> nextBirthday(c, date)))
                 .limit(size)
                 .map(InMemoryContactQueryRepository::toOutput)
                 .toList();
+    }
+
+    private static LocalDate nextBirthday(Contact c, LocalDate date) {
+        var next = c.birthdate().withYear(date.getYear());
+        if (next.isBefore(date)) {
+            next = next.plusYears(1);
+        }
+        return next;
     }
 }
