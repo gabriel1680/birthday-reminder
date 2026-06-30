@@ -3,6 +3,7 @@ package org.gbl.controller.contacts;
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
+import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdaysInput;
 import org.gbl.controller.HttpAPIResponse;
 import spark.Request;
 import spark.Response;
@@ -23,12 +24,14 @@ class BasicContactsAPI implements ContactsAPI {
         this.requestParser = new ContactsRequestParser();
     }
 
+    @Override
     public HttpAPIResponse createContact(Request request, Response response) {
         final var output = contactsModule.addContact(requestParser.parseBody(request));
         response.status(CREATED.getCode());
         return HttpAPIResponse.ofSuccess(jsonMapper.toJson(output));
     }
 
+    @Override
     public HttpAPIResponse getContact(Request request, Response response) {
         final var input = new GetContactInput(requestParser.getId(request));
         final var contact = contactsModule.getContact(input);
@@ -36,6 +39,7 @@ class BasicContactsAPI implements ContactsAPI {
         return HttpAPIResponse.ofSuccess(jsonMapper.toJson(contact));
     }
 
+    @Override
     public HttpAPIResponse deleteContact(Request request, Response response) {
         final var input = new RemoveContactInput(requestParser.getId(request));
         contactsModule.removeContact(input);
@@ -43,6 +47,7 @@ class BasicContactsAPI implements ContactsAPI {
         return HttpAPIResponse.empty();
     }
 
+    @Override
     public HttpAPIResponse updateContact(Request request, Response response) {
         final var id = requestParser.getId(request);
         contactsModule.updateContact(requestParser.parseBody(id, request));
@@ -50,8 +55,17 @@ class BasicContactsAPI implements ContactsAPI {
         return HttpAPIResponse.empty();
     }
 
+    @Override
     public HttpAPIResponse searchContacts(Request request, Response response) {
         final var output = contactsModule.search(requestParser.parseSearchInput(request));
+        response.status(OK.getCode());
+        return HttpAPIResponse.ofSuccess(jsonMapper.toJson(output));
+    }
+
+    @Override
+    public HttpAPIResponse upcomingBirthdays(Request request, Response response) {
+        final var input = requestParser.parseUpcomingBirthdays(request);
+        final var output = contactsModule.upcomingBirthdays(input);
         response.status(OK.getCode());
         return HttpAPIResponse.ofSuccess(jsonMapper.toJson(output));
     }

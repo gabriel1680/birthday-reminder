@@ -46,6 +46,11 @@ public class ContactsAPIProxy extends BasicContactsAPI implements ContactsAPI {
         return wrap(request, response, () -> super.searchContacts(request, response));
     }
 
+    @Override
+    public HttpAPIResponse upcomingBirthdays(Request request, Response response) {
+        return wrap(request, response, () -> super.upcomingBirthdays(request, response));
+    }
+
     private HttpAPIResponse wrap(Request request, Response response,
                                  Supplier<HttpAPIResponse> supplier) {
         response.type("application/json");

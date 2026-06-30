@@ -11,6 +11,7 @@ import org.gbl.contacts.application.usecase.get.GetContactInput;
 import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdaysInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.gbl.controller.ResponseStatus;
 import org.gbl.controller.contacts.ContactsAPIProxy;
@@ -27,9 +28,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
@@ -452,6 +455,91 @@ class ContactsBReminderAPITest extends SparkControllerTest {
                     .withActual(output)
                     .build();
             verify(contactsModule, never()).search(any());
+        }
+    }
+
+    @Nested
+    class GetUpcomingBirthdaysShould {
+
+        private static final String X_TIME_ZONE_HEADER = "X-Time-Zone";
+        private static final String ZONE_ID = "Australia/Sydney";
+
+        @Test
+        void emptyResponse() {
+            doAnswer(invocationOnMock -> ZONE_ID)
+                    .when(request)
+                    .headers(X_TIME_ZONE_HEADER);
+            when(request.queryParamOrDefault("size", "5")).thenReturn("5");
+            when(contactsModule.upcomingBirthdays(any()))
+                    .thenReturn(emptyList());
+            var output = sut.upcomingBirthdays(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(OK)
+                    .forExpected(ResponseStatus.SUCCESS, "", "[]")
+                    .withActual(output)
+                    .build();
+        }
+
+        @Test
+        void emptyTimeZoneHeader() {
+            doAnswer(invocationOnMock -> null)
+                    .when(request)
+                    .headers(X_TIME_ZONE_HEADER);
+            var output = sut.upcomingBirthdays(request, response);
+            aAssertionFor(response)
+                    .withStatusCode(BAD_REQUEST)
+                    .forExpected(ResponseStatus.ERROR, "X-Time-Zone header missing", "{}")
+                    .withActual(output)
+                    .build();
+        }
+
+        @Test
+        void returnItemsWhenExists() {
+            doAnswer(invocationOnMock -> ZONE_ID)
+                    .when(request)
+                    .headers(X_TIME_ZONE_HEADER);
+            when(request.queryParamOrDefault("size", "5")).thenReturn("5");
+            var results = List.of(new ContactOutput("1", "a", LocalDate.of(2018, 4, 9)));
+            when(contactsModule.upcomingBirthdays(any())).thenReturn(results);
+            var output = sut.upcomingBirthdays(request, response);
+            var json = """
+                    [{"birthdate":"2018-04-09","name":"a","id":"1"}]""";
+            aAssertionFor(response)
+                    .withStatusCode(OK)
+                    .forExpected(ResponseStatus.SUCCESS, "", json)
+                    .withActual(output)
+                    .build();
+        }
+
+        @Captor
+        private ArgumentCaptor<GetUpcomingBirthdaysInput> inputCaptor;
+
+        @Test
+        void requestParams() {
+            doAnswer(invocationOnMock -> ZONE_ID)
+                    .when(request)
+                    .headers(X_TIME_ZONE_HEADER);
+            when(request.queryParamOrDefault("size", "5")).thenReturn("1");
+            sut.upcomingBirthdays(request, response);
+            verify(contactsModule).upcomingBirthdays(inputCaptor.capture());
+            var input = inputCaptor.getValue();
+            assertThat(input)
+                    .extracting(GetUpcomingBirthdaysInput::size, GetUpcomingBirthdaysInput::zoneId)
+                    .containsExactly(1, ZoneId.of(ZONE_ID));
+        }
+
+        @Test
+        void haveMaxSizeFixed() {
+            doAnswer(invocationOnMock -> ZONE_ID)
+                    .when(request)
+                    .headers(X_TIME_ZONE_HEADER);
+            when(request.queryParamOrDefault("size", "5")).thenReturn("20");
+            sut.upcomingBirthdays(request, response);
+            verify(contactsModule).upcomingBirthdays(inputCaptor.capture());
+            var input = inputCaptor.getValue();
+            assertThat(input)
+                    .extracting(GetUpcomingBirthdaysInput::size)
+                    .isEqualTo(10);
         }
     }
 }

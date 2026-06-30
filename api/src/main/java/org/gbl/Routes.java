@@ -34,6 +34,7 @@ public class Routes {
         get("/contacts/:id", contactsAPI::getContact);
         delete("/contacts/:id", contactsAPI::deleteContact);
         put("/contacts/:id", contactsAPI::updateContact);
+        get("/upcoming-birthdays", contactsAPI::upcomingBirthdays);
     }
 
     private void swaggerRoutes() {

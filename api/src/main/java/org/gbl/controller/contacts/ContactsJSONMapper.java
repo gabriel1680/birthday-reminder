@@ -5,6 +5,8 @@ import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Collection;
+
 public class ContactsJSONMapper {
 
     public JSONObject toJson(ContactOutput contact) {
@@ -15,15 +17,18 @@ public class ContactsJSONMapper {
     }
 
     public JSONObject toJson(PaginationOutput<ContactOutput> output) {
-        final var values = output.values().stream()
-                .reduce(new JSONArray(),
-                        (acc, next) -> acc.put(toJson(next)),
-                        JSONArray::putAll);
         return new JSONObject()
                 .put("current_page", output.page())
                 .put("size", output.size())
                 .put("total", output.total())
                 .put("last_page", output.lastPage())
-                .put("values", values);
+                .put("values", toJson(output.values()));
+    }
+
+    public Object toJson(Collection<ContactOutput> output) {
+        return output.stream()
+                .reduce(new JSONArray(),
+                        (acc, next) -> acc.put(toJson(next)),
+                        JSONArray::putAll);
     }
 }

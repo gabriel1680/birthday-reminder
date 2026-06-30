@@ -1,15 +1,17 @@
 package org.gbl.controller.contacts;
 
+import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
-import org.gbl.contacts.application.service.query.ContactFilter;
+import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdaysInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
 import org.gbl.controller.exceptions.InvalidPayloadException;
 import org.json.JSONObject;
 import spark.Request;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class ContactsRequestParser {
@@ -66,5 +68,15 @@ public class ContactsRequestParser {
 
     private static LocalDate toDate(String aDate) {
         return LocalDate.parse(aDate);
+    }
+
+    public GetUpcomingBirthdaysInput parseUpcomingBirthdays(Request request) {
+        final var clientZoneId = request.headers("X-Time-Zone");
+        if (clientZoneId == null) {
+            throw new InvalidPayloadException("X-Time-Zone header missing");
+        }
+        final var MAX_SIZE = 10;
+        final var size = Integer.parseInt(request.queryParamOrDefault("size", "5"));
+        return new GetUpcomingBirthdaysInput(Math.min(MAX_SIZE, size), ZoneId.of(clientZoneId));
     }
 }
