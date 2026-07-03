@@ -6,13 +6,16 @@ import io.javalin.rendering.template.JavalinJte;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.view.ContactSearchPresenter;
 
+import java.time.Clock;
+
 public class Web {
 
     private final Javalin server;
     private final ContactsController controller;
 
     public Web(ContactsGateway contactsGateway) {
-        controller = new ContactsController(contactsGateway, new ContactSearchPresenter());
+        final var clock = Clock.systemUTC();
+        controller = new ContactsController(contactsGateway, new ContactSearchPresenter(clock));
         server = Javalin.create(Web::configureServer);
     }
 

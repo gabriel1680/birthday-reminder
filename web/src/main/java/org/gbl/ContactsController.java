@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
-import static java.util.Collections.emptyList;
 
 public class ContactsController {
 
@@ -41,7 +40,7 @@ public class ContactsController {
 
     private void createSearchPage(Context context, Pagination<ContactResponse> pagination,
                                   ContactFilter filter) {
-        final var viewModel = presenter.toView(pagination, filter, emptyList());
+        final var viewModel = presenter.toView(pagination, filter, pagination.values().stream().toList());
         context.render("contacts/search.jte", Map.of("viewModel", viewModel));
     }
 
