@@ -3,7 +3,7 @@ package org.gbl;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.http.HttpContactGateway;
 import org.gbl.common.service.json.GsonJsonParser;
-import org.gbl.controller.ContactInfoController;
+import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.SearchContactsController;
 import org.gbl.view.ContactSearchPresenter;
 
@@ -16,12 +16,12 @@ public class DI {
 
     public static Web createWebApp(ContactsGateway gateway) {
         final var searchContactsController = searchContactsController(gateway);
-        final var contactInfoController = contactInfoController();
+        final var contactInfoController = contactInfoController(gateway);
         return new Web(searchContactsController, contactInfoController);
     }
 
-    private static ContactInfoController contactInfoController() {
-        final var contactInfoController = new ContactInfoController();
+    private static ContactDetailsController contactInfoController(ContactsGateway gateway) {
+        final var contactInfoController = new ContactDetailsController(gateway);
         return contactInfoController;
     }
 

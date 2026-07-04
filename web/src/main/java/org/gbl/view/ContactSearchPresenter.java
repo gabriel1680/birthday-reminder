@@ -42,7 +42,7 @@ public class ContactSearchPresenter {
         );
     }
 
-    private static ContactView toContactView(ContactResponse c) {
+    public static ContactView toContactView(ContactResponse c) {
         final var formatted = formatBirthday(c.birthdate());
         return new ContactView(c.id(), c.name(), formatted);
     }

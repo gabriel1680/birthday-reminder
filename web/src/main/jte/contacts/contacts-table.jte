@@ -29,13 +29,14 @@
             @for(ContactView contact : contacts)
                 <tr>
                     <td class="contacts-table__name">
-                        <a href="/contacts/${contact.id()}"
-                           class="contacts-table__link">
+                        <a href="/details/${contact.id()}" class="contacts-table__link">
                             ${contact.name()}
                         </a>
                     </td>
-                    <td> ${contact.birthdate()} </td>
-                    <td class="contacts-table__arrow">›</td>
+                    <td>${contact.birthdate()}</td>
+                    <td class="contacts-table__arrow">
+                        ›
+                    </td>
                 </tr>
             @endfor
             </tbody>

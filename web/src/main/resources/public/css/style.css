@@ -25,18 +25,14 @@
 
 body {
     margin: 0;
-
     background: var(--background);
-
     color: var(--text);
-
     font-family:
         system-ui,
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-
     line-height: 1.5;
 }
 
@@ -84,24 +80,19 @@ a {
 
 .card {
     margin-bottom: 24px;
-
     background: var(--surface);
-
     border: 1px solid var(--border);
     border-radius: var(--radius);
-
     box-shadow: var(--shadow);
 }
 
 .card__header {
     padding: 18px 22px;
-
     border-bottom: 1px solid var(--border);
 }
 
 .card__header h2 {
     margin: 0;
-
     font-size: 1.15rem;
 }
 
@@ -109,19 +100,14 @@ a {
 
 .search-form {
     display: grid;
-
     grid-template-columns: repeat(2, 1fr);
-
     gap: 20px;
-
     padding: 22px;
 }
 
 .form-field {
     display: flex;
-
     flex-direction: column;
-
     gap: 8px;
 }
 
@@ -131,52 +117,39 @@ a {
 
 label {
     font-weight: 600;
-
     font-size: .9rem;
 }
 
 input {
     padding: 10px 12px;
-
     border: 1px solid var(--border);
     border-radius: 8px;
-
     font: inherit;
 }
 
 input:focus {
     outline: none;
-
     border-color: var(--primary);
 }
 
 .search-form__actions {
     grid-column: 1 / -1;
-
     display: flex;
-
     justify-content: flex-end;
-
     gap: 12px;
 }
 
 .btn {
     padding: 10px 18px;
-
     border-radius: 8px;
-
     font-weight: 600;
-
     cursor: pointer;
-
     transition: background var(--transition);
 }
 
 .btn--primary {
     border: none;
-
     background: var(--primary);
-
     color: white;
 }
 
@@ -188,6 +161,16 @@ input:focus {
     border: 1px solid var(--border);
 
     background: white;
+}
+
+.btn--danger {
+    border: none;
+    background: #cf222e;
+    color: white;
+}
+
+.btn--danger:hover {
+    background: #a40e26;
 }
 
 /* ---------- Upcoming birthdays ---------- */

@@ -8,8 +8,6 @@ import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
 import org.gbl.view.ContactSearchPresenter;
 import org.gbl.view.SearchViewModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.ZoneId;
 import java.util.Map;
@@ -20,10 +18,9 @@ import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.gbl.controller.ErrorController.internalServerErrorPage;
 
 public class SearchContactsController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SearchContactsController.class);
 
     private final ContactsGateway contactsGateway;
     private final ContactSearchPresenter presenter;
@@ -47,7 +44,7 @@ public class SearchContactsController {
                           upcomingBirthdaysTry.map(birthdays ->
                                presenter.toView(pagination, request.filter(), birthdays))));
         combinedFuture.join()
-                .onSuccess(viewModel -> createSearchPage(context, viewModel))
+                .onSuccess(viewModel -> renderSearchPage(context, viewModel))
                 .onFailure(err -> internalServerErrorPage(context, err));
     }
 
@@ -57,14 +54,8 @@ public class SearchContactsController {
         return new GetUpcomingBirthdaysRequest(size, clientZoneId);
     }
 
-    private static void internalServerErrorPage(Context context, Throwable throwable) {
-        LOGGER.error("Internal Server Error", throwable);
-        context.status(500);
-        context.render("internal-server-error.jte");
-    }
-
-    private void createSearchPage(Context context, SearchViewModel viewModel) {
-        context.render("contacts/search.jte", Map.of("viewModel", viewModel));
+    private void renderSearchPage(Context context, SearchViewModel viewModel) {
+        context.render("contacts/search-page.jte", Map.of("viewModel", viewModel));
     }
 
     private static SearchRequest<ContactFilter> createSearchRequestFrom(Context context) {
