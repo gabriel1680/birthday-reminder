@@ -42,10 +42,10 @@ public class ContactsController {
         final var birthdaysFuture =
                 supplyAsync(() -> contactsGateway.getUpcomingBirthdays(getUpcomingBirthdaysRequest), executor);
         final var combinedFuture =
-                searchFuture.thenCombineAsync(birthdaysFuture, (searchTry, upcomingBirthdaysTry) ->
+                searchFuture.thenCombine(birthdaysFuture, (searchTry, upcomingBirthdaysTry) ->
                     searchTry.flatMap(pagination ->
                           upcomingBirthdaysTry.map(birthdays ->
-                               presenter.toView(pagination, request.filter(), birthdays))), executor);
+                               presenter.toView(pagination, request.filter(), birthdays))));
         combinedFuture.join()
                 .onSuccess(viewModel -> createSearchPage(context, viewModel))
                 .onFailure(err -> internalServerErrorPage(context, err));
