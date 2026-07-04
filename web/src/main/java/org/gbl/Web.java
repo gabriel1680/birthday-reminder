@@ -19,6 +19,12 @@ public class Web {
         this.searchContactsController = searchContactsController;
         this.contactInfoController = contactInfoController;
         server = Javalin.create(Web::configureServer);
+        initRoutes();
+    }
+
+    private void initRoutes() {
+        server.get("/", searchContactsController::searchPage);
+        server.get("/{id}", contactInfoController::contactInfo);
     }
 
     private static void configureServer(JavalinConfig config) {
@@ -31,8 +37,6 @@ public class Web {
     }
 
     public Javalin getServer() {
-        server.get("/", searchContactsController::searchPage);
-        server.get("/{id}", contactInfoController::contactInfo);
         return server;
     }
 

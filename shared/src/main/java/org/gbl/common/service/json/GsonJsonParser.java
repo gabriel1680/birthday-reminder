@@ -8,6 +8,7 @@ import org.gbl.common.search.Pagination;
 import org.gbl.common.gateway.ContactResponse;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 
 public class GsonJsonParser implements JsonParser {
 
@@ -16,6 +17,7 @@ public class GsonJsonParser implements JsonParser {
                     new TypeToken<Pagination<ContactResponse>>() {}.getType(),
                     new GsonPaginationDeserializer<ContactResponse>()
             )
+            .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .create();
 
     public String stringify(Object object) {
