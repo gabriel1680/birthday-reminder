@@ -44,8 +44,8 @@ public class WebTest {
 
     @BeforeEach
     void setUp() {
-        final var web = new Web(contactsGateway);
-        server = web.getServer();
+        final var app = DI.createWebApp(contactsGateway);
+        server = app.getServer();
     }
 
     private LocalDate date(String dateString) {
