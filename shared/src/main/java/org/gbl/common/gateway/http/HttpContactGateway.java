@@ -2,6 +2,7 @@ package org.gbl.common.gateway.http;
 
 import com.google.gson.reflect.TypeToken;
 import io.vavr.control.Try;
+import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
@@ -33,6 +34,9 @@ public class HttpContactGateway implements ContactsGateway {
     private static final Type CONTACT_RESPONSE_TYPE = ContactResponse.class;
     private static final Type PAGINATION_RESPONSE_TYPE =
             TypeToken.getParameterized(Pagination.class, ContactResponse.class).getType();
+
+    private static final Type UPCOMING_RESPONSE_TYPE =
+            TypeToken.getParameterized(List.class, ContactResponse.class).getType();
 
     private final JsonParser jsonParser;
     private final HttpClient client;
@@ -97,6 +101,17 @@ public class HttpContactGateway implements ContactsGateway {
         return Try.of(
                 () -> (Pagination<ContactResponse>) execute(httpRequest, PAGINATION_RESPONSE_TYPE)
                         .orElseThrow());
+    }
+
+    @Override
+    public Try<List<ContactResponse>> getUpcomingBirthdays(GetUpcomingBirthdaysRequest request) {
+        final var httpRequest = baseRequest()
+                .uri(URI.create(baseUrl + RESOURCE + "/upcoming-birthdays?size=" + request.size()))
+                .header("X-Time-Zone", request.clientZoneId().getId())
+                .GET()
+                .build();
+        return Try.of(() -> (List<ContactResponse>) execute(httpRequest, UPCOMING_RESPONSE_TYPE)
+                .orElseThrow());
     }
 
     private String toString(SearchRequest<ContactFilter> searchRequest) {

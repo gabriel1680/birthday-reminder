@@ -2,7 +2,6 @@ package org.gbl;
 
 import io.restassured.http.ContentType;
 import org.gbl.dsl.BirthdayReminderDSL;
-import org.gbl.dsl.ContactDSL;
 import org.gbl.dsl.ContactDSL.ITContact;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.gbl.dsl.ContactDSL.ITContactBuilder.aContact;
+import static org.gbl.dsl.ContactDSL.RESOURCE_URL;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -27,7 +27,7 @@ public class ContactBReminderAPI_IT {
         given()
                 .body(withJSON("Carl Edward Sagan", "1934-11-09T00:00:00Z"))
         .when()
-                .post(ContactDSL.RESOURCE_URL)
+                .post(RESOURCE_URL)
         .then()
                 .statusCode(201)
                 .contentType(ContentType.JSON)
@@ -65,7 +65,7 @@ public class ContactBReminderAPI_IT {
         @Test
         void should_retrieve_it() {
             when()
-                    .get(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
+                    .get(RESOURCE_URL + "/" + ISAAC_NEWTON.id())
             .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
@@ -82,7 +82,7 @@ public class ContactBReminderAPI_IT {
             given()
                     .body(withJSON("Albert Einstein", "1879-03-14T00:00:00Z"))
             .when()
-                    .put(ContactDSL.RESOURCE_URL + "/" + ISAAC_NEWTON.id())
+                    .put(RESOURCE_URL + "/" + ISAAC_NEWTON.id())
             .then()
                     .statusCode(204)
                     .contentType(ContentType.JSON)
@@ -93,7 +93,7 @@ public class ContactBReminderAPI_IT {
         void given_a_contact_should_delete_it() {
             DANIEL_BERNOULLI = BirthdayReminderDSL.register(DANIEL_BERNOULLI);
             when()
-                    .delete(ContactDSL.RESOURCE_URL + "/" + DANIEL_BERNOULLI.id())
+                    .delete(RESOURCE_URL + "/" + DANIEL_BERNOULLI.id())
             .then()
                     .statusCode(204)
                     .contentType(ContentType.JSON)
@@ -103,7 +103,7 @@ public class ContactBReminderAPI_IT {
         @Test
         void given_two_contacts_should_retrieve_all() {
             when()
-                    .get(ContactDSL.RESOURCE_URL + "?page=1&size=15")
+                    .get(RESOURCE_URL + "?page=1&size=15")
             .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
@@ -114,6 +114,21 @@ public class ContactBReminderAPI_IT {
                     .body("data.size", is(15))
                     .body("data.total", is(2))
                     .body("data.last_page", is(1))
+                    .body("data.values", hasSize(2));
+        }
+
+        @Test
+        void should_get_upcoming_birthdays() {
+            given()
+                    .headers("X-Time-Zone", "America/Sao_Paulo")
+            .when()
+                    .get(RESOURCE_URL + "/upcoming-birthdays?size=15")
+            .then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("status", equalTo("success"))
+                    .body("message", emptyString())
+                    .body("data", notNullValue())
                     .body("data.values", hasSize(2));
         }
     }

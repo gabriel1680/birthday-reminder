@@ -5,6 +5,8 @@ import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 
+import java.util.List;
+
 public interface ContactsGateway {
     Try<ContactResponse> create(CreateContactRequest request);
 
@@ -15,4 +17,6 @@ public interface ContactsGateway {
     Try<Void> delete(String contactId);
 
     Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> request);
+
+    Try<List<ContactResponse>> getUpcomingBirthdays(GetUpcomingBirthdaysRequest request);
 }

@@ -29,12 +29,12 @@ public class Routes {
 
     private void configureRoutes() {
         get("status", this::ok);
+        get("/contacts/upcoming-birthdays", contactsAPI::upcomingBirthdays);
         post("/contacts", contactsAPI::createContact);
         get("/contacts", contactsAPI::searchContacts);
         get("/contacts/:id", contactsAPI::getContact);
         delete("/contacts/:id", contactsAPI::deleteContact);
         put("/contacts/:id", contactsAPI::updateContact);
-        get("/upcoming-birthdays", contactsAPI::upcomingBirthdays);
     }
 
     private void swaggerRoutes() {

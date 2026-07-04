@@ -1,46 +1,68 @@
 package org.gbl;
 
 import io.javalin.http.Context;
-import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
 import org.gbl.common.search.ContactFilter;
-import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
 import org.gbl.view.ContactSearchPresenter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.ZoneId;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class ContactsController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContactsController.class);
+
     private final ContactsGateway contactsGateway;
     private final ContactSearchPresenter presenter;
+    private final Executor executor;
 
-    public ContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter) {
+    public ContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter, Executor executor) {
         this.contactsGateway = contactsGateway;
         this.presenter = presenter;
+        this.executor = executor;
     }
 
     public void searchPage(Context context) {
         final var request = createSearchRequestFrom(context);
-        contactsGateway.search(request)
-                .onSuccess(pagination -> createSearchPage(context, pagination, request.filter()))
-                .onFailure(error -> internalServerErrorPage(context));
+        final var searchFuture = supplyAsync(() -> contactsGateway.search(request), executor);
+        final var getUpcomingBirthdaysRequest = createUpcomingBirthdaysRequest(context);
+        final var birthdaysFuture =
+                supplyAsync(() -> contactsGateway.getUpcomingBirthdays(getUpcomingBirthdaysRequest), executor);
+        final var combinedFuture =
+                searchFuture.thenCombineAsync(birthdaysFuture, (searchTry, upcomingBirthdaysTry) ->
+                    searchTry.flatMap(pagination ->
+                          upcomingBirthdaysTry.map(birthdays ->
+                               presenter.toView(pagination, request.filter(), birthdays))), executor);
+        combinedFuture.join()
+                .onSuccess(viewModel -> createSearchPage(context, viewModel))
+                .onFailure(err -> internalServerErrorPage(context, err));
     }
 
-    private static void internalServerErrorPage(Context context) {
+    private static GetUpcomingBirthdaysRequest createUpcomingBirthdaysRequest(Context context) {
+        final var size = 3;
+        final var clientZoneId = ZoneId.of("America/Sao_Paulo");
+        return new GetUpcomingBirthdaysRequest(size, clientZoneId);
+    }
+
+    private static void internalServerErrorPage(Context context, Throwable throwable) {
+        LOGGER.error("Internal Server Error", throwable);
         context.status(500);
         context.render("internal-server-error.jte");
     }
 
-    private void createSearchPage(Context context, Pagination<ContactResponse> pagination,
-                                  ContactFilter filter) {
-        final var viewModel = presenter.toView(pagination, filter, pagination.values().stream().toList());
+    private void createSearchPage(Context context, SearchViewModel viewModel) {
         context.render("contacts/search.jte", Map.of("viewModel", viewModel));
     }
 

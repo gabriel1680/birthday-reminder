@@ -1,6 +1,7 @@
 package org.gbl.common.gateway.memory;
 
 import io.vavr.control.Try;
+import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
@@ -38,5 +39,10 @@ public class ContactsGatewayStub implements ContactsGateway {
     @Override
     public Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> request) {
         return Try.success(new Pagination<>(request.page(), request.size(), 1, 1, List.of(BELLA)));
+    }
+
+    @Override
+    public Try<List<ContactResponse>> getUpcomingBirthdays(GetUpcomingBirthdaysRequest request) {
+        return Try.success(List.of(BELLA));
     }
 }
