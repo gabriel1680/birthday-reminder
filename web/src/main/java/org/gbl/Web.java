@@ -4,7 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.rendering.template.JavalinJte;
 import org.gbl.common.gateway.ContactsGateway;
-import org.gbl.controller.ContactsController;
+import org.gbl.controller.SearchContactsController;
 import org.gbl.view.ContactSearchPresenter;
 
 import java.time.Clock;
@@ -13,14 +13,14 @@ import java.util.concurrent.Executors;
 public class Web {
 
     private final Javalin server;
-    private final ContactsController controller;
+    private final SearchContactsController controller;
 
     public Web(ContactsGateway contactsGateway) {
         final var clock = Clock.systemUTC();
         final var presenter = new ContactSearchPresenter(clock);
         final var factory = Thread.ofVirtual().name("contacts-search-pool", 0).factory();
         final var executor = Executors.newThreadPerTaskExecutor(factory);
-        controller = new ContactsController(contactsGateway, presenter, executor);
+        controller = new SearchContactsController(contactsGateway, presenter, executor);
         server = Javalin.create(Web::configureServer);
     }
 

@@ -21,15 +21,15 @@ import java.util.stream.Stream;
 import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-public class ContactsController {
+public class SearchContactsController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContactsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchContactsController.class);
 
     private final ContactsGateway contactsGateway;
     private final ContactSearchPresenter presenter;
     private final Executor executor;
 
-    public ContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter, Executor executor) {
+    public SearchContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter, Executor executor) {
         this.contactsGateway = contactsGateway;
         this.presenter = presenter;
         this.executor = executor;
