@@ -3,16 +3,12 @@ package org.gbl;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.rendering.template.JavalinJte;
-import org.eclipse.jetty.util.thread.ThreadPool;
 import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.controller.ContactsController;
 import org.gbl.view.ContactSearchPresenter;
 
 import java.time.Clock;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class Web {
 

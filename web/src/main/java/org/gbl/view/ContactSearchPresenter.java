@@ -1,7 +1,5 @@
 package org.gbl.view;
 
-import org.gbl.SearchViewModel;
-import org.gbl.UpcomingBirthday;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;

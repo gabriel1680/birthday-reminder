@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.controller;
 
 import io.javalin.http.Context;
 import org.gbl.common.gateway.ContactsGateway;
@@ -7,6 +7,7 @@ import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
 import org.gbl.view.ContactSearchPresenter;
+import org.gbl.view.SearchViewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

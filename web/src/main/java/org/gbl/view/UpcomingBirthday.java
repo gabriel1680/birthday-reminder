@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.view;
 
 public record UpcomingBirthday(
         String id,
