@@ -1,9 +1,8 @@
-@import org.gbl.common.gateway.ContactResponse
-@import org.gbl.view.PaginationView
+@import org.gbl.view.ContactView
 @import java.util.Collection
 
 @param int totalContacts
-@param Collection<ContactResponse> contacts
+@param Collection<ContactView> contacts
 
 @if(contacts.isEmpty())
     @template.components.empty-state(
@@ -27,7 +26,7 @@
             </tr>
             </thead>
             <tbody>
-            @for(ContactResponse contact : contacts)
+            @for(ContactView contact : contacts)
                 <tr>
                     <td class="contacts-table__name">
                         <a href="/contacts/${contact.id()}"

@@ -1,4 +1,6 @@
 package org.gbl.common.gateway;
 
-public record CreateContactRequest(String name, String birthdate) {
+import java.time.LocalDate;
+
+public record CreateContactRequest(String name, LocalDate birthdate) {
 }

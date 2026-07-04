@@ -10,11 +10,12 @@ import org.gbl.common.search.SearchRequest;
 import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.UpdateContactRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class ContactsGatewayStub implements ContactsGateway {
 
-    private static final ContactResponse BELLA = new ContactResponse("1", "Bella", "13/09/1987");
+    private static final ContactResponse BELLA = new ContactResponse("1", "Bella", LocalDate.of(1987, 9, 13));
 
     @Override
     public Try<ContactResponse> create(CreateContactRequest request) {

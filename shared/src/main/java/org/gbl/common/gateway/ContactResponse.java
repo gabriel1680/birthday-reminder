@@ -1,4 +1,6 @@
 package org.gbl.common.gateway;
 
-public record ContactResponse(String id, String name, String birthdate) {
+import java.time.LocalDate;
+
+public record ContactResponse(String id, String name, LocalDate birthdate) {
 }
