@@ -36,4 +36,4 @@
         <span class="pagination__disabled">Next →</span>
     @endif
 
-</nav>>
+</nav>
