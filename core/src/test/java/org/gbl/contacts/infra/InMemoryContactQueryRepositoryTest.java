@@ -125,19 +125,27 @@ class InMemoryContactQueryRepositoryTest {
         }
 
         @Test
-        void upcoming_birthdays_always_match() {
+        void upcoming_birthdays_none_match() {
             var date = LocalDate.parse("2010-12-23");
-            var size = 1;
+            var size = 2;
             var output = sut.upcomingBirthdaysFor(date, size);
-            assertThat(output).hasSize(1)
-                    .first()
-                    .extracting(ContactOutput::id).isEqualTo(TOM.id());
+            assertThat(output).isEmpty();
         }
 
         @Test
         void upcoming_birthdays_matches_one_same_day() {
             var date = LocalDate.parse("2030-12-22");
-            var size = 1;
+            var size = 2;
+            var output = sut.upcomingBirthdaysFor(date, size);
+            assertThat(output).hasSize(1)
+                    .first()
+                    .extracting(ContactOutput::id).isEqualTo(HARRY.id());
+        }
+
+        @Test
+        void upcoming_birthdays_matches_one() {
+            var date = LocalDate.parse("2030-12-20");
+            var size = 2;
             var output = sut.upcomingBirthdaysFor(date, size);
             assertThat(output).hasSize(1)
                     .first()
@@ -146,18 +154,18 @@ class InMemoryContactQueryRepositoryTest {
 
         @Test
         void upcoming_birthdays_matches_all_return_asc_ordered() {
-            var date = LocalDate.parse("2000-12-12");
+            var date = LocalDate.parse("2000-09-12");
             var size = 2;
             var output = sut.upcomingBirthdaysFor(date, size);
             assertThat(output).hasSize(2)
                     .first()
-                    .extracting(ContactOutput::id).isEqualTo(HARRY.id());
+                    .extracting(ContactOutput::id).isEqualTo(TOM.id());
         }
 
         @Test
         void upcoming_birthdays_matches_all_with_year_after() {
             var date = LocalDate.parse("2020-12-21");
-            var size = 1;
+            var size = 2;
             var output = sut.upcomingBirthdaysFor(date, size);
             assertThat(output).hasSize(1)
                     .first()

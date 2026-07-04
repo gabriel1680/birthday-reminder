@@ -10,9 +10,7 @@ import org.gbl.contacts.domain.Contact;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import static java.util.Collections.*;
 
@@ -71,10 +69,15 @@ public class InMemoryContactQueryRepository implements ContactQueryRepository {
         }
         return contacts
                 .stream()
+                .filter(contact -> filterBirthdays(contact.birthdate(), date))
                 .sorted(Comparator.comparing(c -> nextBirthday(c, date)))
                 .limit(size)
                 .map(InMemoryContactQueryRepository::toOutput)
                 .toList();
+    }
+
+    private boolean filterBirthdays(LocalDate birthday, LocalDate date) {
+        return !birthday.withYear(date.getYear()).isBefore(date);
     }
 
     private static LocalDate nextBirthday(Contact c, LocalDate date) {
