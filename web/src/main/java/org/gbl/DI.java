@@ -32,8 +32,8 @@ public class DI {
         return new SearchContactsController(gateway, presenter, executor);
     }
 
-    private static ExecutorService executorService(String contactsSearchPool) {
-        final var factory = Thread.ofVirtual().name(contactsSearchPool, 0).factory();
+    private static ExecutorService executorService(String poolName) {
+        final var factory = Thread.ofVirtual().name(poolName, 0).factory();
         return Executors.newThreadPerTaskExecutor(factory);
     }
 

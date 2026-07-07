@@ -8,9 +8,11 @@ public class ErrorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ErrorController.class);
 
-    public static void internalServerErrorPage(Context context, Throwable throwable) {
-        LOGGER.error("Internal Server Error", throwable);
-        context.status(500);
+    public static void internalServerErrorPage(Context context) {
         context.render("internal-server-error-page.jte");
+    }
+
+    public static void notFoundPage(Context context) {
+        context.render("not-found-page.jte");
     }
 }

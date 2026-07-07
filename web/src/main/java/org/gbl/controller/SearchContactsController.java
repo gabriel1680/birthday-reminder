@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.gbl.controller.ErrorController.internalServerErrorPage;
 
 public class SearchContactsController {
 
@@ -43,9 +42,8 @@ public class SearchContactsController {
                     searchTry.flatMap(pagination ->
                           upcomingBirthdaysTry.map(birthdays ->
                                presenter.toView(pagination, request.filter(), birthdays))));
-        combinedFuture.join()
-                .onSuccess(viewModel -> renderSearchPage(context, viewModel))
-                .onFailure(err -> internalServerErrorPage(context, err));
+        final var viewModel = combinedFuture.join().get();
+        renderSearchPage(context, viewModel);
     }
 
     private static GetUpcomingBirthdaysRequest createUpcomingBirthdaysRequest(Context context) {
@@ -55,6 +53,7 @@ public class SearchContactsController {
     }
 
     private void renderSearchPage(Context context, SearchViewModel viewModel) {
+        context.header("Cache-Control", "public, max-age=30, must-revalidate");
         context.render("contacts/search-page.jte", Map.of("viewModel", viewModel));
     }
 

@@ -4,17 +4,22 @@ import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.rendering.template.JavalinJte;
 import org.gbl.controller.ContactDetailsController;
+import org.gbl.controller.ErrorController;
 import org.gbl.controller.SearchContactsController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Web {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Web.class);
 
     private final Javalin server;
     private final SearchContactsController searchContactsController;
     private final ContactDetailsController contactDetailsController;
 
     public Web(
-            SearchContactsController searchContactsController,
-            ContactDetailsController contactDetailsController
+        SearchContactsController searchContactsController,
+        ContactDetailsController contactDetailsController
     ) {
         this.searchContactsController = searchContactsController;
         this.contactDetailsController = contactDetailsController;
@@ -25,6 +30,12 @@ public class Web {
     private void initRoutes() {
         server.get("/", searchContactsController::searchPage);
         server.get("/details/{id}", contactDetailsController::contactInfo);
+        server.error(404, ErrorController::notFoundPage);
+        server.error(500, ErrorController::internalServerErrorPage);
+        server.exception(RuntimeException.class, (e, context) -> {
+            LOGGER.error("Internal Server Error", e);
+            context.status(500);
+        });
     }
 
     private static void configureServer(JavalinConfig config) {
