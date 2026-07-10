@@ -128,26 +128,30 @@ public class WebTest {
         }
     }
 
-    @Test
-    void contact_info_page_error() {
-        JavalinTest.test(server, (server, httpClient) -> {
-            final var randomError = new RuntimeException("Random error");
-            when(contactsGateway.get(any())).thenReturn(failure(randomError));
-            final var response = httpClient.get("/details/1");
-            assertThat(response.header("Content-Type")).isEqualTo("text/html");
-            assertThat(response.body().string()).contains("Internal Server Error");
-            assertThat(response.code()).isEqualTo(500);
-        });
-    }
+    @Nested
+    class ContactDetailsPage {
 
-    @Test
-    void contact_info_page() {
-        JavalinTest.test(server, (server, httpClient) -> {
-            when(contactsGateway.get(any())).thenReturn(success(AYRTON_SENNA));
-            final var response = httpClient.get("/details/1");
-            assertThat(response.header("Content-Type")).isEqualTo("text/html");
-            assertThat(response.body().string()).contains(AYRTON_SENNA.id());
-            assertThat(response.code()).isEqualTo(200);
-        });
+        @Test
+        void should_handle_internal_server_error_page() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var randomError = new RuntimeException("Random error");
+                when(contactsGateway.get(any())).thenReturn(failure(randomError));
+                final var response = httpClient.get("/details/1");
+                assertThat(response.header("Content-Type")).isEqualTo("text/html");
+                assertThat(response.body().string()).contains("Internal Server Error");
+                assertThat(response.code()).isEqualTo(500);
+            });
+        }
+
+        @Test
+        void should_render_page() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.get(any())).thenReturn(success(AYRTON_SENNA));
+                final var response = httpClient.get("/details/1");
+                assertThat(response.header("Content-Type")).isEqualTo("text/html");
+                assertThat(response.body().string()).contains(AYRTON_SENNA.id());
+                assertThat(response.code()).isEqualTo(200);
+            });
+        }
     }
 }
