@@ -12,9 +12,9 @@ public interface ContactsGateway {
 
     Try<ContactResponse> get(String contactId);
 
-    Try<Void> update(UpdateContactRequest request);
+    Try<ContactResponse> update(UpdateContactRequest request);
 
-    Try<Void> delete(String contactId);
+    Try<ContactResponse> delete(String contactId);
 
     Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> request);
 

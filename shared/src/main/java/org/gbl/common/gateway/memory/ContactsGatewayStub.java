@@ -1,14 +1,14 @@
 package org.gbl.common.gateway.memory;
 
 import io.vavr.control.Try;
-import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
-import org.gbl.common.search.ContactFilter;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.CreateContactRequest;
+import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
+import org.gbl.common.gateway.UpdateContactRequest;
+import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
-import org.gbl.common.gateway.CreateContactRequest;
-import org.gbl.common.gateway.UpdateContactRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,12 +28,12 @@ public class ContactsGatewayStub implements ContactsGateway {
     }
 
     @Override
-    public Try<Void> update(UpdateContactRequest request) {
+    public Try<ContactResponse> update(UpdateContactRequest request) {
         return Try.success(null);
     }
 
     @Override
-    public Try<Void> delete(String contactId) {
+    public Try<ContactResponse> delete(String contactId) {
         return Try.success(null);
     }
 

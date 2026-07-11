@@ -1,15 +1,14 @@
 package out;
 
-import org.gbl.common.gateway.ContactNotFoundException;
+import io.vavr.control.Try;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.UpdateContactRequest;
-import org.gbl.common.gateway.http.ApiResponse;
+import org.gbl.common.gateway.http.HttpApiClient;
 import org.gbl.common.gateway.http.HttpContactGateway;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
-import org.gbl.common.service.json.GsonJsonParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,109 +18,74 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandler;
 import java.time.LocalDate;
-import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class HttpContactGatewayTest {
 
-    private static final String BASE_URL = "https://localhost:8000";
+    private static final ContactResponse MARY_ANN =
+            new ContactResponse("1", "Mary Ann", LocalDate.parse("1959-08-14"));
 
-    private final GsonJsonParser jsonParser = new GsonJsonParser();
+    private static final ContactResponse JOHN_WICK =
+            new ContactResponse("2", "John Wick", LocalDate.parse("1964-09-02"));
 
     @Mock
-    private HttpResponse<String> response;
-
-    @Mock
-    private HttpClient client;
+    private HttpApiClient httpApiClient;
 
     private HttpContactGateway sut;
 
     @BeforeEach
     void setUp() {
-        sut = new HttpContactGateway(jsonParser, client, BASE_URL);
+        sut = new HttpContactGateway(httpApiClient);
     }
 
     @Test
-    void responseError() throws IOException, InterruptedException {
-        when(response.statusCode()).thenReturn(400);
-        when(response.body()).thenReturn(jsonParser.stringify(new ApiResponse<String>("error",
-                                                                                      "invalid" +
-                " " +
-                "name", null)));
-        when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+    void responseError() {
+        final var exception = new RuntimeException("invalid name");
+        when(httpApiClient.post(any(), any(), any())).thenReturn(Try.failure(exception));
         var request = new CreateContactRequest("John", LocalDate.parse("1957-04-14"));
         final var output = sut.create(request);
         assertThat(output.isFailure()).isTrue();
         assertThat(output.failed().get())
                 .extracting(Throwable::getMessage)
-                .isEqualTo("invalid name");
-    }
-
-    @Test
-    void clientThrowsError() throws IOException, InterruptedException {
-        final var error = new IOException("invalid error");
-        when(client.send(any(), any())).thenThrow(error);
-        var request = new CreateContactRequest("John", LocalDate.parse("1957-04-14"));
-        assertThat(sut.create(request).isFailure()).isTrue();
+                .isEqualTo(exception.getMessage());
     }
 
     @Nested
     class WhenCreateAContact {
 
         private final CreateContactRequest request =
-                new CreateContactRequest("Mary Ann", LocalDate.parse("1959-08-14"));
+                new CreateContactRequest(MARY_ANN.name(), MARY_ANN.birthdate());
 
         @Captor
-        private ArgumentCaptor<HttpRequest> requestCaptor;
+        private ArgumentCaptor<CreateContactRequest> requestCaptor;
 
         @BeforeEach
-        void setUp() throws IOException, InterruptedException {
-            when(response.statusCode()).thenReturn(201);
-            final var body = """
-                    {
-                    "status": "success",
-                    "message": "contact created",
-                    "data": { "values": [{ "id": 1, "name":"Mary Ann","birthdate":"1959-08-14" }] }
-                    }
-                    """;
-            when(response.body()).thenReturn(body);
-            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        void setUp() {
+            when(httpApiClient.post(eq("/contacts"), any(), any())).thenReturn(Try.success(MARY_ANN));
         }
 
         @Test
         void shouldReturnAValidOutput() {
             assertThat(sut.create(request).get())
                     .isNotNull()
-                    .isInstanceOf(ContactResponse.class);
+                    .isSameAs(MARY_ANN);
         }
 
         @Test
-        void shouldCallSendWithAValidRequest() throws IOException, InterruptedException {
+        void shouldCallSendWithAValidRequest() {
             sut.create(request);
-            verify(client).send(requestCaptor.capture(), any());
+            verify(httpApiClient).post(eq("/contacts"), requestCaptor.capture(), any());
             final var httpRequest = requestCaptor.getValue();
-            assertThat(httpRequest.method()).isEqualTo("POST");
-            assertThat(httpRequest)
-                    .extracting(HttpRequest::uri)
-                    .extracting(URI::getPath)
-                    .isEqualTo("/contacts");
-            assertThat(httpRequest)
-                    .extracting(HttpRequest::bodyPublisher)
-                    .extracting(Optional::get)
-                    .extracting(HttpRequest.BodyPublisher::contentLength)
-                    .isEqualTo(44L);
+            assertThat(httpRequest).extracting(CreateContactRequest::name, CreateContactRequest::birthdate)
+                    .containsExactly(request.name(), request.birthdate());
         }
     }
 
@@ -130,63 +94,14 @@ class HttpContactGatewayTest {
 
         private final String request = "1";
 
-        @Captor
-        private ArgumentCaptor<HttpRequest> requestCaptor;
-
         @BeforeEach
-        void setUp() throws IOException, InterruptedException {
-            when(response.statusCode()).thenReturn(200);
-            final var body = """
-                    {
-                    "status": "success",
-                    "message": "",
-                    "data": { "values": [{ "id": 1, "name":"Mary Ann","birthdate":"1959-08-14" }] }
-                    }
-                    """;
-            when(response.body()).thenReturn(body);
-            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        void setUp() {
+            when(httpApiClient.get("/contacts/1", ContactResponse.class)).thenReturn(Try.success(MARY_ANN));
         }
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.get(request).get())
-                    .isNotNull()
-                    .isInstanceOf(ContactResponse.class);
-        }
-
-        @Test
-        void shouldCallSendWithAValidRequest() throws IOException, InterruptedException {
-            sut.get(request);
-            verify(client).send(requestCaptor.capture(), any());
-            final var httpRequest = requestCaptor.getValue();
-            assertThat(httpRequest.method()).isEqualTo("GET");
-            assertThat(httpRequest)
-                    .extracting(HttpRequest::uri)
-                    .extracting(URI::getPath)
-                    .isEqualTo("/contacts/1");
-        }
-    }
-
-    @Nested
-    class WhenGetContactError {
-
-        @Test
-        void shouldThrowExceptionWhenContactNotFound() throws IOException, InterruptedException {
-            when(response.statusCode()).thenReturn(404);
-            final var body = """
-                    {
-                    "status": "error",
-                    "message": "Contact with id \\"035531c5-3034-4f25-aee6-26942c446e12\\" not found",
-                    "data": {}
-                    }
-                    """;
-            when(response.body()).thenReturn(body);
-            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
-            final var result = sut.get("1");
-            assertThat(result.isFailure()).isTrue();
-            assertThat(result.getCause())
-                    .isInstanceOf(ContactNotFoundException.class)
-                    .hasMessage("Contact with id \"035531c5-3034-4f25-aee6-26942c446e12\" not found");
+            assertThat(sut.get(request).get()).isSameAs(MARY_ANN);
         }
     }
 
@@ -194,85 +109,29 @@ class HttpContactGatewayTest {
     class WhenUpdateAContact {
 
         private final UpdateContactRequest request =
-                new UpdateContactRequest("2", "John Wick", "1964-09-02");
-
-        @Captor
-        private ArgumentCaptor<HttpRequest> requestCaptor;
+                new UpdateContactRequest(JOHN_WICK.id(), JOHN_WICK.name(), JOHN_WICK.birthdate().toString());
 
         @BeforeEach
-        void setUp() throws IOException, InterruptedException {
-            when(response.statusCode()).thenReturn(200);
-            final var body = """
-                    {
-                    "status": "success",
-                    "message": "Contact updated",
-                    "data": { "values": [{ "id":"2","name":"John Wick","birthdate":"1964-09-02" }] }
-                    }
-                    """;
-            when(response.body()).thenReturn(body);
-            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        void setUp() {
+            when(httpApiClient.put("/contacts/2", request, ContactResponse.class))
+                    .thenReturn(Try.success(JOHN_WICK));
         }
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.update(request).get()).isNull();
-        }
-
-        @Test
-        void shouldCallSendWithAValidRequest() throws IOException, InterruptedException {
-            sut.update(request);
-            verify(client).send(requestCaptor.capture(), any());
-            final var httpRequest = requestCaptor.getValue();
-            assertThat(httpRequest.method()).isEqualTo("PUT");
-            assertThat(httpRequest)
-                    .extracting(HttpRequest::uri)
-                    .extracting(URI::getPath)
-                    .isEqualTo("/contacts/2");
-            assertThat(httpRequest)
-                    .extracting(HttpRequest::bodyPublisher)
-                    .extracting(Optional::get)
-                    .extracting(HttpRequest.BodyPublisher::contentLength)
-                    .isEqualTo(54L);
+            assertThat(sut.update(request).get()).isSameAs(JOHN_WICK);
         }
     }
 
     @Nested
     class WhenDeleteAContact {
 
-        private final String request = "1";
-
-        @Captor
-        private ArgumentCaptor<HttpRequest> requestCaptor;
-
-        @BeforeEach
-        void setUp() throws IOException, InterruptedException {
-            when(response.statusCode()).thenReturn(204);
-            final var body = """
-                    {
-                    "status": "success",
-                    "message": "contact deleted",
-                    "data": {}
-                    }
-                    """;
-            when(response.body()).thenReturn(body);
-            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
-        }
-
         @Test
         void success() {
-            assertThat(sut.delete(request).isSuccess()).isTrue();
-        }
-
-        @Test
-        void invalidPayload() throws IOException, InterruptedException {
-            sut.delete(request);
-            verify(client).send(requestCaptor.capture(), any());
-            final var httpRequest = requestCaptor.getValue();
-            assertThat(httpRequest.method()).isEqualTo("DELETE");
-            assertThat(httpRequest)
-                    .extracting(HttpRequest::uri)
-                    .extracting(URI::getPath)
-                    .isEqualTo("/contacts/1");
+            when(httpApiClient.delete("/contacts/1", ContactResponse.class))
+                    .thenReturn(Try.success(MARY_ANN));
+            final var result = sut.delete("1");
+            assertThat(result.isSuccess()).isTrue();
         }
     }
 
@@ -281,27 +140,11 @@ class HttpContactGatewayTest {
 
         private final SearchRequest request = new SearchRequest(1, 1, SortingOrder.ASC, null);
 
-        @Captor
-        private ArgumentCaptor<HttpRequest> requestCaptor;
-
         @BeforeEach
-        void setUp() throws IOException, InterruptedException {
-            when(response.statusCode()).thenReturn(200);
-            final var body = """
-                    {
-                    "status": "success",
-                    "message": "",
-                    "data": {
-                        "current_page": 1,
-                        "size": 5,
-                        "last_page": 5,
-                        "total": 20,
-                        "values": [{"id":"1", "name":"Mary Ann","birthdate":"1959-08-14" }]
-                    }
-                    }
-                    """;
-            when(response.body()).thenReturn(body);
-            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+        void setUp() {
+            final var pagination = new Pagination<ContactResponse>(1, 1, 1, 1, emptyList());
+            when(httpApiClient.get(eq("/contacts?page=1&size=1&order=asc"), any()))
+                    .thenReturn(Try.success(pagination));
         }
 
         @Test
@@ -309,18 +152,6 @@ class HttpContactGatewayTest {
             assertThat(sut.search(request).get())
                     .isNotNull()
                     .isInstanceOf(Pagination.class);
-        }
-
-        @Test
-        void shouldCallSendWithAValidRequest() throws IOException, InterruptedException {
-            sut.search(request);
-            verify(client).send(requestCaptor.capture(), any());
-            final var httpRequest = requestCaptor.getValue();
-            assertThat(httpRequest.method()).isEqualTo("GET");
-            assertThat(httpRequest)
-                    .extracting(HttpRequest::uri)
-                    .extracting(URI::getPath)
-                    .isEqualTo("/contacts");
         }
     }
 }

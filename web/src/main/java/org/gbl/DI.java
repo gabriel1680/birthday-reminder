@@ -2,6 +2,7 @@ package org.gbl;
 
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.http.HttpContactGateway;
+import org.gbl.common.gateway.http.HttpApiClient;
 import org.gbl.common.service.json.GsonJsonParser;
 import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.SearchContactsController;
@@ -41,6 +42,7 @@ public class DI {
         final var httpClient = HttpClient.newHttpClient();
         final var jsonParser = new GsonJsonParser();
         final var url = "http://localhost:8080";
-        return new HttpContactGateway(jsonParser, httpClient, url);
+        final var httpRestClient = new HttpApiClient(jsonParser, httpClient, url);
+        return new HttpContactGateway(httpRestClient);
     }
 }

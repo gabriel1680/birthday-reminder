@@ -1,6 +1,7 @@
 package org.gbl.config;
 
 import com.google.inject.AbstractModule;
+import org.gbl.common.gateway.http.HttpApiClient;
 import org.gbl.common.service.json.GsonJsonParser;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.memory.ContactsGatewayStub;
@@ -27,8 +28,8 @@ public class ContactsModule extends AbstractModule {
     private void bindProduction() {
         final var jsonParser = new GsonJsonParser();
         final var httpClient = HttpClient.newHttpClient();
-        final var contactGateway =
-                new HttpContactGateway(jsonParser, httpClient, "http://localhost:8080");
+        final var restClient = new HttpApiClient(jsonParser, httpClient, "http://localhost:8080");
+        final var contactGateway = new HttpContactGateway(restClient);
         bind(ContactsGateway.class).toInstance(contactGateway);
     }
 }
