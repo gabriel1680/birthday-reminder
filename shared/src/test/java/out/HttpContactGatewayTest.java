@@ -1,14 +1,15 @@
 package out;
 
-import org.gbl.common.search.Pagination;
-import org.gbl.common.search.SearchRequest;
-import org.gbl.common.search.SortingOrder;
-import org.gbl.common.service.json.GsonJsonParser;
+import org.gbl.common.gateway.ContactNotFoundException;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.UpdateContactRequest;
 import org.gbl.common.gateway.http.ApiResponse;
 import org.gbl.common.gateway.http.HttpContactGateway;
+import org.gbl.common.search.Pagination;
+import org.gbl.common.search.SearchRequest;
+import org.gbl.common.search.SortingOrder;
+import org.gbl.common.service.json.GsonJsonParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +61,7 @@ class HttpContactGatewayTest {
                 " " +
                 "name", null)));
         when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
-        var request = new CreateContactRequest("John", "1957-04-14");
+        var request = new CreateContactRequest("John", LocalDate.parse("1957-04-14"));
         final var output = sut.create(request);
         assertThat(output.isFailure()).isTrue();
         assertThat(output.failed().get())
@@ -71,7 +73,7 @@ class HttpContactGatewayTest {
     void clientThrowsError() throws IOException, InterruptedException {
         final var error = new IOException("invalid error");
         when(client.send(any(), any())).thenThrow(error);
-        var request = new CreateContactRequest("John", "1957-04-14");
+        var request = new CreateContactRequest("John", LocalDate.parse("1957-04-14"));
         assertThat(sut.create(request).isFailure()).isTrue();
     }
 
@@ -79,7 +81,7 @@ class HttpContactGatewayTest {
     class WhenCreateAContact {
 
         private final CreateContactRequest request =
-                new CreateContactRequest("Mary Ann", "1959-08-14");
+                new CreateContactRequest("Mary Ann", LocalDate.parse("1959-08-14"));
 
         @Captor
         private ArgumentCaptor<HttpRequest> requestCaptor;
@@ -162,6 +164,29 @@ class HttpContactGatewayTest {
                     .extracting(HttpRequest::uri)
                     .extracting(URI::getPath)
                     .isEqualTo("/contacts/1");
+        }
+    }
+
+    @Nested
+    class WhenGetContactError {
+
+        @Test
+        void shouldThrowExceptionWhenContactNotFound() throws IOException, InterruptedException {
+            when(response.statusCode()).thenReturn(404);
+            final var body = """
+                    {
+                    "status": "error",
+                    "message": "Contact with id \\"035531c5-3034-4f25-aee6-26942c446e12\\" not found",
+                    "data": {}
+                    }
+                    """;
+            when(response.body()).thenReturn(body);
+            when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
+            final var result = sut.get("1");
+            assertThat(result.isFailure()).isTrue();
+            assertThat(result.getCause())
+                    .isInstanceOf(ContactNotFoundException.class)
+                    .hasMessage("Contact with id \"035531c5-3034-4f25-aee6-26942c446e12\" not found");
         }
     }
 

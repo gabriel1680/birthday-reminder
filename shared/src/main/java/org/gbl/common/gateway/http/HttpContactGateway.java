@@ -2,15 +2,16 @@ package org.gbl.common.gateway.http;
 
 import com.google.gson.reflect.TypeToken;
 import io.vavr.control.Try;
+import org.gbl.common.gateway.ContactNotFoundException;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
+import org.gbl.common.gateway.UpdateContactRequest;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.service.json.JsonParser;
-import org.gbl.common.gateway.ContactResponse;
-import org.gbl.common.gateway.ContactsGateway;
-import org.gbl.common.gateway.CreateContactRequest;
-import org.gbl.common.gateway.UpdateContactRequest;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -19,16 +20,15 @@ import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class HttpContactGateway implements ContactsGateway {
 
-    private static final List<Integer> OK_RESPONSES = List.of(200, 201, 204);
     private static final String RESOURCE = "/contacts";
 
     private static final Type CONTACT_RESPONSE_TYPE = ContactResponse.class;
@@ -49,7 +49,7 @@ public class HttpContactGateway implements ContactsGateway {
         this.baseUrl = baseUrl;
     }
 
-    private HttpRequest.Builder baseRequest() {
+    private Builder baseRequest() {
         return HttpRequest.newBuilder()
                 .version(Version.HTTP_2)
                 .timeout(Duration.of(500, ChronoUnit.MILLIS))
@@ -62,7 +62,7 @@ public class HttpContactGateway implements ContactsGateway {
         final var httpRequest = baseRequest()
                 .POST(BodyPublishers.ofString(jsonParser.stringify(request)))
                 .build();
-        return Try.of(() -> (ContactResponse) execute(httpRequest, CONTACT_RESPONSE_TYPE).orElseThrow());
+        return execute(httpRequest, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class HttpContactGateway implements ContactsGateway {
                 .GET()
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .build();
-        return Try.of(() -> (ContactResponse) execute(httpRequest, CONTACT_RESPONSE_TYPE).orElseThrow());
+        return execute(httpRequest, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class HttpContactGateway implements ContactsGateway {
                 .uri(URI.create(baseUrl + RESOURCE + "/" + request.id()))
                 .PUT(BodyPublishers.ofString(jsonParser.stringify(request)))
                 .build();
-        return Try.run(() -> execute(httpRequest, CONTACT_RESPONSE_TYPE));
+        return execute(httpRequest, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class HttpContactGateway implements ContactsGateway {
                 .uri(URI.create(baseUrl + RESOURCE + "/" + contactId))
                 .DELETE()
                 .build();
-        return Try.run(() -> execute(httpRequest, CONTACT_RESPONSE_TYPE));
+        return execute(httpRequest, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
@@ -98,9 +98,7 @@ public class HttpContactGateway implements ContactsGateway {
                 .uri(URI.create(baseUrl + RESOURCE + "?" + toString(searchRequest)))
                 .GET()
                 .build();
-        return Try.of(
-                () -> (Pagination<ContactResponse>) execute(httpRequest, PAGINATION_RESPONSE_TYPE)
-                        .orElseThrow());
+        return execute(httpRequest, PAGINATION_RESPONSE_TYPE);
     }
 
     @Override
@@ -110,8 +108,7 @@ public class HttpContactGateway implements ContactsGateway {
                 .header("X-Time-Zone", request.clientZoneId().getId())
                 .GET()
                 .build();
-        return Try.of(() -> (List<ContactResponse>) execute(httpRequest, UPCOMING_RESPONSE_TYPE)
-                .orElseThrow());
+        return execute(httpRequest, UPCOMING_RESPONSE_TYPE);
     }
 
     private String toString(SearchRequest<ContactFilter> searchRequest) {
@@ -122,17 +119,21 @@ public class HttpContactGateway implements ContactsGateway {
         return String.join("&", params);
     }
 
-    private <T> Optional<T> execute(HttpRequest httpRequest, Type type) {
-        try {
-            final var response = client.send(httpRequest, BodyHandlers.ofString());
-            ApiResponse<T> apiResponse = jsonParser.parse(response.body(), toParameterizedOf(type));
-            if (!OK_RESPONSES.contains(response.statusCode())) {
-                throw new HttpApiException(apiResponse.message());
+    private <T> Try<T> execute(HttpRequest httpRequest, Type type) {
+        return Try.of(() -> {
+            try {
+                final var response = client.send(httpRequest, BodyHandlers.ofString());
+                final ApiResponse<T> apiResponse = jsonParser.parse(response.body(), toParameterizedOf(type));
+                return switch (response.statusCode()) {
+                    case 200, 201, 204 -> apiResponse.data();
+                    case 404 -> throw new ContactNotFoundException(apiResponse.message());
+                    default -> throw new HttpApiException(apiResponse.message());
+
+                };
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException("Error: request failed", e);
             }
-            return Optional.ofNullable(apiResponse).map(ApiResponse::data);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Error: request failed", e);
-        }
+        });
     }
 
     private static Type toParameterizedOf(Type type) {
