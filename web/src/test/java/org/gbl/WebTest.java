@@ -2,13 +2,13 @@ package org.gbl;
 
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
-import io.vavr.control.Try;
+import org.gbl.common.gateway.ContactNotFoundException;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
-import org.gbl.common.gateway.ContactResponse;
-import org.gbl.common.gateway.ContactsGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,14 +18,13 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 
-import static io.vavr.control.Try.*;
-import static java.util.Collections.*;
+import static io.vavr.control.Try.failure;
+import static io.vavr.control.Try.success;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -151,6 +150,17 @@ public class WebTest {
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains(AYRTON_SENNA.id());
                 assertThat(response.code()).isEqualTo(200);
+            });
+        }
+
+        @Test
+        void should_render_not_found_for_invalid_contact_id() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.get(any())).thenReturn(failure(new ContactNotFoundException("not found")));
+                final var response = httpClient.get("/details/72");
+                assertThat(response.header("Content-Type")).isEqualTo("text/html");
+                assertThat(response.body().string()).contains("Page not found");
+                assertThat(response.code()).isEqualTo(404);
             });
         }
     }

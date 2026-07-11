@@ -3,6 +3,7 @@ package org.gbl;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.rendering.template.JavalinJte;
+import org.gbl.common.gateway.ContactNotFoundException;
 import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.ErrorController;
 import org.gbl.controller.SearchContactsController;
@@ -35,6 +36,10 @@ public class Web {
         server.exception(RuntimeException.class, (e, context) -> {
             LOGGER.error("Internal Server Error", e);
             context.status(500);
+        });
+        server.exception(ContactNotFoundException.class, (e, context) -> {
+            LOGGER.warn("Contact Not Found", e);
+            context.status(404);
         });
     }
 
