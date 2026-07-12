@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.OffsetDateTime;
+
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.gbl.dsl.ContactDSL.ITContactBuilder.aContact;
@@ -22,21 +24,31 @@ import static org.hamcrest.Matchers.stringContainsInOrder;
 
 public class ContactBReminderAPI_IT {
 
-    @Test
-    void given_a_new_contact_should_create_it() {
-        given()
-                .body(withJSON("Carl Edward Sagan", "1934-11-09T00:00:00Z"))
-        .when()
-                .post(RESOURCE_URL)
-        .then()
-                .statusCode(201)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo("success"))
-                .body("message", emptyString())
-                .body("data", notNullValue())
-                .body("data.id", notNullValue())
-                .body("data.name", stringContainsInOrder("Carl"))
-                .body("data.birthdate", is("1934-11-09"));
+    @Nested
+    class  GivenNoContacts {
+
+        @Test
+        void should_create_it() {
+            final var CARL_SAGAN = aContact()
+                    .withName("Carl Edward Sagan")
+                    .withBirthdate("1934-11-09T00:00:00Z")
+                    .build();
+            final String userId = given()
+                    .body(withJSON(CARL_SAGAN.name(), CARL_SAGAN.birthdate()))
+            .when()
+                    .post(RESOURCE_URL)
+            .then()
+                    .statusCode(201)
+                    .contentType(ContentType.JSON)
+                    .body("status", equalTo("success"))
+                    .body("message", emptyString())
+                    .body("data", notNullValue())
+                    .body("data.id", notNullValue())
+                    .body("data.name", stringContainsInOrder("Carl"))
+                    .body("data.birthdate", is("1934-11-09"))
+                    .extract().body().jsonPath().get("data.id");
+            BirthdayReminderDSL.remove(new ITContact(userId, CARL_SAGAN.name(), CARL_SAGAN.birthdate()));
+        }
     }
 
     @Nested
@@ -90,7 +102,7 @@ public class ContactBReminderAPI_IT {
         }
 
         @Test
-        void given_a_contact_should_delete_it() {
+        void should_delete_it() {
             DANIEL_BERNOULLI = BirthdayReminderDSL.register(DANIEL_BERNOULLI);
             when()
                     .delete(RESOURCE_URL + "/" + DANIEL_BERNOULLI.id())
@@ -101,7 +113,7 @@ public class ContactBReminderAPI_IT {
         }
 
         @Test
-        void given_two_contacts_should_retrieve_all() {
+        void should_retrieve_all() {
             when()
                     .get(RESOURCE_URL + "?page=1&size=15")
             .then()
@@ -112,9 +124,34 @@ public class ContactBReminderAPI_IT {
                     .body("data", notNullValue())
                     .body("data.current_page", is(1))
                     .body("data.size", is(15))
-                    .body("data.total", is(2))
+                    .body("data.total", is(1))
                     .body("data.last_page", is(1))
-                    .body("data.values", hasSize(2));
+                    .body("data.values", hasSize(1));
+        }
+    }
+
+    @Nested
+    class GivenABirthdayAfterToday {
+
+        private final String now2000Plus10DaysString = OffsetDateTime.now()
+                .withYear(2000)
+                .plusDays(10)
+                .toInstant()
+                .toString();
+
+        private ITContact JOHN_DOE = aContact()
+                .withName("John Doe")
+                .withBirthdate(now2000Plus10DaysString)
+                .build();
+
+        @BeforeEach
+        void setUp() {
+            JOHN_DOE = BirthdayReminderDSL.register(JOHN_DOE);
+        }
+
+        @AfterEach
+        void tearDown() {
+            BirthdayReminderDSL.remove(JOHN_DOE);
         }
 
         @Test
@@ -122,14 +159,13 @@ public class ContactBReminderAPI_IT {
             given()
                     .headers("X-Time-Zone", "America/Sao_Paulo")
             .when()
-                    .get(RESOURCE_URL + "/upcoming-birthdays?size=15")
+                    .get(RESOURCE_URL + "/upcoming-birthdays")
             .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
                     .body("status", equalTo("success"))
                     .body("message", emptyString())
-                    .body("data", notNullValue())
-                    .body("data.values", hasSize(2));
+                    .body("data", hasSize(1));
         }
     }
 
