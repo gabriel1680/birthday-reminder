@@ -2,9 +2,11 @@ package org.gbl;
 
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
-import org.gbl.common.gateway.ContactNotFoundException;
+import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.notification.NotificationGateway;
+import org.gbl.common.notification.NotificationResponse;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
@@ -26,6 +28,7 @@ import static io.vavr.control.Try.failure;
 import static io.vavr.control.Try.success;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.gbl.DI.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -40,11 +43,14 @@ public class WebTest {
     @Mock
     private ContactsGateway contactsGateway;
 
+    @Mock
+    private NotificationGateway notificationGateway;
+
     private Javalin server;
 
     @BeforeEach
     void setUp() {
-        final var app = DI.createWebApp(contactsGateway);
+        final var app = createWebApp(contactsGateway, notificationGateway);
         server = app.getServer();
     }
 
@@ -156,11 +162,39 @@ public class WebTest {
         @Test
         void should_render_not_found_for_invalid_contact_id() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(contactsGateway.get(any())).thenReturn(failure(new ContactNotFoundException("not found")));
+                when(contactsGateway.get(any())).thenReturn(failure(new ResourceNotFoundException("not found")));
                 final var response = httpClient.get("/details/72");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Page not found");
                 assertThat(response.code()).isEqualTo(404);
+            });
+        }
+    }
+
+    @Nested
+    class NotificationsPage {
+
+        @Test
+        void should_handle_internal_server_error_page() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var randomError = new RuntimeException("Random error");
+                when(notificationGateway.getAll()).thenReturn(failure(randomError));
+                final var response = httpClient.get("/notifications");
+                assertThat(response.header("Content-Type")).isEqualTo("text/html");
+                assertThat(response.body().string()).contains("Internal Server Error");
+                assertThat(response.code()).isEqualTo(500);
+            });
+        }
+
+        @Test
+        void should_render_page() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var pushNotification = new NotificationResponse("1", "push", "push notification");
+                when(notificationGateway.getAll()).thenReturn(success(List.of(pushNotification)));
+                final var response = httpClient.get("/notifications");
+                assertThat(response.header("Content-Type")).isEqualTo("text/html");
+                assertThat(response.body().string()).contains(pushNotification.id());
+                assertThat(response.code()).isEqualTo(200);
             });
         }
     }
