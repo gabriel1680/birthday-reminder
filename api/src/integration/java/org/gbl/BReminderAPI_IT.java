@@ -14,6 +14,6 @@ public class BReminderAPI_IT {
                 .post(BirthdayReminderDSL.BASE_URL + "/not-found-url")
         .then()
                 .statusCode(404)
-                .contentType(ContentType.TEXT);
+                .contentType(ContentType.JSON);
     }
 }

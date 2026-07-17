@@ -1,20 +1,22 @@
 package org.gbl;
 
 import org.gbl.contacts.ContactsModule;
+import org.gbl.contacts.application.service.query.ContactFilter;
+import org.gbl.contacts.application.service.query.InvalidSearchInputException;
 import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
-import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.application.usecase.get.GetContactInput;
-import org.gbl.contacts.application.service.query.ContactFilter;
 import org.gbl.contacts.application.usecase.remove.RemoveContactInput;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
+import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdaysInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
-import org.gbl.controller.ResponseStatus;
-import org.gbl.controller.contacts.ContactsAPIProxy;
+import org.gbl.controller.common.InvalidPayloadException;
+import org.gbl.controller.common.ResponseStatus;
+import org.gbl.controller.contacts.ContactsAPIImpl;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,15 +34,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.eclipse.jetty.http.HttpStatus.Code.BAD_REQUEST;
 import static org.eclipse.jetty.http.HttpStatus.Code.CREATED;
-import static org.eclipse.jetty.http.HttpStatus.Code.NOT_FOUND;
 import static org.eclipse.jetty.http.HttpStatus.Code.NO_CONTENT;
 import static org.eclipse.jetty.http.HttpStatus.Code.OK;
-import static org.eclipse.jetty.http.HttpStatus.Code.UNPROCESSABLE_ENTITY;
 import static org.gbl.SparkResponseAssertionBuilder.aAssertionFor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -57,7 +56,7 @@ class ContactsBReminderAPITest extends SparkControllerTest {
     ContactsModule contactsModule;
 
     @InjectMocks
-    ContactsAPIProxy sut;
+    ContactsAPIImpl sut;
 
     @Nested
     class CreateContactShould {
@@ -78,12 +77,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
         @Test
         void throwAParseError_whenReceiveAnInvalidPayload() {
             when(request.body()).thenReturn("{}");
-            final var output = sut.createContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid payload", new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.createContact(request, response))
+                    .isInstanceOf(InvalidPayloadException.class)
+                    .hasMessage("invalid payload");
         }
 
         @Test
@@ -100,12 +96,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.body()).thenReturn(VALID_PAYLOAD);
             final var exception = new ContactAlreadyExistsException("Contact 1");
             doThrow(exception).when(contactsModule).addContact(any());
-            final var output = sut.createContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(UNPROCESSABLE_ENTITY)
-                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.createContact(request, response))
+                    .isInstanceOf(ContactAlreadyExistsException.class)
+                    .hasMessage("Contact already exists with name \"Contact 1\"");
         }
 
         @Captor
@@ -140,12 +133,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
         @Test
         void throwAParseError_whenReceiveAnInvalidId() {
             when(request.params("id")).thenReturn("");
-            final var output = sut.getContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid id", new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.getContact(request, response))
+                    .isInstanceOf(InvalidPayloadException.class)
+                    .hasMessage("invalid id");
         }
 
         @Test
@@ -162,12 +152,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.params("id")).thenReturn("123");
             final var exception = new ContactNotFoundException("123");
             doThrow(exception).when(contactsModule).getContact(any());
-            final var output = sut.getContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(NOT_FOUND)
-                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.getContact(request, response))
+                    .isInstanceOf(ContactNotFoundException.class)
+                    .hasMessage("Contact with id \"123\" not found");
         }
 
         @Captor
@@ -199,12 +186,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
         @Test
         void throwAParseError_whenReceiveAnInvalidId() {
             when(request.params("id")).thenReturn("");
-            final var output = sut.deleteContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid id", new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.deleteContact(request, response))
+                    .isInstanceOf(InvalidPayloadException.class)
+                    .hasMessage("invalid id");
         }
 
         @Test
@@ -221,12 +205,8 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.params("id")).thenReturn("123");
             final var exception = new ContactNotFoundException("123");
             doThrow(exception).when(contactsModule).removeContact(any());
-            final var output = sut.deleteContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(NOT_FOUND)
-                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.deleteContact(request, response))
+                    .isInstanceOf(ContactNotFoundException.class);
         }
 
         @Captor
@@ -255,12 +235,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
         @Test
         void throwAParseError_whenReceiveAnInvalidId() {
             when(request.params("id")).thenReturn("");
-            final var output = sut.updateContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid id", new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.updateContact(request, response))
+                    .isInstanceOf(InvalidPayloadException.class)
+                    .hasMessage("invalid id");
         }
 
         @ParameterizedTest
@@ -268,12 +245,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
         void throwAParseError_whenReceiveAnInvalidPayload(String body) {
             when(request.params("id")).thenReturn("123");
             when(request.body()).thenReturn(body);
-            final var output = sut.updateContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid payload", new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.updateContact(request, response))
+                    .isInstanceOf(InvalidPayloadException.class)
+                    .hasMessage("invalid payload");
         }
 
         @Test
@@ -292,12 +266,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.body()).thenReturn(VALID_PAYLOAD);
             final var exception = new ContactNotFoundException("123");
             doThrow(exception).when(contactsModule).updateContact(any());
-            final var output = sut.updateContact(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(NOT_FOUND)
-                    .forExpected(ResponseStatus.ERROR, exception.getMessage(), new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.updateContact(request, response))
+                    .isInstanceOf(ContactNotFoundException.class)
+                    .hasMessage("Contact with id \"123\" not found");
         }
 
         @Captor
@@ -434,12 +405,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("page", "1")).thenReturn("0");
             when(request.queryParamOrDefault("size", "5")).thenReturn("0");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("asc");
-            final var output = sut.searchContacts(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "invalid page: value should be greater than 0", new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.searchContacts(request, response))
+                    .isInstanceOf(InvalidSearchInputException.class)
+                    .hasMessage("invalid page: value should be greater than 0");
             verify(contactsModule, never()).search(any());
         }
 
@@ -448,12 +416,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             when(request.queryParamOrDefault("page", "1")).thenReturn("1");
             when(request.queryParamOrDefault("size", "5")).thenReturn("1");
             when(request.queryParamOrDefault("order", "asc")).thenReturn("asd");
-            final var output = sut.searchContacts(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "Invalid SortingOrder string value \"asd\"", new JSONObject())
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.searchContacts(request, response))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Invalid SortingOrder string value \"asd\"");
             verify(contactsModule, never()).search(any());
         }
     }
@@ -485,12 +450,9 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             doAnswer(invocationOnMock -> null)
                     .when(request)
                     .headers(X_TIME_ZONE_HEADER);
-            var output = sut.upcomingBirthdays(request, response);
-            aAssertionFor(response)
-                    .withStatusCode(BAD_REQUEST)
-                    .forExpected(ResponseStatus.ERROR, "X-Time-Zone header missing", "{}")
-                    .withActual(output)
-                    .build();
+            assertThatThrownBy(() -> sut.upcomingBirthdays(request, response))
+                    .isInstanceOf(InvalidPayloadException.class)
+                    .hasMessage("X-Time-Zone header missing");
         }
 
         @Test

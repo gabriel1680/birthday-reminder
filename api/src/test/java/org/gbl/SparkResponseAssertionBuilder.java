@@ -1,8 +1,8 @@
 package org.gbl;
 
 import org.eclipse.jetty.http.HttpStatus.Code;
-import org.gbl.controller.HttpAPIResponse;
-import org.gbl.controller.ResponseStatus;
+import org.gbl.controller.common.HttpAPIResponse;
+import org.gbl.controller.common.ResponseStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Response;
@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 
 public class SparkResponseAssertionBuilder {
 
-    private String type = "application/json";
     private Code statusCode;
     private HttpAPIResponse expected;
     private HttpAPIResponse actual;
@@ -56,7 +55,6 @@ public class SparkResponseAssertionBuilder {
     }
 
     public void build() {
-        verify(response).type(type);
         verify(response).status(statusCode.getCode());
         assertThat(actual.status()).isEqualTo(expected.status());
         assertThat(actual.message()).isEqualTo(expected.message());

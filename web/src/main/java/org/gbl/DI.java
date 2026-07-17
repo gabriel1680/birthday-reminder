@@ -5,7 +5,7 @@ import org.gbl.common.gateway.http.HttpContactGateway;
 import org.gbl.common.gateway.http.HttpApiClient;
 import org.gbl.common.notification.HttpNotificationGateway;
 import org.gbl.common.notification.NotificationGateway;
-import org.gbl.common.service.json.GsonJsonParser;
+import org.gbl.common.service.json.GsonJsonAdapter;
 import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
@@ -59,7 +59,7 @@ public class DI {
 
     private static HttpApiClient httpApiClient() {
         final var httpClient = HttpClient.newHttpClient();
-        final var jsonParser = new GsonJsonParser();
+        final var jsonParser = new GsonJsonAdapter();
         final var url = "http://localhost:8080";
         return new HttpApiClient(jsonParser, httpClient, url);
     }

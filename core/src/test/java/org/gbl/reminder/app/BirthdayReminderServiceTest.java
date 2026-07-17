@@ -3,8 +3,8 @@ package org.gbl.reminder.app;
 import org.gbl.contacts.ContactsModule;
 import org.gbl.contacts.application.service.query.PaginationOutput;
 import org.gbl.contacts.application.usecase.shared.ContactOutput;
-import org.gbl.notification.NotificationModule;
-import org.gbl.notification.application.NotificationResponse;
+import org.gbl.notification.NotificationsModule;
+import org.gbl.notification.application.NotificationOutput;
 import org.gbl.reminder.out.email.EmailSender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,14 +27,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BirthdayReminderServiceTest {
 
-    private final static NotificationResponse NOTIFICATION_RESPONSE =
-            new NotificationResponse(UUID.randomUUID().toString(), "email", "j@gmail.com");
+    private final static NotificationOutput NOTIFICATION_RESPONSE =
+            new NotificationOutput(UUID.randomUUID().toString(), "email", "j@gmail.com");
 
     @Mock
     private ContactsModule contactsModule;
 
     @Mock
-    private NotificationModule notificationModule;
+    private NotificationsModule notificationsModule;
 
     @Mock
     private EmailSender sender;
@@ -45,7 +45,7 @@ class BirthdayReminderServiceTest {
     private void givenContacts(List<ContactOutput> contacts) {
         final var output = new PaginationOutput<>(1, 1, contacts.size(), contacts);
         when(contactsModule.search(any())).thenReturn(output);
-        when(notificationModule.all()).thenReturn(List.of(NOTIFICATION_RESPONSE));
+        when(notificationsModule.all()).thenReturn(List.of(NOTIFICATION_RESPONSE));
     }
 
     @Test

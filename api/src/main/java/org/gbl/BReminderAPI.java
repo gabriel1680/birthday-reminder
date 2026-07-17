@@ -1,33 +1,24 @@
 package org.gbl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.gbl.common.service.json.Json;
 import spark.Spark;
 
-import static org.eclipse.jetty.http.HttpStatus.INTERNAL_SERVER_ERROR_500;
-import static org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404;
-import static spark.Spark.before;
-import static spark.Spark.internalServerError;
-import static spark.Spark.notFound;
 import static spark.Spark.port;
 
 public class BReminderAPI {
 
-    private static final Logger logger = LoggerFactory.getLogger(BReminderAPI.class);
-
     private final Routes routes;
+    private final Middleware middleware;
 
-    public BReminderAPI() {
-        routes = new Routes();
+    public BReminderAPI(Json json) {
+        this.middleware = new Middleware(json);
+        this.routes = new Routes();
     }
 
     public void start() {
         port(getPort());
-        enableCORS();
-        configureLogging();
         routes.init();
-        configureInternalServerError();
-        configureNotImplemented();
+        middleware.init();
     }
 
     public void awaitInitialization() {
@@ -42,39 +33,5 @@ public class BReminderAPI {
         var processBuilder = new ProcessBuilder();
         var port = processBuilder.environment().getOrDefault("PORT", "8080");
         return Integer.parseInt(port);
-    }
-
-    private void configureInternalServerError() {
-        internalServerError((req, res) -> {
-            res.type("text/plain");
-            res.status(INTERNAL_SERVER_ERROR_500);
-            logger.error("Internal Server Error: {}", req.pathInfo());
-            return "Internal Server Error.";
-        });
-    }
-
-    private void configureNotImplemented() {
-        notFound((req, res) -> {
-            res.type("text/plain");
-            res.status(NOT_FOUND_404);
-            logger.error("Not found: {}", req.pathInfo());
-            return "Not Found.";
-        });
-    }
-
-    private void enableCORS() {
-        before((request, response) -> {
-            response.header("Access-Control-Allow-Origin", "*");
-            response.header("Access-Control-Allow-Headers", "*");
-            response.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, " +
-                    "OPTIONS");
-        });
-    }
-
-    private void configureLogging() {
-        before((request, response) -> logger.info("Request: {} {} - headers: {}",
-                                                  request.requestMethod(),
-                                                  request.uri(),
-                                                  request.headers()));
     }
 }
