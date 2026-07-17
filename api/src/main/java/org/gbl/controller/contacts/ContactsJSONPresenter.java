@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.util.Collection;
 
-public class ContactsJSONMapper {
+public class ContactsJSONPresenter {
 
     public JSONObject toJson(ContactOutput contact) {
         return new JSONObject()
