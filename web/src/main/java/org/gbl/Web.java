@@ -6,6 +6,7 @@ import io.javalin.rendering.template.JavalinJte;
 import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.ErrorController;
+import org.gbl.controller.HomeController;
 import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
 import org.slf4j.Logger;
@@ -16,15 +17,18 @@ public class Web {
     private static final Logger LOGGER = LoggerFactory.getLogger(Web.class);
 
     private final Javalin server;
+    private final HomeController homeController;
     private final SearchContactsController searchContactsController;
     private final ContactDetailsController contactDetailsController;
     private final NotificationsController notificationsController;
 
     public Web(
+            HomeController homeController,
             SearchContactsController searchContactsController,
             ContactDetailsController contactDetailsController,
             NotificationsController notificationsController
     ) {
+        this.homeController = homeController;
         this.searchContactsController = searchContactsController;
         this.contactDetailsController = contactDetailsController;
         this.notificationsController = notificationsController;
@@ -33,7 +37,7 @@ public class Web {
     }
 
     private void initRoutes() {
-        server.get("/", context -> context.redirect("/contacts"));
+        server.get("/", homeController::homePage);
         server.get("/contacts", searchContactsController::searchPage);
         server.get("/contacts/{id}", contactDetailsController::contactInfo);
         server.post("/contacts/{id}/delete", contactDetailsController::deleteContact);

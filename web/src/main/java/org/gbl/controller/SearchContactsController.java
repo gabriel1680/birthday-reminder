@@ -2,54 +2,33 @@ package org.gbl.controller;
 
 import io.javalin.http.Context;
 import org.gbl.common.gateway.ContactsGateway;
-import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
 import org.gbl.view.ContactSearchPresenter;
 import org.gbl.view.SearchViewModel;
 
-import java.time.ZoneId;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class SearchContactsController {
 
     private final ContactsGateway contactsGateway;
     private final ContactSearchPresenter presenter;
-    private final Executor executor;
-
-    public SearchContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter, Executor executor) {
+    public SearchContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter) {
         this.contactsGateway = contactsGateway;
         this.presenter = presenter;
-        this.executor = executor;
     }
 
     public void searchPage(Context context) {
         final var request = createSearchRequestFrom(context);
-        final var searchFuture = supplyAsync(() -> contactsGateway.search(request), executor);
-        final var getUpcomingBirthdaysRequest = createUpcomingBirthdaysRequest(context);
-        final var birthdaysFuture =
-                supplyAsync(() -> contactsGateway.getUpcomingBirthdays(getUpcomingBirthdaysRequest), executor);
-        final var combinedFuture =
-                searchFuture.thenCombine(birthdaysFuture, (searchTry, upcomingBirthdaysTry) ->
-                    searchTry.flatMap(pagination ->
-                          upcomingBirthdaysTry.map(birthdays ->
-                               presenter.toView(pagination, request.filter(), birthdays))));
-        final var viewModel = combinedFuture.join().get();
+        final var pagination = contactsGateway.search(request).get();
+        final var viewModel = presenter.toView(pagination, request.filter());
         renderSearchPage(context, viewModel);
-    }
-
-    private static GetUpcomingBirthdaysRequest createUpcomingBirthdaysRequest(Context context) {
-        final var size = 3;
-        final var clientZoneId = ZoneId.of("America/Sao_Paulo");
-        return new GetUpcomingBirthdaysRequest(size, clientZoneId);
     }
 
     private void renderSearchPage(Context context, SearchViewModel viewModel) {

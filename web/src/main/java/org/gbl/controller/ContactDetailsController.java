@@ -3,7 +3,7 @@ package org.gbl.controller;
 import io.javalin.http.Context;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
-import org.gbl.view.ContactSearchPresenter;
+import org.gbl.view.ContactViewPresenter;
 
 import java.util.Map;
 
@@ -22,11 +22,11 @@ public class ContactDetailsController {
 
     public void deleteContact(Context context) {
         gateway.delete(context.pathParam("id")).get();
-        context.redirect("/");
+        context.redirect("/contacts");
     }
 
     private static void renderDetailsPage(Context context, ContactResponse contactResponse) {
-        final var viewModel = ContactSearchPresenter.toContactView(contactResponse);
+        final var viewModel = ContactViewPresenter.toView(contactResponse);
         context.render("contacts/details-page.jte", Map.of("viewModel", viewModel));
     }
 }

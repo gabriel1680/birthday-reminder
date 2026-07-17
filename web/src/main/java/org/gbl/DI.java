@@ -1,28 +1,33 @@
 package org.gbl;
 
 import org.gbl.common.gateway.ContactsGateway;
-import org.gbl.common.gateway.http.HttpContactGateway;
 import org.gbl.common.gateway.http.HttpApiClient;
+import org.gbl.common.gateway.http.HttpContactGateway;
 import org.gbl.common.notification.HttpNotificationGateway;
 import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.service.json.GsonJsonServiceAdapter;
 import org.gbl.controller.ContactDetailsController;
+import org.gbl.controller.HomeController;
 import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
 import org.gbl.view.ContactSearchPresenter;
+import org.gbl.view.UpcomingBirthdaysPresenter;
 
 import java.net.http.HttpClient;
 import java.time.Clock;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class DI {
 
     public static Web createWebApp(ContactsGateway gateway, NotificationGateway notificationGateway) {
+        final var homeController = homeController(gateway);
         final var searchContactsController = searchContactsController(gateway);
         final var contactInfoController = contactInfoController(gateway);
         final var notificationsController = notificationsController(notificationGateway);
-        return new Web(searchContactsController, contactInfoController, notificationsController);
+        return new Web(homeController, searchContactsController, contactInfoController, notificationsController);
+    }
+
+    private static HomeController homeController(ContactsGateway gateway) {
+        return new HomeController(gateway, upcomingBirthdaysPresenter());
     }
 
     private static NotificationsController notificationsController(NotificationGateway notificationGateway) {
@@ -36,15 +41,11 @@ public class DI {
     }
 
     private static SearchContactsController searchContactsController(ContactsGateway gateway) {
-        final var executor = executorService("contacts-search-pool");
-        final var clock = Clock.systemUTC();
-        final var presenter = new ContactSearchPresenter(clock);
-        return new SearchContactsController(gateway, presenter, executor);
+        return new SearchContactsController(gateway, new ContactSearchPresenter());
     }
 
-    private static ExecutorService executorService(String poolName) {
-        final var factory = Thread.ofVirtual().name(poolName, 0).factory();
-        return Executors.newThreadPerTaskExecutor(factory);
+    private static UpcomingBirthdaysPresenter upcomingBirthdaysPresenter() {
+        return new UpcomingBirthdaysPresenter(Clock.systemUTC());
     }
 
     public static HttpContactGateway httpContactGateway() {

@@ -61,13 +61,32 @@ public class WebTest {
     }
 
     @Nested
+    class HomePage {
+
+        @Test
+        void should_render_upcoming_birthdays() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(List.of(AYRTON_SENNA)));
+
+                final var response = httpClient.get("/");
+
+                assertThat(response.header("Content-Type")).isEqualTo("text/html");
+                assertThat(response.body().string())
+                        .contains("Birthday Reminder")
+                        .contains("Upcoming Birthdays")
+                        .contains(AYRTON_SENNA.name());
+                assertThat(response.code()).isEqualTo(200);
+            });
+        }
+    }
+
+    @Nested
     class SearchContactsPage {
 
         @Test
         void should_send_headers() {
             JavalinTest.test(server, (server, httpClient) -> {
                 when(contactsGateway.search(any())).thenReturn(success(Pagination.empty()));
-                when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(emptyList()));
                 final var response = httpClient.get("/contacts");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.code()).isEqualTo(200);
@@ -80,7 +99,6 @@ public class WebTest {
                 final var contactResponses = List.of(AYRTON_SENNA, OZZY_OSBURN);
                 final var pagination = new Pagination<>(1, 5, 2, 1, contactResponses);
                 when(contactsGateway.search(any())).thenReturn(success(pagination));
-                when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(contactResponses));
                 final var response = httpClient.get("/contacts");
                 assert response.body() != null;
                 final var htmlContent = response.body().string();
@@ -176,7 +194,6 @@ public class WebTest {
             JavalinTest.test(server, (server, httpClient) -> {
                 when(contactsGateway.delete("1")).thenReturn(success(AYRTON_SENNA));
                 when(contactsGateway.search(any())).thenReturn(success(Pagination.empty()));
-                when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(emptyList()));
 
                 final var response = httpClient.post("/contacts/1/delete");
 

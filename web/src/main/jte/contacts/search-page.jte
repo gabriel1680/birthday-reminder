@@ -2,16 +2,14 @@
 
 @param SearchViewModel viewModel
 
-@template.layout.layout(title = "Birthday Reminder")
+@template.layout.layout(title = "Contacts | Birthday Reminder")
 
 @template.layout.header(
-    title = "🎂 Birthday Reminder",
-    subtitle = "Never miss an important birthday again.",
+    title = "Contacts",
+    subtitle = "Search and manage birthday contacts.",
     activeSection = "contacts")
 
 <main class="container">
-    @template.contacts.upcoming-birthdays(upcomingBirthdays = viewModel.upcomingBirthdays())
-
     @template.contacts.search-form(
     filter = viewModel.filter(),
     action = "/contacts")
