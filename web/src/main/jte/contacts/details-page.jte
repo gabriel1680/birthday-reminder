@@ -13,7 +13,7 @@
     <section class="card detail-view">
         <div class="card__header detail-view__header">
             <h2>${viewModel.name()}</h2>
-            <form action="/delete/${viewModel.id()}" method="post">
+            <form action="/contacts/${viewModel.id()}/delete" method="post">
                 <button class="btn btn--danger"
                         type="submit"
                         onclick="return confirm('Delete this contact?')">
@@ -41,10 +41,10 @@
 
             <div class="detail-view__actions">
                 <a class="btn btn--secondary"
-                        href="/">
+                        href="/contacts">
                     Back
                 </a>
-                <a class="btn btn--primary" href="/edit/${viewModel.id()}">
+                <a class="btn btn--primary" href="/contacts/${viewModel.id()}/edit">
                     Edit
                 </a>
             </div>

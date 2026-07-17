@@ -68,7 +68,7 @@ public class WebTest {
             JavalinTest.test(server, (server, httpClient) -> {
                 when(contactsGateway.search(any())).thenReturn(success(Pagination.empty()));
                 when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(emptyList()));
-                final var response = httpClient.get("/");
+                final var response = httpClient.get("/contacts");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.code()).isEqualTo(200);
             });
@@ -81,7 +81,7 @@ public class WebTest {
                 final var pagination = new Pagination<>(1, 5, 2, 1, contactResponses);
                 when(contactsGateway.search(any())).thenReturn(success(pagination));
                 when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(contactResponses));
-                final var response = httpClient.get("/");
+                final var response = httpClient.get("/contacts");
                 assert response.body() != null;
                 final var htmlContent = response.body().string();
                 assertThat(htmlContent).contains("Ozzy");
@@ -97,7 +97,7 @@ public class WebTest {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var pagination = new Pagination<>(2, 1, 2, 2, List.of(AYRTON_SENNA));
                 when(contactsGateway.search(any())).thenReturn(success(pagination));
-                httpClient.get("/?page=2&size=1&order=asc");
+                httpClient.get("/contacts?page=2&size=1&order=asc");
                 verify(contactsGateway, times(1)).search(requestCaptor.capture());
                 final var value = requestCaptor.getValue();
                 assertThat(value.page()).isEqualTo(2);
@@ -111,7 +111,7 @@ public class WebTest {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var pagination = new Pagination<>(2, 1, 2, 2, List.of(AYRTON_SENNA));
                 when(contactsGateway.search(any())).thenReturn(success(pagination));
-                httpClient.get("/?name=xyz&birthdateFrom=12/12/1900&birthdateTo=12/12/1999");
+                httpClient.get("/contacts?name=xyz&birthdateFrom=12/12/1900&birthdateTo=12/12/1999");
                 verify(contactsGateway, times(1)).search(requestCaptor.capture());
                 final var value = requestCaptor.getValue();
                 assertThat(value.filter())
@@ -126,7 +126,7 @@ public class WebTest {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var randomError = new RuntimeException("Random error");
                 when(contactsGateway.search(any())).thenReturn(failure(randomError));
-                final var response = httpClient.get("/");
+                final var response = httpClient.get("/contacts");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Internal Server Error");
                 assertThat(response.code()).isEqualTo(500);
@@ -142,7 +142,7 @@ public class WebTest {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var randomError = new RuntimeException("Random error");
                 when(contactsGateway.get(any())).thenReturn(failure(randomError));
-                final var response = httpClient.get("/details/1");
+                final var response = httpClient.get("/contacts/1");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Internal Server Error");
                 assertThat(response.code()).isEqualTo(500);
@@ -153,7 +153,7 @@ public class WebTest {
         void should_render_page() {
             JavalinTest.test(server, (server, httpClient) -> {
                 when(contactsGateway.get(any())).thenReturn(success(AYRTON_SENNA));
-                final var response = httpClient.get("/details/1");
+                final var response = httpClient.get("/contacts/1");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains(AYRTON_SENNA.id());
                 assertThat(response.code()).isEqualTo(200);
@@ -164,10 +164,25 @@ public class WebTest {
         void should_render_not_found_for_invalid_contact_id() {
             JavalinTest.test(server, (server, httpClient) -> {
                 when(contactsGateway.get(any())).thenReturn(failure(new ResourceNotFoundException("not found")));
-                final var response = httpClient.get("/details/72");
+                final var response = httpClient.get("/contacts/72");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Page not found");
                 assertThat(response.code()).isEqualTo(404);
+            });
+        }
+
+        @Test
+        void should_delete_contact_and_return_to_contacts() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.delete("1")).thenReturn(success(AYRTON_SENNA));
+                when(contactsGateway.search(any())).thenReturn(success(Pagination.empty()));
+                when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(emptyList()));
+
+                final var response = httpClient.post("/contacts/1/delete");
+
+                verify(contactsGateway).delete("1");
+                assertThat(response.body().string()).contains("No contacts found");
+                assertThat(response.code()).isEqualTo(200);
             });
         }
     }

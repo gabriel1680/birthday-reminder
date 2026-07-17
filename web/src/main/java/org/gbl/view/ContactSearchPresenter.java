@@ -38,7 +38,7 @@ public class ContactSearchPresenter {
                         .sorted(Comparator.comparing(it -> it.contact().birthdate()))
                         .toList(),
                 filter,
-                new ContactUrlBuilder("/")
+                new ContactUrlBuilder("/contacts")
         );
     }
 

@@ -30,7 +30,7 @@
                 @for(ContactView contact : contacts)
                     <tr>
                         <td class="data-list__primary">
-                            <a href="/details/${contact.id()}" class="data-list__link">
+                            <a href="/contacts/${contact.id()}" class="data-list__link">
                                 ${contact.name()}
                             </a>
                         </td>

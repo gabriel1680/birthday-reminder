@@ -12,7 +12,7 @@
         </div>
         <nav class="hero__tabs" aria-label="Primary navigation">
             <a class="hero__tab ${"contacts".equals(activeSection) ? "hero__tab--active" : ""}"
-               href="/"
+               href="/contacts"
                aria-current="${"contacts".equals(activeSection) ? "page" : "false"}">
                 Contacts
             </a>

@@ -14,7 +14,7 @@
 
     @template.contacts.search-form(
     filter = viewModel.filter(),
-    action = "/")
+    action = "/contacts")
 
     @template.contacts.contacts-table(
     totalContacts = viewModel.pagination().total(),

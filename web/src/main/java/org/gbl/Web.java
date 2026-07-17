@@ -33,8 +33,10 @@ public class Web {
     }
 
     private void initRoutes() {
-        server.get("/", searchContactsController::searchPage);
-        server.get("/details/{id}", contactDetailsController::contactInfo);
+        server.get("/", context -> context.redirect("/contacts"));
+        server.get("/contacts", searchContactsController::searchPage);
+        server.get("/contacts/{id}", contactDetailsController::contactInfo);
+        server.post("/contacts/{id}/delete", contactDetailsController::deleteContact);
         server.get("/notifications", notificationsController::notificationPage);
         server.get("/notifications/{id}", notificationsController::notificationDetailsPage);
         server.post("/notifications/{id}/delete", notificationsController::deleteNotification);
