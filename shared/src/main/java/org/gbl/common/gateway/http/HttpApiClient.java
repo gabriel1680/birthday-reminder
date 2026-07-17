@@ -3,7 +3,7 @@ package org.gbl.common.gateway.http;
 import com.google.gson.reflect.TypeToken;
 import io.vavr.control.Try;
 import org.gbl.common.gateway.ResourceNotFoundException;
-import org.gbl.common.service.json.JsonParser;
+import org.gbl.common.service.json.Json;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -23,12 +23,12 @@ import static java.util.Collections.emptyMap;
 
 public class HttpApiClient {
 
-    private final JsonParser jsonParser;
+    private final Json json;
     private final HttpClient client;
     private final String baseUrl;
 
-    public HttpApiClient(JsonParser jsonParser, HttpClient client, String baseUrl) {
-        this.jsonParser = jsonParser;
+    public HttpApiClient(Json json, HttpClient client, String baseUrl) {
+        this.json = json;
         this.client = client;
         this.baseUrl = baseUrl;
     }
@@ -49,14 +49,14 @@ public class HttpApiClient {
 
     public <T> Try<T> post(String path, Object body, Type responseType) {
         final var httpRequest = baseRequest(path)
-                .POST(BodyPublishers.ofString(jsonParser.stringify(body)))
+                .POST(BodyPublishers.ofString(json.stringify(body)))
                 .build();
         return execute(httpRequest, responseType);
     }
 
     public <T> Try<T> put(String path, Object body, Type responseType) {
         final var httpRequest = baseRequest(path)
-                .PUT(BodyPublishers.ofString(jsonParser.stringify(body)))
+                .PUT(BodyPublishers.ofString(json.stringify(body)))
                 .build();
         return execute(httpRequest, responseType);
     }
@@ -80,7 +80,7 @@ public class HttpApiClient {
         return Try.of(() -> {
             try {
                 final var response = client.send(httpRequest, BodyHandlers.ofString());
-                final ApiResponse<T> apiResponse = jsonParser.parse(response.body(), toParameterizedOf(type));
+                final ApiResponse<T> apiResponse = json.parse(response.body(), toParameterizedOf(type));
                 return switch (response.statusCode()) {
                     case 200, 201, 204 -> apiResponse.data();
                     case 404 -> throw new ResourceNotFoundException(apiResponse.message());

@@ -3,10 +3,11 @@ package org.gbl.notification;
 import org.gbl.notification.application.NotificationService;
 import org.gbl.reminder.out.notification.InMemoryNotificationRepository;
 
-public class NotificationModuleFactory {
-    public static NotificationModule create() {
+public class NotificationsModuleFactory {
+
+    public static NotificationsModule createInMemory() {
         final var repository = new InMemoryNotificationRepository();
         final var service = new NotificationService(repository);
-        return new NotificationModuleImpl(service);
+        return new NotificationsModuleImpl(service);
     }
 }

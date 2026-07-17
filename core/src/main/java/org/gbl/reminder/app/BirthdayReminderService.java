@@ -6,7 +6,7 @@ import org.gbl.contacts.application.service.query.SearchInput;
 import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.shared.ContactOutput;
 import org.gbl.contacts.application.service.query.ContactFilter;
-import org.gbl.notification.NotificationModule;
+import org.gbl.notification.NotificationsModule;
 import org.gbl.reminder.out.email.EmailSender;
 import org.gbl.reminder.out.email.SendEmailRequest;
 
@@ -16,13 +16,13 @@ public class BirthdayReminderService {
 
     private final ContactsModule contactsModule;
     private final EmailSender emailSender;
-    private final NotificationModule notificationModule;
+    private final NotificationsModule notificationsModule;
 
     public BirthdayReminderService(ContactsModule contactsModule, EmailSender emailSender,
-                                   NotificationModule notificationModule) {
+                                   NotificationsModule notificationsModule) {
         this.contactsModule = contactsModule;
         this.emailSender = emailSender;
-        this.notificationModule = notificationModule;
+        this.notificationsModule = notificationsModule;
     }
 
     public void remindOf(final LocalDate today) {
@@ -30,7 +30,7 @@ public class BirthdayReminderService {
         if (output.total() == 0) {
             return;
         }
-        final var notificationMethods = notificationModule.all();
+        final var notificationMethods = notificationsModule.all();
         if (notificationMethods.stream().anyMatch(n -> n.type().equals("email"))) {
             sendEmails(today, output);
         }

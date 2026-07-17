@@ -6,7 +6,8 @@ import org.gbl.contacts.application.service.query.SortingOrder;
 import org.gbl.contacts.application.usecase.add.AddContactInput;
 import org.gbl.contacts.application.usecase.upcoming_birthdays.GetUpcomingBirthdaysInput;
 import org.gbl.contacts.application.usecase.update.UpdateContactInput;
-import org.gbl.controller.exceptions.InvalidPayloadException;
+import org.gbl.controller.common.RequestParser;
+import org.gbl.controller.common.InvalidPayloadException;
 import org.json.JSONObject;
 import spark.Request;
 
@@ -14,14 +15,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-public class ContactsRequestParser {
-
-    public String getId(Request request) {
-        final var id = request.params("id");
-        if (id == null || id.isEmpty())
-            throw new InvalidPayloadException("invalid id");
-        return id;
-    }
+public class ContactsRequestParser extends RequestParser {
 
     public UpdateContactInput parseBody(String id, Request request) {
         try {

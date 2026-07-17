@@ -22,7 +22,7 @@ class NotificationServiceTest {
 
     @Test
     void add() {
-        var request = new AddNotificationRequest("email", "jacob@gmail.com");
+        var request = new AddNotificationInput("email", "jacob@gmail.com");
         sut.add(request);
         assertThat(repository.all()).hasSize(1);
     }
@@ -35,31 +35,16 @@ class NotificationServiceTest {
     }
 
     @Test
-    void remove() {
+    void removeOf() {
         var notification = Notification.create("email", "jacob@gmail.com");
         repository.add(notification);
-        sut.remove(notification.id());
+        sut.removeOf(notification.id());
         assertThat(repository.all()).hasSize(0);
     }
 
     @Test
-    void update() {
-        var notification = Notification.create("email", "jacob@gmail.com");
-        repository.add(notification);
-        var request = new UpdateNotificationRequest(notification.id(), "j@gmail.com");
-        sut.update(request);
-        assertThat(repository.getById(notification.id()))
-                .get()
-                .extracting(Notification::value)
-                .isEqualTo("j@gmail.com");
-    }
-
-    @Test
     void notFound() {
-        var request = new UpdateNotificationRequest("invalid", "j@gmail.com");
-        assertThatThrownBy(() -> sut.update(request))
-                .isInstanceOf(NotificationNotFoundException.class);
-        assertThatThrownBy(() -> sut.remove(request.id()))
+        assertThatThrownBy(() -> sut.removeOf(""))
                 .isInstanceOf(NotificationNotFoundException.class);
     }
 }
