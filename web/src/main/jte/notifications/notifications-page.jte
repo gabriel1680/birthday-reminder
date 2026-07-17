@@ -6,7 +6,8 @@
 
 @template.layout.header(
     title = "Notifications",
-    subtitle = "Choose where birthday reminders are delivered.")
+    subtitle = "Choose where birthday reminders are delivered.",
+    activeSection = "notifications")
 
 <main class="container">
 

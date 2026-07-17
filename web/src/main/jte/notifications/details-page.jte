@@ -6,7 +6,8 @@
 
 @template.layout.header(
     title = "Notification details",
-    subtitle = "Review this delivery destination or remove it.")
+    subtitle = "Review this delivery destination or remove it.",
+    activeSection = "notifications")
 
 <main class="container">
     <section class="card detail-view">

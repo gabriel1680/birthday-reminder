@@ -76,6 +76,35 @@ a {
     color: var(--muted);
     font-size: .95rem;
 }
+
+.hero__tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.hero__tab {
+    padding: 8px 12px 10px;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-size: .9rem;
+    font-weight: 600;
+    transition: border-color var(--transition), color var(--transition);
+}
+
+.hero__tab:hover {
+    color: var(--text);
+}
+
+.hero__tab:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.hero__tab--active {
+    border-color: var(--primary);
+    color: var(--text);
+}
 /* ---------- Cards ---------- */
 
 .card {

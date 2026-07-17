@@ -4,7 +4,10 @@
 
 @template.layout.layout(title = "Birthday Reminder")
 
-@template.layout.header( title = "Contact Details", subtitle = "View contact information.")
+@template.layout.header(
+    title = "Contact Details",
+    subtitle = "View contact information.",
+    activeSection = "contacts")
 
 <main class="container">
     <section class="card detail-view">

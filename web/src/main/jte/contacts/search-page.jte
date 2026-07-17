@@ -4,7 +4,10 @@
 
 @template.layout.layout(title = "Birthday Reminder")
 
-@template.layout.header( title = "🎂 Birthday Reminder", subtitle = "Never miss an important birthday again.")
+@template.layout.header(
+    title = "🎂 Birthday Reminder",
+    subtitle = "Never miss an important birthday again.",
+    activeSection = "contacts")
 
 <main class="container">
     @template.contacts.upcoming-birthdays(upcomingBirthdays = viewModel.upcomingBirthdays())
