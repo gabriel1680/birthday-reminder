@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import io.vavr.control.Try;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ResourceNotFoundException;
-import org.gbl.common.service.json.GsonJsonAdapter;
+import org.gbl.common.service.json.GsonJsonServiceAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 class HttpApiClientTest {
 
     private static final String BASE_URL = "https://localhost:8000";
-    private final GsonJsonAdapter jsonParser = new GsonJsonAdapter();
+    private final GsonJsonServiceAdapter jsonParser = new GsonJsonServiceAdapter();
 
     @Captor
     private ArgumentCaptor<HttpRequest> requestCaptor;

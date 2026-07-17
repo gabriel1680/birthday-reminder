@@ -1,6 +1,6 @@
 package org.gbl;
 
-import org.gbl.common.service.json.GsonJsonAdapter;
+import org.gbl.common.service.json.GsonJsonServiceAdapter;
 import org.junit.platform.suite.api.AfterSuite;
 import org.junit.platform.suite.api.BeforeSuite;
 import org.junit.platform.suite.api.IncludeClassNamePatterns;
@@ -18,7 +18,7 @@ class BirthdayReminderSuite {
 
     @BeforeSuite
     static void init() {
-        api = new BReminderAPI(new GsonJsonAdapter());
+        api = new BReminderAPI(new GsonJsonServiceAdapter());
         api.start();
         api.awaitInitialization();
     }

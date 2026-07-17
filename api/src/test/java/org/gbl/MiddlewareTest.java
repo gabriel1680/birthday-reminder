@@ -1,6 +1,6 @@
 package org.gbl;
 
-import org.gbl.common.service.json.Json;
+import org.gbl.common.service.json.JsonService;
 import org.gbl.contacts.application.service.query.InvalidSearchInputException;
 import org.gbl.contacts.application.usecase.add.ContactAlreadyExistsException;
 import org.gbl.contacts.application.usecase.shared.ContactNotFoundException;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 class MiddlewareTest extends SparkControllerTest {
 
     @Mock
-    private Json json;
+    private JsonService jsonService;
 
     @InjectMocks
     private Middleware sut;
@@ -52,11 +52,11 @@ class MiddlewareTest extends SparkControllerTest {
     @ParameterizedTest
     @MethodSource("exceptionsProvider")
     void should_handle_exceptions(int statusCode, Exception exception, String message) {
-        when(json.stringify(any())).thenReturn("a json body");
+        when(jsonService.stringify(any())).thenReturn("a json body");
         sut.handleException(exception, request, response);
         verify(response).status(statusCode);
         verify(response).body("a json body");
-        verify(json).stringify(apiResponseCaptor.capture());
+        verify(jsonService).stringify(apiResponseCaptor.capture());
         assertThat(apiResponseCaptor.getValue())
                 .isInstanceOf(HttpAPIResponse.class)
                 .extracting(HttpAPIResponse::status, HttpAPIResponse::message)

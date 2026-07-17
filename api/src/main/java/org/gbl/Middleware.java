@@ -1,6 +1,6 @@
 package org.gbl;
 
-import org.gbl.common.service.json.Json;
+import org.gbl.common.service.json.JsonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -27,10 +27,10 @@ class Middleware {
     private static final BiFunction<Request, Response, String> ERR_404_HANDLER =
             (req, res) -> error(res, NOT_FOUND_404, "Not found: {}", req, "Not Found.");
 
-    private final Json json;
+    private final JsonService jsonService;
 
-    public Middleware(Json json) {
-        this.json = json;
+    public Middleware(JsonService jsonService) {
+        this.jsonService = jsonService;
     }
 
     public void init() {
@@ -53,7 +53,7 @@ class Middleware {
 
     public void handleException(Exception exception, Request request, Response response) {
         final var httpApiResponse = mapException(response, exception);
-        response.body(json.stringify(httpApiResponse));
+        response.body(jsonService.stringify(httpApiResponse));
     }
 
     public static void enableCORS(Response response) {

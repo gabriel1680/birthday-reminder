@@ -2,7 +2,7 @@ package org.gbl.config;
 
 import com.google.inject.AbstractModule;
 import org.gbl.common.gateway.http.HttpApiClient;
-import org.gbl.common.service.json.GsonJsonAdapter;
+import org.gbl.common.service.json.GsonJsonServiceAdapter;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.memory.ContactsGatewayStub;
 import org.gbl.common.gateway.http.HttpContactGateway;
@@ -26,7 +26,7 @@ public class ContactsModule extends AbstractModule {
     }
 
     private void bindProduction() {
-        final var jsonParser = new GsonJsonAdapter();
+        final var jsonParser = new GsonJsonServiceAdapter();
         final var httpClient = HttpClient.newHttpClient();
         final var restClient = new HttpApiClient(jsonParser, httpClient, "http://localhost:8080");
         final var contactGateway = new HttpContactGateway(restClient);
