@@ -15,7 +15,7 @@ public class NotificationsJSONPresenter {
                 .put("value", output.value());
     }
 
-    public Object toJson(Collection<NotificationOutput> output) {
+    public JSONArray toJson(Collection<NotificationOutput> output) {
         return output.stream()
                 .reduce(new JSONArray(),
                         (acc, next) -> acc.put(toJson(next)),

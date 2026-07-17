@@ -25,7 +25,7 @@ public class ContactsJSONPresenter {
                 .put("values", toJson(output.values()));
     }
 
-    public Object toJson(Collection<ContactOutput> output) {
+    public JSONArray toJson(Collection<ContactOutput> output) {
         return output.stream()
                 .reduce(new JSONArray(),
                         (acc, next) -> acc.put(toJson(next)),
