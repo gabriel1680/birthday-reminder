@@ -9,8 +9,8 @@
     subtitle = "Review this delivery destination or remove it.")
 
 <main class="container">
-    <section class="card">
-        <div class="card__header notification-details__header">
+    <section class="card detail-view">
+        <div class="card__header detail-view__header">
             <h2>${viewModel.type()}</h2>
             <form action="/notifications/${viewModel.id()}/delete" method="post">
                 <button class="btn btn--danger"
@@ -21,23 +21,23 @@
             </form>
         </div>
 
-        <div class="search-form">
-            <div class="form-field">
-                <label for="notification-id">ID</label>
-                <input id="notification-id" type="text" value="${viewModel.id()}" readonly>
+        <div class="detail-view__fields">
+            <div class="detail-view__field">
+                <label class="detail-view__label" for="notification-id">ID</label>
+                <input class="detail-view__input" id="notification-id" type="text" value="${viewModel.id()}" readonly>
             </div>
 
-            <div class="form-field">
-                <label for="notification-type">Delivery type</label>
-                <input id="notification-type" type="text" value="${viewModel.type()}" readonly>
+            <div class="detail-view__field">
+                <label class="detail-view__label" for="notification-type">Delivery type</label>
+                <input class="detail-view__input" id="notification-type" type="text" value="${viewModel.type()}" readonly>
             </div>
 
-            <div class="form-field form-field--full">
-                <label for="notification-destination">Destination</label>
-                <input id="notification-destination" type="text" value="${viewModel.value()}" readonly>
+            <div class="detail-view__field detail-view__field--full">
+                <label class="detail-view__label" for="notification-destination">Destination</label>
+                <input class="detail-view__input" id="notification-destination" type="text" value="${viewModel.value()}" readonly>
             </div>
 
-            <div class="search-form__actions">
+            <div class="detail-view__actions">
                 <a class="btn btn--secondary" href="/notifications">Back to notifications</a>
             </div>
         </div>

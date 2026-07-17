@@ -7,8 +7,8 @@
 @template.layout.header( title = "Contact Details", subtitle = "View contact information.")
 
 <main class="container">
-    <section class="card">
-        <div class="card__header">
+    <section class="card detail-view">
+        <div class="card__header detail-view__header">
             <h2>${viewModel.name()}</h2>
             <form action="/delete/${viewModel.id()}" method="post">
                 <button class="btn btn--danger"
@@ -20,23 +20,23 @@
         </div>
 
 
-        <div class="search-form">
-            <div class="form-field">
-                <label>ID</label>
-                <input type="text" value="${viewModel.id()}" readonly>
+        <div class="detail-view__fields">
+            <div class="detail-view__field">
+                <label class="detail-view__label" for="contact-id">ID</label>
+                <input class="detail-view__input" id="contact-id" type="text" value="${viewModel.id()}" readonly>
             </div>
 
-            <div class="form-field">
-                <label>Name</label>
-                <input type="text" value="${viewModel.name()}" readonly>
+            <div class="detail-view__field">
+                <label class="detail-view__label" for="contact-name">Name</label>
+                <input class="detail-view__input" id="contact-name" type="text" value="${viewModel.name()}" readonly>
             </div>
 
-            <div class="form-field">
-                <label>Birthday</label>
-                <input type="date" value="${viewModel.birthdate()}" readonly>
+            <div class="detail-view__field">
+                <label class="detail-view__label" for="contact-birthday">Birthday</label>
+                <input class="detail-view__input" id="contact-birthday" type="date" value="${viewModel.birthdate()}" readonly>
             </div>
 
-            <div class="search-form__actions">
+            <div class="detail-view__actions">
                 <a class="btn btn--secondary"
                         href="/">
                     Back
