@@ -28,6 +28,11 @@ public class HttpNotificationGateway implements  NotificationGateway {
     }
 
     @Override
+    public Try<NotificationResponse> get(String id) {
+        return httpApiClient.get(RESOURCE + "/" + id, NOTIFICATION_RESPONSE_TYPE);
+    }
+
+    @Override
     public Try<Void> add(AddNotificationRequest request) {
         return httpApiClient.post(RESOURCE, request, NOTIFICATION_RESPONSE_TYPE);
     }

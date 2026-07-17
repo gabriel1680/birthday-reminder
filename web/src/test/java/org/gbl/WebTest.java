@@ -7,6 +7,7 @@ import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.notification.NotificationResponse;
+import org.gbl.common.notification.RemoveNotificationRequest;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
@@ -207,6 +208,54 @@ public class WebTest {
 
                 final var response = httpClient.get("/notifications");
 
+                assertThat(response.body().string()).contains("No notifications configured");
+                assertThat(response.code()).isEqualTo(200);
+            });
+        }
+    }
+
+    @Nested
+    class NotificationDetailsPage {
+
+        @Test
+        void should_render_page() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var notification = new NotificationResponse("1", "email", "ada@example.com");
+                when(notificationGateway.get("1")).thenReturn(success(notification));
+
+                final var response = httpClient.get("/notifications/1");
+
+                assertThat(response.header("Content-Type")).isEqualTo("text/html");
+                assertThat(response.body().string())
+                        .contains(notification.type())
+                        .contains(notification.value())
+                        .contains("Delete notification");
+                assertThat(response.code()).isEqualTo(200);
+            });
+        }
+
+        @Test
+        void should_render_not_found_for_an_invalid_notification_id() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(notificationGateway.get("72"))
+                        .thenReturn(failure(new ResourceNotFoundException("not found")));
+
+                final var response = httpClient.get("/notifications/72");
+
+                assertThat(response.body().string()).contains("Page not found");
+                assertThat(response.code()).isEqualTo(404);
+            });
+        }
+
+        @Test
+        void should_delete_notification_and_return_to_notifications() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(notificationGateway.remove(any())).thenReturn(success(null));
+                when(notificationGateway.getAll()).thenReturn(success(emptyList()));
+
+                final var response = httpClient.post("/notifications/1/delete");
+
+                verify(notificationGateway).remove(new RemoveNotificationRequest("1"));
                 assertThat(response.body().string()).contains("No notifications configured");
                 assertThat(response.code()).isEqualTo(200);
             });

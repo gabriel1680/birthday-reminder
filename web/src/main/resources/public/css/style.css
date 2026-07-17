@@ -96,6 +96,13 @@ a {
     font-size: 1.15rem;
 }
 
+.notification-details__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
 /* ---------- Form ---------- */
 
 .search-form {
@@ -412,5 +419,10 @@ input:focus {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+    }
+
+    .notification-details__header {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }

@@ -36,6 +36,8 @@ public class Web {
         server.get("/", searchContactsController::searchPage);
         server.get("/details/{id}", contactDetailsController::contactInfo);
         server.get("/notifications", notificationsController::notificationPage);
+        server.get("/notifications/{id}", notificationsController::notificationDetailsPage);
+        server.post("/notifications/{id}/delete", notificationsController::deleteNotification);
         server.error(404, ErrorController::notFoundPage);
         server.error(500, ErrorController::internalServerErrorPage);
         server.exception(RuntimeException.class, (e, context) -> {
@@ -43,7 +45,7 @@ public class Web {
             context.status(500);
         });
         server.exception(ResourceNotFoundException.class, (e, context) -> {
-            LOGGER.warn("Contact Not Found", e);
+            LOGGER.warn("Resource Not Found", e);
             context.status(404);
         });
     }

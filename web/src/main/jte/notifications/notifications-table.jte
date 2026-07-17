@@ -31,7 +31,11 @@
                 <tbody>
                 @for(NotificationViewModel notification : notifications)
                     <tr>
-                        <td class="data-list__type">${notification.type()}</td>
+                        <td class="data-list__type">
+                            <a href="/notifications/${notification.id()}" class="data-list__link">
+                                ${notification.type()}
+                            </a>
+                        </td>
                         <td>${notification.value()}</td>
                     </tr>
                 @endfor
