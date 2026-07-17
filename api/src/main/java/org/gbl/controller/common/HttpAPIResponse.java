@@ -1,4 +1,4 @@
-package org.gbl.controller;
+package org.gbl.controller.common;
 
 import org.json.JSONObject;
 
@@ -16,6 +16,10 @@ public record HttpAPIResponse(ResponseStatus status, String message, Object data
 
     public static HttpAPIResponse ofError(String message) {
         return new HttpAPIResponse(ResponseStatus.ERROR, message, EMPTY_DATA);
+    }
+
+    public static HttpAPIResponse ofSuccess() {
+        return ofSuccess(null);
     }
 
     @Override

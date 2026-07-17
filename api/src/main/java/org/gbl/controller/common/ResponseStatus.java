@@ -1,4 +1,4 @@
-package org.gbl.controller;
+package org.gbl.controller.common;
 
 public enum ResponseStatus {
     SUCCESS("success"),
