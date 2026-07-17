@@ -10,36 +10,38 @@
         title = "No contacts found",
         message = "Try adjusting your search filters.")
 @else
-    <div class="contacts">
-        <div class="contacts__header">
+    <section class="data-list card">
+        <div class="data-list__header">
             <h2>Contacts</h2>
-            <span class="contacts__count">
-            ${totalContacts} contact${totalContacts == 1 ? "" : "s"}
-        </span>
+            <span class="data-list__count">
+                ${totalContacts} contact${totalContacts == 1 ? "" : "s"}
+            </span>
         </div>
-        <table class="contacts-table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Birthday</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @for(ContactView contact : contacts)
+        <div class="data-list__table-wrapper">
+            <table class="data-list__table">
+                <thead>
                 <tr>
-                    <td class="contacts-table__name">
-                        <a href="/details/${contact.id()}" class="contacts-table__link">
-                            ${contact.name()}
-                        </a>
-                    </td>
-                    <td>${contact.birthdate()}</td>
-                    <td class="contacts-table__arrow">
-                        ›
-                    </td>
+                    <th>Name</th>
+                    <th>Birthday</th>
+                    <th></th>
                 </tr>
-            @endfor
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                @for(ContactView contact : contacts)
+                    <tr>
+                        <td class="data-list__primary">
+                            <a href="/details/${contact.id()}" class="data-list__link">
+                                ${contact.name()}
+                            </a>
+                        </td>
+                        <td>${contact.birthdate()}</td>
+                        <td class="data-list__arrow">
+                            ›
+                        </td>
+                    </tr>
+                @endfor
+                </tbody>
+            </table>
+        </div>
+    </section>
 @endif
