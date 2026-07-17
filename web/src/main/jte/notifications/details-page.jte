@@ -13,13 +13,6 @@
     <section class="card detail-view">
         <div class="card__header detail-view__header">
             <h2>${viewModel.type()}</h2>
-            <form action="/notifications/${viewModel.id()}/delete" method="post">
-                <button class="btn btn--danger"
-                        type="submit"
-                        onclick="return confirm('Delete this notification?')">
-                    Delete notification
-                </button>
-            </form>
         </div>
 
         <div class="detail-view__fields">
@@ -38,8 +31,18 @@
                 <input class="detail-view__input" id="notification-destination" type="text" value="${viewModel.value()}" readonly>
             </div>
 
-            <div class="detail-view__actions">
-                <a class="btn btn--secondary" href="/notifications">Back to notifications</a>
+        </div>
+
+        <div class="detail-view__actions">
+            <a class="btn btn--secondary" href="/notifications">Back to notifications</a>
+            <div class="detail-view__record-actions">
+                <form action="/notifications/${viewModel.id()}/delete" method="post">
+                    <button class="btn btn--danger"
+                            type="submit"
+                            onclick="return confirm('Delete this notification?')">
+                        Delete notification
+                    </button>
+                </form>
             </div>
         </div>
     </section>

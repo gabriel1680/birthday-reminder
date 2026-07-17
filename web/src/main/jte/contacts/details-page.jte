@@ -13,13 +13,6 @@
     <section class="card detail-view">
         <div class="card__header detail-view__header">
             <h2>${viewModel.name()}</h2>
-            <form action="/contacts/${viewModel.id()}/delete" method="post">
-                <button class="btn btn--danger"
-                        type="submit"
-                        onclick="return confirm('Delete this contact?')">
-                    Delete
-                </button>
-            </form>
         </div>
 
 
@@ -39,14 +32,19 @@
                 <input class="detail-view__input" id="contact-birthday" type="date" value="${viewModel.birthdate()}" readonly>
             </div>
 
-            <div class="detail-view__actions">
-                <a class="btn btn--secondary"
-                        href="/contacts">
-                    Back
-                </a>
-                <a class="btn btn--primary" href="/contacts/${viewModel.id()}/edit">
-                    Edit
-                </a>
+        </div>
+
+        <div class="detail-view__actions">
+            <a class="btn btn--secondary" href="/contacts">Back to contacts</a>
+            <div class="detail-view__record-actions">
+                <form action="/contacts/${viewModel.id()}/delete" method="post">
+                    <button class="btn btn--danger"
+                            type="submit"
+                            onclick="return confirm('Delete this contact?')">
+                        Delete contact
+                    </button>
+                </form>
+                <a class="btn btn--primary" href="/contacts/${viewModel.id()}/edit">Edit contact</a>
             </div>
         </div>
     </section>
