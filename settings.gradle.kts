@@ -12,5 +12,4 @@ plugins {
 
 rootProject.name = "birthday-reminder"
 
-include("core", "api", "web", "cli")
-include("shared")
+include("core", "api", "web", "cli", "shared")
