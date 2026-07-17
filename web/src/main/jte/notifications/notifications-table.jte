@@ -10,33 +10,28 @@
     title = "No notifications configured",
     message = "Add a new notification configuration.")
 @else
-    <div class="contacts">
-        <div class="contacts__header">
-            <h2>Contacts</h2>
-            <span class="contacts__count">
+    <div class="notifications__header">
+        <div>
+            <h2 id="notifications-heading">Configured notifications</h2>
+            <p>Birthday reminders currently sent by the service.</p>
+        </div>
+        <span class="notifications__count">
             ${totalNotifications} notification${totalNotifications == 1 ? "" : "s"}
         </span>
-        </div>
-        <table class="contacts-table">
+    </div>
+    <div class="notifications__table-wrapper">
+        <table class="notifications-table">
             <thead>
             <tr>
-                <th>Type</th>
-                <th>Value</th>
-                <th></th>
+                <th scope="col">Delivery type</th>
+                <th scope="col">Destination</th>
             </tr>
             </thead>
             <tbody>
             @for(NotificationViewModel notification : notifications)
                 <tr>
-                    <td class="contacts-table__name">
-                        <a href="/notifications/details/${notification.id()}" class="contacts-table__link">
-                            ${notification.type()}
-                        </a>
-                    </td>
+                    <td class="notifications-table__type">${notification.type()}</td>
                     <td>${notification.value()}</td>
-                    <td class="contacts-table__arrow">
-                        ›
-                    </td>
                 </tr>
             @endfor
             </tbody>

@@ -2,15 +2,19 @@
 
 @param NotificationsViewModel viewModel
 
-@template.layout.layout(title = "Birthday Reminder")
+@template.layout.layout(title = "Notifications | Birthday Reminder")
 
-@template.layout.header( title = "Notifications", subtitle = "Never miss an important birthday again.")
+@template.layout.header(
+    title = "Notifications",
+    subtitle = "Choose where birthday reminders are delivered.")
 
 <main class="container">
 
-    @template.notifications.notifications-table(
-    totalNotifications = viewModel.total(),
-    notifications = viewModel.notifications())
+    <section class="notifications card" aria-labelledby="notifications-heading">
+        @template.notifications.notifications-table(
+            totalNotifications = viewModel.total(),
+            notifications = viewModel.notifications())
+    </section>
 
 </main>
 

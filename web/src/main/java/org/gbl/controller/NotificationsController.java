@@ -5,11 +5,9 @@ import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.notification.NotificationResponse;
 import org.gbl.view.notification.NotificationViewModel;
 import org.gbl.view.notification.NotificationsViewModel;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class NotificationsController {
     private final NotificationGateway notificationGateway;

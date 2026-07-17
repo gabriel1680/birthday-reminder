@@ -303,6 +303,64 @@ input:focus {
 
 /* ---------- Pagination ---------- */
 
+/* ---------- Notifications ---------- */
+
+.notifications {
+    overflow: hidden;
+}
+
+.notifications__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.notifications__header h2,
+.notifications__header p {
+    margin: 0;
+}
+
+.notifications__header p,
+.notifications__count {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.notifications__table-wrapper {
+    overflow-x: auto;
+}
+
+.notifications-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.notifications-table th,
+.notifications-table td {
+    padding: 16px 22px;
+    text-align: left;
+}
+
+.notifications-table thead {
+    background: #f9fafb;
+}
+
+.notifications-table tbody tr:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+}
+
+.notifications-table tbody tr:hover {
+    background: #f6f8fa;
+}
+
+.notifications-table__type {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
 .pagination {
     display: flex;
 
@@ -407,5 +465,10 @@ input:focus {
         align-items: flex-start;
 
         gap: 8px;
+    }
+
+    .notifications__header {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }

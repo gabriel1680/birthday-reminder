@@ -2,9 +2,9 @@ package org.gbl;
 
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
-import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.notification.NotificationResponse;
 import org.gbl.common.search.ContactFilter;
@@ -28,7 +28,7 @@ import static io.vavr.control.Try.failure;
 import static io.vavr.control.Try.success;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.gbl.DI.*;
+import static org.gbl.DI.createWebApp;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -193,7 +193,21 @@ public class WebTest {
                 when(notificationGateway.getAll()).thenReturn(success(List.of(pushNotification)));
                 final var response = httpClient.get("/notifications");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
-                assertThat(response.body().string()).contains(pushNotification.id());
+                assertThat(response.body().string())
+                        .contains(pushNotification.type())
+                        .contains(pushNotification.value());
+                assertThat(response.code()).isEqualTo(200);
+            });
+        }
+
+        @Test
+        void should_render_empty_state_when_no_notifications_are_configured() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(notificationGateway.getAll()).thenReturn(success(emptyList()));
+
+                final var response = httpClient.get("/notifications");
+
+                assertThat(response.body().string()).contains("No notifications configured");
                 assertThat(response.code()).isEqualTo(200);
             });
         }
