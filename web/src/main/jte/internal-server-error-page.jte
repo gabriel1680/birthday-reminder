@@ -1,31 +1,26 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+@template.layout.layout(title = "Something went wrong | Birthday Reminder")
 
-<h1>Internal Server Error</h1>
+@template.layout.header(
+    title = "Birthday Reminder",
+    subtitle = "We are here to help you get back on track.",
+    activeSection = "")
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 40px auto;
-    }
+<main class="container error-page">
+    <section class="card error-state" aria-labelledby="error-title">
+        <div class="error-state__icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+                <path d="M24 7 43 39H5L24 7Z"></path>
+                <path d="M24 18v10"></path>
+                <circle cx="24" cy="34" r="1"></circle>
+            </svg>
+        </div>
+        <p class="error-state__code">500 · Internal Server Error</p>
+        <h2 id="error-title">We hit an unexpected bump</h2>
+        <p class="error-state__message">
+            Something went wrong while loading this page. Please try again in a moment or return home.
+        </p>
+        <a class="btn btn--primary error-state__action" href="/">Go to home</a>
+    </section>
+</main>
 
-    select {
-        margin: 5px 0;
-    }
-
-    h1, h2, h3 {
-        margin-top: 1.5em;
-        margin-bottom: 5px;
-    }
-</style>
-</body>
-</html>
+@template.layout.footer()
