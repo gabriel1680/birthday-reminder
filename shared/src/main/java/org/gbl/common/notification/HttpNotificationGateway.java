@@ -1,7 +1,6 @@
 package org.gbl.common.notification;
 
 import com.google.gson.reflect.TypeToken;
-import io.vavr.control.Try;
 import org.gbl.common.gateway.http.HttpApiClient;
 
 import java.lang.reflect.Type;
@@ -23,22 +22,22 @@ public class HttpNotificationGateway implements  NotificationGateway {
     }
 
     @Override
-    public Try<List<NotificationResponse>> getAll() {
+    public List<NotificationResponse> getAll() {
         return httpApiClient.get(RESOURCE, NOTIFICATIONS_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<NotificationResponse> get(String id) {
+    public NotificationResponse get(String id) {
         return httpApiClient.get(RESOURCE + "/" + id, NOTIFICATION_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<Void> add(AddNotificationRequest request) {
-        return httpApiClient.post(RESOURCE, request, NOTIFICATION_RESPONSE_TYPE);
+    public void add(AddNotificationRequest request) {
+        httpApiClient.post(RESOURCE, request, NOTIFICATION_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<Void> remove(RemoveNotificationRequest request) {
-        return httpApiClient.delete(RESOURCE + "/" + request.id(), NOTIFICATION_RESPONSE_TYPE);
+    public void remove(RemoveNotificationRequest request) {
+        httpApiClient.delete(RESOURCE + "/" + request.id(), NOTIFICATION_RESPONSE_TYPE);
     }
 }

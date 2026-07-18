@@ -25,8 +25,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static io.vavr.control.Try.failure;
-import static io.vavr.control.Try.success;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.gbl.DI.createWebApp;
@@ -66,7 +64,7 @@ public class WebTest {
         @Test
         void should_render_upcoming_birthdays() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(success(List.of(AYRTON_SENNA)));
+                when(contactsGateway.getUpcomingBirthdays(any())).thenReturn(List.of(AYRTON_SENNA));
 
                 final var response = httpClient.get("/");
 
@@ -86,7 +84,7 @@ public class WebTest {
         @Test
         void should_send_headers() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(contactsGateway.search(any())).thenReturn(success(Pagination.empty()));
+                when(contactsGateway.search(any())).thenReturn(Pagination.empty());
                 final var response = httpClient.get("/contacts");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.code()).isEqualTo(200);
@@ -98,7 +96,7 @@ public class WebTest {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var contactResponses = List.of(AYRTON_SENNA, OZZY_OSBURN);
                 final var pagination = new Pagination<>(1, 5, 2, 1, contactResponses);
-                when(contactsGateway.search(any())).thenReturn(success(pagination));
+                when(contactsGateway.search(any())).thenReturn(pagination);
                 final var response = httpClient.get("/contacts");
                 assert response.body() != null;
                 final var htmlContent = response.body().string();
@@ -114,7 +112,7 @@ public class WebTest {
         void should_handle_contacts_pagination() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var pagination = new Pagination<>(2, 1, 2, 2, List.of(AYRTON_SENNA));
-                when(contactsGateway.search(any())).thenReturn(success(pagination));
+                when(contactsGateway.search(any())).thenReturn(pagination);
                 httpClient.get("/contacts?page=2&size=1&order=asc");
                 verify(contactsGateway, times(1)).search(requestCaptor.capture());
                 final var value = requestCaptor.getValue();
@@ -128,7 +126,7 @@ public class WebTest {
         void should_handle_filtering() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var pagination = new Pagination<>(2, 1, 2, 2, List.of(AYRTON_SENNA));
-                when(contactsGateway.search(any())).thenReturn(success(pagination));
+                when(contactsGateway.search(any())).thenReturn(pagination);
                 httpClient.get("/contacts?name=xyz&birthdateFrom=12/12/1900&birthdateTo=12/12/1999");
                 verify(contactsGateway, times(1)).search(requestCaptor.capture());
                 final var value = requestCaptor.getValue();
@@ -143,7 +141,7 @@ public class WebTest {
         void should_handle_internal_server_error() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var randomError = new RuntimeException("Random error");
-                when(contactsGateway.search(any())).thenReturn(failure(randomError));
+                when(contactsGateway.search(any())).thenThrow(randomError);
                 final var response = httpClient.get("/contacts");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Internal Server Error");
@@ -159,7 +157,7 @@ public class WebTest {
         void should_handle_internal_server_error_page() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var randomError = new RuntimeException("Random error");
-                when(contactsGateway.get(any())).thenReturn(failure(randomError));
+                when(contactsGateway.get(any())).thenThrow(randomError);
                 final var response = httpClient.get("/contacts/1");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Internal Server Error");
@@ -170,7 +168,7 @@ public class WebTest {
         @Test
         void should_render_page() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(contactsGateway.get(any())).thenReturn(success(AYRTON_SENNA));
+                when(contactsGateway.get(any())).thenReturn(AYRTON_SENNA);
                 final var response = httpClient.get("/contacts/1");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains(AYRTON_SENNA.id());
@@ -181,7 +179,7 @@ public class WebTest {
         @Test
         void should_render_not_found_for_invalid_contact_id() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(contactsGateway.get(any())).thenReturn(failure(new ResourceNotFoundException("not found")));
+                when(contactsGateway.get(any())).thenThrow(new ResourceNotFoundException("not found"));
                 final var response = httpClient.get("/contacts/72");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Page not found");
@@ -192,8 +190,7 @@ public class WebTest {
         @Test
         void should_delete_contact_and_return_to_contacts() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(contactsGateway.delete("1")).thenReturn(success(AYRTON_SENNA));
-                when(contactsGateway.search(any())).thenReturn(success(Pagination.empty()));
+                when(contactsGateway.search(any())).thenReturn(Pagination.empty());
 
                 final var response = httpClient.post("/contacts/1/delete");
 
@@ -211,7 +208,7 @@ public class WebTest {
         void should_handle_internal_server_error_page() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var randomError = new RuntimeException("Random error");
-                when(notificationGateway.getAll()).thenReturn(failure(randomError));
+                when(notificationGateway.getAll()).thenThrow(randomError);
                 final var response = httpClient.get("/notifications");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Internal Server Error");
@@ -223,7 +220,7 @@ public class WebTest {
         void should_render_page() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var pushNotification = new NotificationResponse("1", "push", "push notification");
-                when(notificationGateway.getAll()).thenReturn(success(List.of(pushNotification)));
+                when(notificationGateway.getAll()).thenReturn(List.of(pushNotification));
                 final var response = httpClient.get("/notifications");
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string())
@@ -236,7 +233,7 @@ public class WebTest {
         @Test
         void should_render_empty_state_when_no_notifications_are_configured() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(notificationGateway.getAll()).thenReturn(success(emptyList()));
+                when(notificationGateway.getAll()).thenReturn(emptyList());
 
                 final var response = httpClient.get("/notifications");
 
@@ -253,7 +250,7 @@ public class WebTest {
         void should_render_page() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var notification = new NotificationResponse("1", "email", "ada@example.com");
-                when(notificationGateway.get("1")).thenReturn(success(notification));
+                when(notificationGateway.get("1")).thenReturn(notification);
 
                 final var response = httpClient.get("/notifications/1");
 
@@ -270,7 +267,7 @@ public class WebTest {
         void should_render_not_found_for_an_invalid_notification_id() {
             JavalinTest.test(server, (server, httpClient) -> {
                 when(notificationGateway.get("72"))
-                        .thenReturn(failure(new ResourceNotFoundException("not found")));
+                        .thenThrow(new ResourceNotFoundException("not found"));
 
                 final var response = httpClient.get("/notifications/72");
 
@@ -282,8 +279,7 @@ public class WebTest {
         @Test
         void should_delete_notification_and_return_to_notifications() {
             JavalinTest.test(server, (server, httpClient) -> {
-                when(notificationGateway.remove(any())).thenReturn(success(null));
-                when(notificationGateway.getAll()).thenReturn(success(emptyList()));
+                when(notificationGateway.getAll()).thenReturn(emptyList());
 
                 final var response = httpClient.post("/notifications/1/delete");
 

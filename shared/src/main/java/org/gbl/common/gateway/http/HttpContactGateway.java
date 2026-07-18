@@ -1,7 +1,6 @@
 package org.gbl.common.gateway.http;
 
 import com.google.gson.reflect.TypeToken;
-import io.vavr.control.Try;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.CreateContactRequest;
@@ -33,36 +32,36 @@ public class HttpContactGateway implements ContactsGateway {
     }
 
     @Override
-    public Try<ContactResponse> get(String contactId) {
+    public ContactResponse get(String contactId) {
         final var path = RESOURCE + "/" + contactId;
         return httpApiClient.get(path, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<ContactResponse> create(CreateContactRequest request) {
+    public ContactResponse create(CreateContactRequest request) {
         return httpApiClient.post(RESOURCE, request, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<ContactResponse> update(UpdateContactRequest request) {
+    public void update(UpdateContactRequest request) {
         final var path = RESOURCE + "/" + request.id();
-        return httpApiClient.put(path, request, CONTACT_RESPONSE_TYPE);
+        httpApiClient.put(path, request, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<ContactResponse> delete(String contactId) {
+    public void delete(String contactId) {
         final var path = RESOURCE + "/" + contactId;
-        return httpApiClient.delete(path, CONTACT_RESPONSE_TYPE);
+        httpApiClient.delete(path, CONTACT_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> searchRequest) {
+    public Pagination<ContactResponse> search(SearchRequest<ContactFilter> searchRequest) {
         final var path = RESOURCE + "?" + toString(searchRequest);
         return httpApiClient.get(path, PAGINATION_RESPONSE_TYPE);
     }
 
     @Override
-    public Try<List<ContactResponse>> getUpcomingBirthdays(GetUpcomingBirthdaysRequest request) {
+    public List<ContactResponse> getUpcomingBirthdays(GetUpcomingBirthdaysRequest request) {
         final var path = RESOURCE + "/upcoming-birthdays?size=" + request.size();
         final var headers = Map.of("X-Time-Zone", request.clientZoneId().getId());
         return httpApiClient.get(path, UPCOMING_RESPONSE_TYPE, headers);

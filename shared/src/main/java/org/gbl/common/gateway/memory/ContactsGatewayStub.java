@@ -1,6 +1,5 @@
 package org.gbl.common.gateway.memory;
 
-import io.vavr.control.Try;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.CreateContactRequest;
@@ -18,32 +17,30 @@ public class ContactsGatewayStub implements ContactsGateway {
     private static final ContactResponse BELLA = new ContactResponse("1", "Bella", LocalDate.of(1987, 9, 13));
 
     @Override
-    public Try<ContactResponse> create(CreateContactRequest request) {
-        return Try.success(new ContactResponse("1", request.name(), request.birthdate()));
+    public ContactResponse create(CreateContactRequest request) {
+        return new ContactResponse("1", request.name(), request.birthdate());
     }
 
     @Override
-    public Try<ContactResponse> get(String contactId) {
-        return Try.success(BELLA);
+    public ContactResponse get(String contactId) {
+        return BELLA;
     }
 
     @Override
-    public Try<ContactResponse> update(UpdateContactRequest request) {
-        return Try.success(null);
+    public void update(UpdateContactRequest request) {
     }
 
     @Override
-    public Try<ContactResponse> delete(String contactId) {
-        return Try.success(null);
+    public void delete(String contactId) {
     }
 
     @Override
-    public Try<Pagination<ContactResponse>> search(SearchRequest<ContactFilter> request) {
-        return Try.success(new Pagination<>(request.page(), request.size(), 1, 1, List.of(BELLA)));
+    public Pagination<ContactResponse> search(SearchRequest<ContactFilter> request) {
+        return new Pagination<>(request.page(), request.size(), 1, 1, List.of(BELLA));
     }
 
     @Override
-    public Try<List<ContactResponse>> getUpcomingBirthdays(GetUpcomingBirthdaysRequest request) {
-        return Try.success(List.of(BELLA));
+    public List<ContactResponse> getUpcomingBirthdays(GetUpcomingBirthdaysRequest request) {
+        return List.of(BELLA);
     }
 }

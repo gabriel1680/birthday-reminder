@@ -25,7 +25,7 @@ public class HomeController {
         final var request = new GetUpcomingBirthdaysRequest(
                 UPCOMING_BIRTHDAYS_LIMIT,
                 ZoneId.of("America/Sao_Paulo"));
-        final var birthdays = contactsGateway.getUpcomingBirthdays(request).get();
+        final var birthdays = contactsGateway.getUpcomingBirthdays(request);
         final var viewModel = new HomeViewModel(presenter.toView(birthdays));
         context.render("home/home-page.jte", Map.of("viewModel", viewModel));
     }

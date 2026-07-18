@@ -26,7 +26,7 @@ public class SearchContactsController {
 
     public void searchPage(Context context) {
         final var request = createSearchRequestFrom(context);
-        final var pagination = contactsGateway.search(request).get();
+        final var pagination = contactsGateway.search(request);
         final var viewModel = presenter.toView(pagination, request.filter());
         renderSearchPage(context, viewModel);
     }

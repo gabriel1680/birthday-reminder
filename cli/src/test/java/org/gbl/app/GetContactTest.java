@@ -1,6 +1,5 @@
 package org.gbl.app;
 
-import io.vavr.control.Try;
 import org.gbl.CLITest;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
@@ -9,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import picocli.CommandLine;
+
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,7 +30,7 @@ class GetContactTest extends CLITest {
 
     @Test
     void ok() {
-        when(gateway.get(anyString())).thenReturn(Try.success(new ContactResponse("1", "Bella", "13/09/1987")));
+        when(gateway.get(anyString())).thenReturn(new ContactResponse("1", "Bella", LocalDate.parse("1987-09-13")));
         int exitCode = commandLine.execute("1");
         assertThat(exitCode).isEqualTo(0);
         var output = "Contact found => id: 1, name: Bella, birthdate: 13/09/1987\n";

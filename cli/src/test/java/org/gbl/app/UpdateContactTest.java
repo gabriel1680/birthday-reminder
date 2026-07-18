@@ -1,6 +1,5 @@
 package org.gbl.app;
 
-import io.vavr.control.Try;
 import org.gbl.CLITest;
 import org.gbl.common.gateway.ContactsGateway;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,7 @@ import picocli.CommandLine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateContactTest extends CLITest {
@@ -26,7 +25,6 @@ class UpdateContactTest extends CLITest {
 
     @Test
     void ok() {
-        when(gateway.update(any())).thenReturn(Try.success(null));
         var args = new String[]{"1", "--name=John", "--birthdate=27/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(0);
@@ -36,7 +34,7 @@ class UpdateContactTest extends CLITest {
 
     @Test
     void clientError() {
-        when(gateway.update(any())).thenReturn(Try.failure(new Throwable("some problem")));
+        doThrow(new RuntimeException("some problem")).when(gateway).update(any());
         var args = new String[]{"1", "--name=John", "--birthdate=27/02/1998"};
         int exitCode = commandLine.execute(args);
         assertThat(exitCode).isEqualTo(1);

@@ -1,7 +1,6 @@
 package org.gbl.common.gateway.http;
 
 import com.google.gson.reflect.TypeToken;
-import io.vavr.control.Try;
 import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.common.service.json.JsonService;
 
@@ -33,11 +32,11 @@ public class HttpApiClient {
         this.baseUrl = baseUrl;
     }
 
-    public <T> Try<T> get(String path, Type responseType) {
+    public <T> T get(String path, Type responseType) {
         return get(path, responseType, emptyMap());
     }
 
-    public <T> Try<T> get(String path, Type responseType, Map<String, String> headers) {
+    public <T> T get(String path, Type responseType, Map<String, String> headers) {
         final var variadicHeaders = headers.entrySet()
                 .stream()
                 .flatMap(e -> Stream.of(e.getKey(), e.getValue()))
@@ -47,21 +46,21 @@ public class HttpApiClient {
         return execute(getRequestBuilder.build(), responseType);
     }
 
-    public <T> Try<T> post(String path, Object body, Type responseType) {
+    public <T> T post(String path, Object body, Type responseType) {
         final var httpRequest = baseRequest(path)
                 .POST(BodyPublishers.ofString(jsonService.stringify(body)))
                 .build();
         return execute(httpRequest, responseType);
     }
 
-    public <T> Try<T> put(String path, Object body, Type responseType) {
+    public <T> T put(String path, Object body, Type responseType) {
         final var httpRequest = baseRequest(path)
                 .PUT(BodyPublishers.ofString(jsonService.stringify(body)))
                 .build();
         return execute(httpRequest, responseType);
     }
 
-    public <T> Try<T> delete(String path, Type responseType) {
+    public <T> T delete(String path, Type responseType) {
         final var httpRequest = baseRequest(path)
                 .DELETE()
                 .build();
@@ -76,9 +75,8 @@ public class HttpApiClient {
                 .headers("Accept", "application/json");
     }
 
-    private <T> Try<T> execute(HttpRequest httpRequest, Type type) {
-        return Try.of(() -> {
-            try {
+    private <T> T execute(HttpRequest httpRequest, Type type) {
+        try {
                 final var response = client.send(httpRequest, BodyHandlers.ofString());
                 final ApiResponse<T> apiResponse = jsonService.parse(response.body(), toParameterizedOf(type));
                 return switch (response.statusCode()) {
@@ -87,10 +85,12 @@ public class HttpApiClient {
                     default -> throw new HttpApiException(apiResponse.message());
 
                 };
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException("Error: request failed", e);
-            }
-        });
+        } catch (IOException e) {
+            throw new RuntimeException("Error: request failed", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Error: request interrupted", e);
+        }
     }
 
     private static Type toParameterizedOf(Type type) {

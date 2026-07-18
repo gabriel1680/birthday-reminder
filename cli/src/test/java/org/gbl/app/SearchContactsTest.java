@@ -1,13 +1,12 @@
 package org.gbl.app;
 
-import io.vavr.control.Try;
 import org.gbl.CLITest;
+import org.gbl.common.gateway.ContactResponse;
+import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
-import org.gbl.common.gateway.ContactResponse;
-import org.gbl.common.gateway.ContactsGateway;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import picocli.CommandLine;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -43,14 +43,14 @@ class SearchContactsTest extends CLITest {
 
     @Test
     void success() {
-        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
+        when(gateway.search(any())).thenReturn(emptyPagination);
         int statusCode = commandLine.execute();
         assertThat(statusCode).isEqualTo(0);
     }
 
     @Test
     void failure() {
-        when(gateway.search(any())).thenReturn(Try.failure(new Throwable("api error")));
+        when(gateway.search(any())).thenThrow(new RuntimeException("api error"));
         int statusCode = commandLine.execute();
         assertThat(statusCode).isEqualTo(1);
         assertThat(err.toString()).contains("Error on search contacts: api error");
@@ -61,7 +61,7 @@ class SearchContactsTest extends CLITest {
 
     @Test
     void defaultSearchValues() {
-        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
+        when(gateway.search(any())).thenReturn(emptyPagination);
         int statusCode = commandLine.execute();
         assertThat(statusCode).isEqualTo(0);
         verify(gateway).search(requestArgumentCaptor.capture());
@@ -76,7 +76,7 @@ class SearchContactsTest extends CLITest {
     @ParameterizedTest
     @MethodSource("searchWithParamsProvider")
     void searchWithParams(String[] args) {
-        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
+        when(gateway.search(any())).thenReturn(emptyPagination);
         int statusCode = commandLine.execute(args);
         assertThat(statusCode).isEqualTo(0);
         verify(gateway).search(requestArgumentCaptor.capture());
@@ -96,7 +96,7 @@ class SearchContactsTest extends CLITest {
 
     @Test
     void searchWithFilter() {
-        when(gateway.search(any())).thenReturn(Try.success(emptyPagination));
+        when(gateway.search(any())).thenReturn(emptyPagination);
         int statusCode = commandLine.execute("-n=Claudio", "-bf=12/12/1900", "-bt=12/12/1990");
         assertThat(statusCode).isEqualTo(0);
         verify(gateway).search(requestArgumentCaptor.capture());
@@ -111,18 +111,18 @@ class SearchContactsTest extends CLITest {
 
     @Test
     void tableRender() {
-        final var johnDoe = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e7", "John Doe", "1990-09-10");
-        final var maryAnn = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e8", "Mary Ann", "1991-09-10");
+        final var johnDoe = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e7", "John Doe", LocalDate.parse("1990-09-10"));
+        final var maryAnn = new ContactResponse("85527e63-86f2-4ea8-8cea-7112b0a792e8", "Mary Ann", LocalDate.parse("1991-09-10"));
         final var pagination = new Pagination<>(1, 5, 2, 1, List.of(johnDoe, maryAnn));
-        when(gateway.search(any())).thenReturn(Try.success(pagination));
+        when(gateway.search(any())).thenReturn(pagination);
         commandLine.execute();
         final var expected = """
                 Contacts retrieved
                                                                     
                 _____________________________________________________________________
                 id | name | birthdate
-                85527e63-86f2-4ea8-8cea-7112b0a792e7 | John Doe | 1990-09-10
-                85527e63-86f2-4ea8-8cea-7112b0a792e8 | Mary Ann | 1991-09-10
+                85527e63-86f2-4ea8-8cea-7112b0a792e7 | John Doe | 10/09/1990
+                85527e63-86f2-4ea8-8cea-7112b0a792e8 | Mary Ann | 10/09/1991
                 _____________________________________________________________________
                 current_page: 1 | last_page: 1 | total: 2
                  """;

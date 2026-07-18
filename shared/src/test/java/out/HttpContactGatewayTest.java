@@ -1,6 +1,5 @@
 package out;
 
-import io.vavr.control.Try;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.UpdateContactRequest;
@@ -22,6 +21,7 @@ import java.time.LocalDate;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -49,13 +49,9 @@ class HttpContactGatewayTest {
     @Test
     void responseError() {
         final var exception = new RuntimeException("invalid name");
-        when(httpApiClient.post(any(), any(), any())).thenReturn(Try.failure(exception));
+        when(httpApiClient.post(any(), any(), any())).thenThrow(exception);
         var request = new CreateContactRequest("John", LocalDate.parse("1957-04-14"));
-        final var output = sut.create(request);
-        assertThat(output.isFailure()).isTrue();
-        assertThat(output.failed().get())
-                .extracting(Throwable::getMessage)
-                .isEqualTo(exception.getMessage());
+        assertThatThrownBy(() -> sut.create(request)).isSameAs(exception);
     }
 
     @Nested
@@ -69,12 +65,12 @@ class HttpContactGatewayTest {
 
         @BeforeEach
         void setUp() {
-            when(httpApiClient.post(eq("/contacts"), any(), any())).thenReturn(Try.success(MARY_ANN));
+            when(httpApiClient.post(eq("/contacts"), any(), any())).thenReturn(MARY_ANN);
         }
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.create(request).get())
+            assertThat(sut.create(request))
                     .isNotNull()
                     .isSameAs(MARY_ANN);
         }
@@ -96,12 +92,12 @@ class HttpContactGatewayTest {
 
         @BeforeEach
         void setUp() {
-            when(httpApiClient.get("/contacts/1", ContactResponse.class)).thenReturn(Try.success(MARY_ANN));
+            when(httpApiClient.get("/contacts/1", ContactResponse.class)).thenReturn(MARY_ANN);
         }
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.get(request).get()).isSameAs(MARY_ANN);
+            assertThat(sut.get(request)).isSameAs(MARY_ANN);
         }
     }
 
@@ -114,12 +110,13 @@ class HttpContactGatewayTest {
         @BeforeEach
         void setUp() {
             when(httpApiClient.put("/contacts/2", request, ContactResponse.class))
-                    .thenReturn(Try.success(JOHN_WICK));
+                    .thenReturn(JOHN_WICK);
         }
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.update(request).get()).isSameAs(JOHN_WICK);
+            sut.update(request);
+            verify(httpApiClient).put("/contacts/2", request, ContactResponse.class);
         }
     }
 
@@ -129,9 +126,9 @@ class HttpContactGatewayTest {
         @Test
         void success() {
             when(httpApiClient.delete("/contacts/1", ContactResponse.class))
-                    .thenReturn(Try.success(MARY_ANN));
-            final var result = sut.delete("1");
-            assertThat(result.isSuccess()).isTrue();
+                    .thenReturn(MARY_ANN);
+            sut.delete("1");
+            verify(httpApiClient).delete("/contacts/1", ContactResponse.class);
         }
     }
 
@@ -144,12 +141,12 @@ class HttpContactGatewayTest {
         void setUp() {
             final var pagination = new Pagination<ContactResponse>(1, 1, 1, 1, emptyList());
             when(httpApiClient.get(eq("/contacts?page=1&size=1&order=asc"), any()))
-                    .thenReturn(Try.success(pagination));
+                    .thenReturn(pagination);
         }
 
         @Test
         void shouldReturnAValidOutput() {
-            assertThat(sut.search(request).get())
+            assertThat(sut.search(request))
                     .isNotNull()
                     .isInstanceOf(Pagination.class);
         }

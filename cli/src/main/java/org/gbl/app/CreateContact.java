@@ -7,6 +7,8 @@ import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
 @Command(name = "create",
@@ -38,11 +40,16 @@ public class CreateContact implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        final var request = new org.gbl.common.gateway.CreateContactRequest(data.name, data.birthdate);
-        final var response = contactsGateway.create(request)
-                .onSuccess(CreateContact::onSuccess)
-                .onFailure(CreateContact::onFailure);
-        return response.isFailure() ? 1 : 0;
+        final var request = new org.gbl.common.gateway.CreateContactRequest(
+                data.name,
+                LocalDate.parse(data.birthdate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        try {
+            onSuccess(contactsGateway.create(request));
+            return 0;
+        } catch (RuntimeException error) {
+            onFailure(error);
+            return 1;
+        }
     }
 
     private static void onFailure(Throwable error) {
@@ -51,6 +58,10 @@ public class CreateContact implements Callable<Integer> {
 
     private static void onSuccess(ContactResponse contact) {
         final var msg = "Create contact with id: %s, name: %s and birthdate: %s%n";
-        System.out.printf(msg, contact.id(), contact.name(), contact.birthdate());
+        System.out.printf(msg, contact.id(), contact.name(), format(contact.birthdate()));
+    }
+
+    private static String format(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }

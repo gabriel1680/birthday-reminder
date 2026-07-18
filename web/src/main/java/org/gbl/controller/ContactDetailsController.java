@@ -16,12 +16,12 @@ public class ContactDetailsController {
     }
 
     public void contactInfo(Context context) {
-        final var contactResponse = gateway.get(context.pathParam("id")).get();
+        final var contactResponse = gateway.get(context.pathParam("id"));
         renderDetailsPage(context, contactResponse);
     }
 
     public void deleteContact(Context context) {
-        gateway.delete(context.pathParam("id")).get();
+        gateway.delete(context.pathParam("id"));
         context.redirect("/contacts");
     }
 

@@ -48,10 +48,14 @@ public class UpdateContact implements Callable<Integer> {
             return 2;
         }
         final var request = new UpdateContactRequest(id, data.name, data.birthdate);
-        final var response = gateway.update(request)
-                .onSuccess(UpdateContact::onSuccess)
-                .onFailure(UpdateContact::onError);
-        return response.isFailure() ? 1 : 0;
+        try {
+            gateway.update(request);
+            onSuccess(null);
+            return 0;
+        } catch (RuntimeException error) {
+            onError(error);
+            return 1;
+        }
     }
 
     private static void onSuccess(Void v) {

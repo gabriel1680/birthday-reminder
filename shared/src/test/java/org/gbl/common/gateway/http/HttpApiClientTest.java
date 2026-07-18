@@ -1,7 +1,6 @@
 package org.gbl.common.gateway.http;
 
 import com.google.gson.reflect.TypeToken;
-import io.vavr.control.Try;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.common.service.json.GsonJsonServiceAdapter;
@@ -28,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,7 +71,10 @@ class HttpApiClientTest {
     void client_exception() throws IOException, InterruptedException {
         final var error = new IOException("invalid error");
         when(client.send(any(), any())).thenThrow(error);
-        assertThat(sut.get("/", String.class).isFailure()).isTrue();
+        assertThatThrownBy(() -> sut.get("/", String.class))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Error: request failed")
+                .hasCause(error);
     }
 
     @Nested
@@ -89,8 +92,8 @@ class HttpApiClientTest {
                     """;
             when(response.body()).thenReturn(body);
             when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
-            final var response = sut.delete("/", ContactResponse.class);
-            assertThat(response.isSuccess()).isTrue();
+            final ContactResponse result = sut.delete("/", ContactResponse.class);
+            assertThat(result).isNotNull();
         }
 
         @Test
@@ -105,8 +108,8 @@ class HttpApiClientTest {
                     """;
             when(response.body()).thenReturn(body);
             when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
-            final var response = sut.post("/", new Object(), ContactResponse.class);
-            assertThat(response.get()).isInstanceOf(ContactResponse.class);
+            final ContactResponse result = sut.post("/", new Object(), ContactResponse.class);
+            assertThat(result).isInstanceOf(ContactResponse.class);
         }
     }
 
@@ -126,9 +129,8 @@ class HttpApiClientTest {
             final var uuid = UUID.randomUUID();
             setupMockResponseWith(200, List.of(uuid));
             final var type = TypeToken.getParameterized(List.class, UUID.class).getType();
-            final Try<List<UUID>> result = sut.post("/", new Object(), type);
-            assertThat(result.isSuccess()).isTrue();
-            assertThat(result.get()).first().extracting(UUID::toString).isEqualTo(uuid.toString());
+            final List<UUID> result = sut.post("/", new Object(), type);
+            assertThat(result).first().extracting(UUID::toString).isEqualTo(uuid.toString());
         }
 
     }
@@ -139,28 +141,24 @@ class HttpApiClientTest {
         @ValueSource(ints = {400, 401, 500})
         void when_not_success_status_code_should_throw(int statusCode) throws IOException, InterruptedException {
             setupMockResponsesWithStatus(statusCode);
-            final var output = sut.post("/", new Object(), String.class);
-            assertThat(output.isFailure()).isTrue();
-            assertThat(output.failed().get())
-                    .extracting(Throwable::getMessage)
-                    .isEqualTo("a message");
+            assertThatThrownBy(() -> sut.post("/", new Object(), String.class))
+                    .isInstanceOf(HttpApiException.class)
+                    .hasMessage("a message");
         }
 
         @ParameterizedTest
         @ValueSource(ints = {200, 201, 204})
         void when_success_status_code_should_succeed(int statusCode) throws IOException, InterruptedException {
             setupMockResponsesWithStatus(statusCode);
-            final var output = sut.post("/", new Object(), String.class);
-            assertThat(output.isSuccess()).isTrue();
-            assertThat(output.get()).isInstanceOf(String.class);
+            final String result = sut.post("/", new Object(), String.class);
+            assertThat(result).isInstanceOf(String.class);
         }
 
         @Test
         void when_404_should_fail_with_not_found_exception() throws IOException, InterruptedException {
             setupMockResponsesWithStatus(404);
-            final var output = sut.post("/", new Object(), String.class);
-            assertThat(output.isFailure()).isTrue();
-            assertThat(output.failed().get()).isInstanceOf(ResourceNotFoundException.class);
+            assertThatThrownBy(() -> sut.post("/", new Object(), String.class))
+                    .isInstanceOf(ResourceNotFoundException.class);
         }
 
     }
@@ -177,9 +175,8 @@ class HttpApiClientTest {
     @Test
     void should_get_without_headers() throws IOException, InterruptedException {
         setupMockResponseWith(200, "xx");
-        final Try<String> result = sut.get("/a-path", String.class);
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).isEqualTo("xx");
+        final String result = sut.get("/a-path", String.class);
+        assertThat(result).isEqualTo("xx");
         assertHttpPathAndVerb("/a-path", "GET");
     }
 
@@ -196,9 +193,8 @@ class HttpApiClientTest {
     @Test
     void should_post_with_response() throws IOException, InterruptedException {
         setupMockResponseWith(200, "zz");
-        final Try<String> result = sut.post("/to-create", new Object(), String.class);
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).isEqualTo("zz");
+        final String result = sut.post("/to-create", new Object(), String.class);
+        assertThat(result).isEqualTo("zz");
         assertHttpPathAndVerb("/to-create", "POST");
     }
 
@@ -218,9 +214,8 @@ class HttpApiClientTest {
     @Test
     void should_put_with_response() throws IOException, InterruptedException {
         setupMockResponseWith(200, "yy");
-        final Try<String> result = sut.put("/to-update", new Object(), String.class);
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).isEqualTo("yy");
+        final String result = sut.put("/to-update", new Object(), String.class);
+        assertThat(result).isEqualTo("yy");
         assertHttpPathAndVerb("/to-update", "PUT");
     }
 
@@ -240,9 +235,8 @@ class HttpApiClientTest {
     @Test
     void should_delete_and_return_data() throws IOException, InterruptedException {
         setupMockResponseWith(200, "xx");
-        final Try<String> result = sut.delete("/to-delete", String.class);
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).isEqualTo("xx");
+        final String result = sut.delete("/to-delete", String.class);
+        assertThat(result).isEqualTo("xx");
         assertHttpPathAndVerb("/to-delete", "DELETE");
     }
 }

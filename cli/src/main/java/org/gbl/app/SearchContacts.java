@@ -1,9 +1,9 @@
 package org.gbl.app;
 
 import jakarta.inject.Inject;
-import org.gbl.common.search.ContactFilter;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
@@ -12,6 +12,7 @@ import picocli.CommandLine.Help.Visibility;
 import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Option;
 
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
 @Command(name = "search", mixinStandardHelpOptions = true, description = "Searches contacts by " +
@@ -57,12 +58,17 @@ public class SearchContacts implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        final var filter = new ContactFilter(name, birthdateFrom, birthdateTo);
+        final var filter = name == null && birthdateFrom == null && birthdateTo == null
+                ? null
+                : new ContactFilter(name, birthdateFrom, birthdateTo);
         final var searchRequest = new SearchRequest<>(page, size, order, filter);
-        final var response = gateway.search(searchRequest)
-                .onSuccess(this::onSuccess)
-                .onFailure(this::onFailure);
-        return response.isFailure() ? 1 : 0;
+        try {
+            onSuccess(gateway.search(searchRequest));
+            return 0;
+        } catch (RuntimeException error) {
+            onFailure(error);
+            return 1;
+        }
     }
 
     private void onFailure(Throwable throwable) {
@@ -75,7 +81,8 @@ public class SearchContacts implements Callable<Integer> {
         System.out.println("_____________________________________________________________________");
         System.out.println("id | name | birthdate");
         for (var contact : pagination.values()) {
-            System.out.printf("%s | %s | %s%n", contact.id(), contact.name(), contact.birthdate());
+            final var birthdate = contact.birthdate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            System.out.printf("%s | %s | %s%n", contact.id(), contact.name(), birthdate);
         }
         System.out.println("_____________________________________________________________________");
         System.out.printf("current_page: %s | last_page: %s | total: %s%n",

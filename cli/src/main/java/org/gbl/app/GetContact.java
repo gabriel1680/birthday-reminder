@@ -6,6 +6,7 @@ import org.gbl.common.gateway.ContactsGateway;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
 @Command(name = "get", mixinStandardHelpOptions = true, description = "Get a contact by id")
@@ -23,10 +24,13 @@ public class GetContact implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        final var response = gateway.get(id)
-                .onSuccess(this::onSuccess)
-                .onFailure(this::onFailure);
-        return response.isFailure() ? 1 : 0;
+        try {
+            onSuccess(gateway.get(id));
+            return 0;
+        } catch (RuntimeException error) {
+            onFailure(error);
+            return 1;
+        }
     }
 
     private void onFailure(Throwable error) {
@@ -37,6 +41,6 @@ public class GetContact implements Callable<Integer> {
         System.out.printf("Contact found => id: %s, name: %s, birthdate: %s%n",
                           contact.id(),
                           contact.name(),
-                          contact.birthdate());
+                          contact.birthdate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 }

@@ -1,6 +1,5 @@
 package org.gbl.app;
 
-import io.vavr.control.Try;
 import org.gbl.CLITest;
 import org.gbl.common.gateway.ContactsGateway;
 import org.junit.jupiter.api.Test;
@@ -12,10 +11,10 @@ import picocli.CommandLine;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DeleteContactTest extends CLITest {
@@ -30,7 +29,6 @@ class DeleteContactTest extends CLITest {
 
     @Test
     void ok() {
-        when(gateway.delete(any())).thenReturn(Try.success(null));
         int exitCode = commandLine.execute("1");
         assertThat(exitCode).isEqualTo(0);
         assertThat(out.toString()).contains("Contact deleted ✅\n");
@@ -39,7 +37,7 @@ class DeleteContactTest extends CLITest {
 
     @Test
     void clientError() {
-        when(gateway.delete(any())).thenReturn(Try.failure(new Throwable("Err")));
+        doThrow(new RuntimeException("Err")).when(gateway).delete(any());
         int exitCode = commandLine.execute("1");
         assertThat(exitCode).isEqualTo(1);
         assertThat(err.toString()).contains("Err\n");
