@@ -1,6 +1,6 @@
-@param org.gbl.view.PaginationWindow pagination
+@param org.gbl.view.common.PaginationWindow pagination
 @param org.gbl.common.search.ContactFilter filter
-@param org.gbl.view.ContactUrlBuilder urlBuilder
+@param org.gbl.view.contacts.ContactUrlBuilder urlBuilder
 
 <nav class="pagination">
 
@@ -12,7 +12,7 @@
         <span class="pagination__disabled">← Previous</span>
     @endif
 
-    @for(org.gbl.view.PaginationItem item : pagination.items())
+    @for(org.gbl.view.common.PaginationItem item : pagination.items())
 
         @if(item.ellipsis())
             <span class="pagination__ellipsis">...</span>

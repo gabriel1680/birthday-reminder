@@ -1,4 +1,4 @@
-@import org.gbl.view.ContactView
+@import org.gbl.view.contacts.ContactView
 @import java.util.Collection
 
 @param int totalContacts

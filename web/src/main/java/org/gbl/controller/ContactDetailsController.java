@@ -3,7 +3,7 @@ package org.gbl.controller;
 import io.javalin.http.Context;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
-import org.gbl.view.ContactViewPresenter;
+import org.gbl.view.contacts.ContactViewPresenter;
 
 import java.util.Map;
 

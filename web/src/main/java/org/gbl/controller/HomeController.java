@@ -4,7 +4,7 @@ import io.javalin.http.Context;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
 import org.gbl.view.HomeViewModel;
-import org.gbl.view.UpcomingBirthdaysPresenter;
+import org.gbl.view.contacts.UpcomingBirthdaysPresenter;
 
 import java.time.ZoneId;
 import java.util.Map;

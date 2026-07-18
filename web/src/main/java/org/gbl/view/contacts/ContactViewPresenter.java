@@ -1,4 +1,4 @@
-package org.gbl.view;
+package org.gbl.view.contacts;
 
 import org.gbl.common.gateway.ContactResponse;
 

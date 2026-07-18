@@ -10,8 +10,8 @@ import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.HomeController;
 import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
-import org.gbl.view.ContactSearchPresenter;
-import org.gbl.view.UpcomingBirthdaysPresenter;
+import org.gbl.view.contacts.ContactSearchPresenter;
+import org.gbl.view.contacts.UpcomingBirthdaysPresenter;
 
 import java.net.http.HttpClient;
 import java.time.Clock;

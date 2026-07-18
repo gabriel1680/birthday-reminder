@@ -1,8 +1,10 @@
-package org.gbl.view;
+package org.gbl.view.contacts;
 
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
+import org.gbl.view.common.PaginationView;
+import org.gbl.view.common.PaginationWindowBuilder;
 
 public class ContactSearchPresenter {
 

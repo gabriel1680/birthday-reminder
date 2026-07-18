@@ -1,4 +1,4 @@
-@import org.gbl.view.UpcomingBirthday
+@import org.gbl.view.contacts.UpcomingBirthday
 @import java.util.Collection
 
 @param Collection<UpcomingBirthday> upcomingBirthdays

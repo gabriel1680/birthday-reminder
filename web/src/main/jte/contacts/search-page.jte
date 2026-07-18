@@ -1,4 +1,4 @@
-@import org.gbl.view.SearchViewModel
+@import org.gbl.view.contacts.SearchViewModel
 
 @param SearchViewModel viewModel
 

@@ -10,6 +10,10 @@
     activeSection = "notifications")
 
 <main class="container">
+    <div class="detail-view__back">
+        <a class="text-link" href="/notifications">← Back to notifications</a>
+    </div>
+
     <section class="card detail-view">
         <div class="card__header detail-view__header">
             <h2>${viewModel.type()}</h2>
@@ -34,7 +38,6 @@
         </div>
 
         <div class="detail-view__actions">
-            <a class="btn btn--secondary" href="/notifications">Back to notifications</a>
             <div class="detail-view__record-actions">
                 <form action="/notifications/${viewModel.id()}/delete" method="post">
                     <button class="btn btn--danger"

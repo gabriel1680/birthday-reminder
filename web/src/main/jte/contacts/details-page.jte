@@ -1,4 +1,4 @@
-@import org.gbl.view.ContactView
+@import org.gbl.view.contacts.ContactView
 
 @param ContactView viewModel
 
@@ -10,6 +10,10 @@
     activeSection = "contacts")
 
 <main class="container">
+    <div class="detail-view__back">
+        <a class="text-link" href="/contacts">← Back to contacts</a>
+    </div>
+
     <section class="card detail-view">
         <div class="card__header detail-view__header">
             <h2>${viewModel.name()}</h2>
@@ -35,7 +39,6 @@
         </div>
 
         <div class="detail-view__actions">
-            <a class="btn btn--secondary" href="/contacts">Back to contacts</a>
             <div class="detail-view__record-actions">
                 <form action="/contacts/${viewModel.id()}/delete" method="post">
                     <button class="btn btn--danger"

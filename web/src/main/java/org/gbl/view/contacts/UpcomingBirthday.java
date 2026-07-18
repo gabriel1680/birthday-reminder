@@ -1,4 +1,4 @@
-package org.gbl.view;
+package org.gbl.view.contacts;
 
 public record UpcomingBirthday(ContactView contact, int daysUntilBirthday) {
 
