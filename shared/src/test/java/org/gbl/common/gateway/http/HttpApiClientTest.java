@@ -83,17 +83,10 @@ class HttpApiClientTest {
         @Test
         void should_parse_empty_data() throws IOException, InterruptedException {
             when(response.statusCode()).thenReturn(204);
-            final var body = """
-                    {
-                    "status": "success",
-                    "message": "contact deleted",
-                    "data": {}
-                    }
-                    """;
-            when(response.body()).thenReturn(body);
+            when(response.body()).thenReturn(null);
             when(client.send(any(), any(BodyHandler.class))).thenReturn(response);
             final ContactResponse result = sut.delete("/", ContactResponse.class);
-            assertThat(result).isNotNull();
+            assertThat(result).isNull();
         }
 
         @Test

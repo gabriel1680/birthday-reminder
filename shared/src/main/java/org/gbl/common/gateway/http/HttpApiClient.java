@@ -80,7 +80,8 @@ public class HttpApiClient {
                 final var response = client.send(httpRequest, BodyHandlers.ofString());
                 final ApiResponse<T> apiResponse = jsonService.parse(response.body(), toParameterizedOf(type));
                 return switch (response.statusCode()) {
-                    case 200, 201, 204 -> apiResponse.data();
+                    case 200, 201 -> apiResponse.data();
+                    case 204 -> null;
                     case 404 -> throw new ResourceNotFoundException(apiResponse.message());
                     default -> throw new HttpApiException(apiResponse.message());
 
