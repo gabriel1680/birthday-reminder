@@ -136,6 +136,7 @@ body {
     background: var(--background);
     color: var(--text);
     font-family: var(--font-sans);
+    font-size: .9375rem;
     line-height: 1.5;
 }
 
@@ -421,6 +422,16 @@ a {
     font-variant-numeric: tabular-nums;
 }
 
+.detail-view__input--error {
+    border-color: var(--danger);
+}
+
+.field-error {
+    margin: 0;
+    color: var(--danger);
+    font-size: .85rem;
+}
+
 .detail-view__actions {
     display: flex;
     align-items: center;
@@ -571,7 +582,8 @@ label {
     font-size: .9rem;
 }
 
-input {
+input,
+select {
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -580,7 +592,8 @@ input {
     font: inherit;
 }
 
-input:focus {
+input:focus,
+select:focus {
     outline: none;
     border-color: var(--primary);
 }
@@ -709,6 +722,12 @@ input:focus {
 
 .data-list__header h2 {
     font-weight: var(--font-weight-semibold);
+}
+
+.data-list__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 .data-list__description,
@@ -924,6 +943,13 @@ input:focus {
 
 @media (max-width: 700px) {
 
+    input,
+    select,
+    button,
+    .btn {
+        font-size: 1rem;
+    }
+
     .hero__top {
         flex-direction: column;
         gap: 16px;
@@ -970,6 +996,11 @@ input:focus {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+    }
+
+    .data-list__header-actions {
+        width: 100%;
+        justify-content: space-between;
     }
 
     .detail-view__header {

@@ -7,6 +7,7 @@ import org.gbl.common.notification.HttpNotificationGateway;
 import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.service.json.GsonJsonServiceAdapter;
 import org.gbl.controller.ContactDetailsController;
+import org.gbl.controller.CreateContactController;
 import org.gbl.controller.HomeController;
 import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
@@ -22,8 +23,10 @@ public class DI {
         final var homeController = homeController(gateway);
         final var searchContactsController = searchContactsController(gateway);
         final var contactInfoController = contactInfoController(gateway);
+        final var createContactController = new CreateContactController(gateway);
         final var notificationsController = notificationsController(notificationGateway);
-        return new Web(homeController, searchContactsController, contactInfoController, notificationsController);
+        return new Web(homeController, searchContactsController, contactInfoController,
+                createContactController, notificationsController);
     }
 
     private static HomeController homeController(ContactsGateway gateway) {

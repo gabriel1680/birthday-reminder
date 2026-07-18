@@ -5,6 +5,7 @@ import io.javalin.config.JavalinConfig;
 import io.javalin.rendering.template.JavalinJte;
 import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.controller.ContactDetailsController;
+import org.gbl.controller.CreateContactController;
 import org.gbl.controller.ErrorController;
 import org.gbl.controller.HomeController;
 import org.gbl.controller.NotificationsController;
@@ -20,17 +21,20 @@ public class Web {
     private final HomeController homeController;
     private final SearchContactsController searchContactsController;
     private final ContactDetailsController contactDetailsController;
+    private final CreateContactController createContactController;
     private final NotificationsController notificationsController;
 
     public Web(
             HomeController homeController,
             SearchContactsController searchContactsController,
             ContactDetailsController contactDetailsController,
+            CreateContactController createContactController,
             NotificationsController notificationsController
     ) {
         this.homeController = homeController;
         this.searchContactsController = searchContactsController;
         this.contactDetailsController = contactDetailsController;
+        this.createContactController = createContactController;
         this.notificationsController = notificationsController;
         server = Javalin.create(Web::configureServer);
         initRoutes();
@@ -39,9 +43,13 @@ public class Web {
     private void initRoutes() {
         server.get("/", homeController::homePage);
         server.get("/contacts", searchContactsController::searchPage);
+        server.get("/contacts/new", createContactController::createPage);
+        server.post("/contacts", createContactController::createContact);
         server.get("/contacts/{id}", contactDetailsController::contactInfo);
         server.post("/contacts/{id}/delete", contactDetailsController::deleteContact);
         server.get("/notifications", notificationsController::notificationPage);
+        server.get("/notifications/new", notificationsController::createNotificationPage);
+        server.post("/notifications", notificationsController::createNotification);
         server.get("/notifications/{id}", notificationsController::notificationDetailsPage);
         server.post("/notifications/{id}/delete", notificationsController::deleteNotification);
         server.error(404, ErrorController::notFoundPage);

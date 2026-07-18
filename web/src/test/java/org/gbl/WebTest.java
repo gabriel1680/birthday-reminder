@@ -4,7 +4,9 @@ import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
+import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.ResourceNotFoundException;
+import org.gbl.common.notification.AddNotificationRequest;
 import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.notification.NotificationResponse;
 import org.gbl.common.notification.RemoveNotificationRequest;
@@ -92,6 +94,19 @@ public class WebTest {
         }
 
         @Test
+        void should_show_add_contact_action_when_the_list_is_empty() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.search(any())).thenReturn(Pagination.empty());
+
+                final var response = httpClient.get("/contacts");
+
+                assertThat(response.body().string())
+                        .contains("+ Add contact")
+                        .contains("href=\"/contacts/new\"");
+            });
+        }
+
+        @Test
         void should_render_with_contacts() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var contactResponses = List.of(AYRTON_SENNA, OZZY_OSBURN);
@@ -146,6 +161,59 @@ public class WebTest {
                 assertThat(response.header("Content-Type")).isEqualTo("text/html");
                 assertThat(response.body().string()).contains("Internal Server Error");
                 assertThat(response.code()).isEqualTo(500);
+            });
+        }
+    }
+
+    @Nested
+    class CreateContactPage {
+
+        @Test
+        void should_render_the_create_form() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var response = httpClient.get("/contacts/new");
+
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string())
+                        .contains("New contact")
+                        .contains("Create contact")
+                        .contains("name=\"birthdate\"");
+            });
+        }
+
+        @Test
+        void should_create_a_contact_and_redirect_to_its_details() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.create(any())).thenReturn(AYRTON_SENNA);
+                when(contactsGateway.get(AYRTON_SENNA.id())).thenReturn(AYRTON_SENNA);
+                final var requestCaptor = ArgumentCaptor.forClass(CreateContactRequest.class);
+
+                final var response = httpClient.post(
+                        "/contacts",
+                        "name=Ayrton+Senna&birthdate=1960-03-21");
+
+                verify(contactsGateway).create(requestCaptor.capture());
+                assertThat(requestCaptor.getValue())
+                        .extracting(CreateContactRequest::name, CreateContactRequest::birthdate)
+                        .containsExactly("Ayrton Senna", LocalDate.parse("1960-03-21"));
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.request().url().encodedPath()).isEqualTo("/contacts/1");
+                assertThat(response.body().string()).contains(AYRTON_SENNA.name());
+            });
+        }
+
+        @Test
+        void should_show_validation_errors_and_preserve_values() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var response = httpClient.post(
+                        "/contacts",
+                        "name=++&birthdate=not-a-date");
+
+                assertThat(response.code()).isEqualTo(400);
+                assertThat(response.body().string())
+                        .contains("Enter a contact name.")
+                        .contains("Enter a valid birthday.")
+                        .contains("value=\"not-a-date\"");
             });
         }
     }
@@ -237,8 +305,61 @@ public class WebTest {
 
                 final var response = httpClient.get("/notifications");
 
-                assertThat(response.body().string()).contains("No notifications configured");
+                assertThat(response.body().string())
+                        .contains("No notifications configured")
+                        .contains("+ Add notification")
+                        .contains("href=\"/notifications/new\"");
                 assertThat(response.code()).isEqualTo(200);
+            });
+        }
+    }
+
+    @Nested
+    class CreateNotificationPage {
+
+        @Test
+        void should_render_the_create_form() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var response = httpClient.get("/notifications/new");
+
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string())
+                        .contains("New notification")
+                        .contains("Create notification")
+                        .contains("<select")
+                        .contains("name=\"type\"")
+                        .contains("value=\"email\"");
+            });
+        }
+
+        @Test
+        void should_create_an_email_notification_and_return_to_the_list() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(notificationGateway.getAll()).thenReturn(emptyList());
+                final var requestCaptor = ArgumentCaptor.forClass(AddNotificationRequest.class);
+
+                final var response = httpClient.post(
+                        "/notifications", "value=ada%40example.com");
+
+                verify(notificationGateway).add(requestCaptor.capture());
+                assertThat(requestCaptor.getValue())
+                        .extracting(AddNotificationRequest::type, AddNotificationRequest::value)
+                        .containsExactly("email", "ada@example.com");
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.request().url().encodedPath()).isEqualTo("/notifications");
+            });
+        }
+
+        @Test
+        void should_validate_and_preserve_an_invalid_email_address() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                final var response = httpClient.post(
+                        "/notifications", "value=invalid-email");
+
+                assertThat(response.code()).isEqualTo(400);
+                assertThat(response.body().string())
+                        .contains("Enter a valid email address.")
+                        .contains("value=\"invalid-email\"");
             });
         }
     }

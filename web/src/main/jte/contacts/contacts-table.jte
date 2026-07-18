@@ -4,19 +4,22 @@
 @param int totalContacts
 @param Collection<ContactView> contacts
 
-@if(contacts.isEmpty())
-    @template.components.empty-state(
-        icon = "🔍",
-        title = "No contacts found",
-        message = "Try adjusting your search filters.")
-@else
-    <section class="data-list card">
-        <div class="data-list__header">
-            <h2>Contacts</h2>
-            <span class="data-list__count">
-                ${totalContacts} contact${totalContacts == 1 ? "" : "s"}
-            </span>
-        </div>
+<section class="data-list card" aria-labelledby="contacts-heading">
+    @template.components.data-list-header(
+        title = "Contacts",
+        headingId = "contacts-heading",
+        description = null,
+        total = totalContacts,
+        itemName = "contact",
+        actionHref = "/contacts/new",
+        actionLabel = "+ Add contact")
+
+    @if(contacts.isEmpty())
+        @template.components.empty-state(
+            icon = "🔍",
+            title = "No contacts found",
+            message = "Try adjusting your search filters or add a new contact.")
+    @else
         <div class="data-list__table-wrapper">
             <table class="data-list__table">
                 <thead>
@@ -43,5 +46,5 @@
                 </tbody>
             </table>
         </div>
-    </section>
-@endif
+    @endif
+</section>
