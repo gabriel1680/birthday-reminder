@@ -5,16 +5,16 @@ import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.view.contacts.CreateContactViewModel;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.Map;
 
 public class CreateContactController {
 
     private final ContactsGateway gateway;
+    private final CreateContactValidator validator;
 
     public CreateContactController(ContactsGateway gateway) {
         this.gateway = gateway;
+        this.validator = new CreateContactValidator();
     }
 
     public void createPage(Context context) {
@@ -22,36 +22,34 @@ public class CreateContactController {
     }
 
     public void createContact(Context context) {
-        final var name = valueOrEmpty(context.formParam("name")).trim();
-        final var birthdateValue = valueOrEmpty(context.formParam("birthdate"));
-        final var nameError = name.isBlank() ? "Enter a contact name." : null;
-        String birthdateError = null;
-        LocalDate birthdate = null;
-
-        if (birthdateValue.isBlank()) {
-            birthdateError = "Enter a birthday.";
-        } else {
-            try {
-                birthdate = LocalDate.parse(birthdateValue);
-            } catch (DateTimeParseException exception) {
-                birthdateError = "Enter a valid birthday.";
-            }
-        }
-
-        final var viewModel = new CreateContactViewModel(
-                name, birthdateValue, nameError, birthdateError);
-        if (viewModel.hasErrors()) {
+        final var form = createContactForm(context);
+        final var validation = validator.validate(form);
+        if (validation.hasErrors()) {
             context.status(400);
-            render(context, viewModel);
+            render(context, createContactViewModel(form, validation));
             return;
         }
-
-        final var contact = gateway.create(new CreateContactRequest(name, birthdate));
+        final var request = createContactRequest(validation);
+        final var contact = gateway.create(request);
         context.redirect("/contacts/" + contact.id());
     }
 
-    private static String valueOrEmpty(String value) {
-        return value == null ? "" : value;
+    private static CreateContactRequest createContactRequest(CreateContactValidation validation) {
+        return new CreateContactRequest(
+                validation.name(), validation.birthdate());
+    }
+
+    private static CreateContactForm createContactForm(Context context) {
+        return new CreateContactForm(
+                context.formParam("name"), context.formParam("birthdate"));
+    }
+
+    private static CreateContactViewModel createContactViewModel(CreateContactForm form, CreateContactValidation validation) {
+        return new CreateContactViewModel(
+                form.name(),
+                form.birthdate(),
+                validation.nameError(),
+                validation.birthdateError());
     }
 
     private static void render(Context context, CreateContactViewModel viewModel) {

@@ -6,6 +6,7 @@ public record CreateContactViewModel(
         String nameError,
         String birthdateError
 ) {
+
     public static CreateContactViewModel empty() {
         return new CreateContactViewModel("", "", null, null);
     }
