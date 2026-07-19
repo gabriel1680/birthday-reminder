@@ -17,6 +17,9 @@ import static java.lang.Integer.parseInt;
 
 public class SearchContactsController {
 
+    private static final int DEFAULT_PAGE_SIZE = 10;
+    private static final int MAX_PAGE_SIZE = 10;
+
     private final ContactsGateway contactsGateway;
     private final ContactSearchPresenter presenter;
     public SearchContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter) {
@@ -38,7 +41,9 @@ public class SearchContactsController {
 
     private static SearchRequest<ContactFilter> createSearchRequestFrom(Context context) {
         final var page = parseInt(queryParamOrDefault(context, "page", "1"));
-        final var size = parseInt(queryParamOrDefault(context, "size", "15"));
+        final var requestedSize = parseInt(queryParamOrDefault(
+                context, "size", String.valueOf(DEFAULT_PAGE_SIZE)));
+        final var size = Math.min(MAX_PAGE_SIZE, Math.max(1, requestedSize));
         final var order = SortingOrder.of(queryParamOrDefault(context, "order", "asc"));
         final var filter = createFilterFrom(context);
         return new SearchRequest<>(page, size, order, filter);

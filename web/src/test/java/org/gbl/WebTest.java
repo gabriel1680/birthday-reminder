@@ -124,6 +124,30 @@ public class WebTest {
         private ArgumentCaptor<SearchRequest<ContactFilter>> requestCaptor;
 
         @Test
+        void should_request_ten_contacts_per_page_by_default() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.search(any())).thenReturn(Pagination.empty());
+
+                httpClient.get("/contacts");
+
+                verify(contactsGateway).search(requestCaptor.capture());
+                assertThat(requestCaptor.getValue().size()).isEqualTo(10);
+            });
+        }
+
+        @Test
+        void should_limit_the_page_size_to_ten_contacts() {
+            JavalinTest.test(server, (server, httpClient) -> {
+                when(contactsGateway.search(any())).thenReturn(Pagination.empty());
+
+                httpClient.get("/contacts?size=100");
+
+                verify(contactsGateway).search(requestCaptor.capture());
+                assertThat(requestCaptor.getValue().size()).isEqualTo(10);
+            });
+        }
+
+        @Test
         void should_handle_contacts_pagination() {
             JavalinTest.test(server, (server, httpClient) -> {
                 final var pagination = new Pagination<>(2, 1, 2, 2, List.of(AYRTON_SENNA));
