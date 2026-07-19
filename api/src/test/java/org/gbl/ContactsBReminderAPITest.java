@@ -119,6 +119,19 @@ class ContactsBReminderAPITest extends SparkControllerTest {
             assertThat(captor.getValue().birthdate()).isEqualTo(toDate("2018-11-15"));
         }
 
+        @Test
+        void createAContactWithALocalDatePayload() {
+            when(contactsModule.addContact(any())).thenReturn(maria);
+            when(request.body()).thenReturn("""
+                    {"name":"Maria","birthdate":"2018-11-15"}
+                    """);
+
+            sut.createContact(request, response);
+
+            verify(contactsModule).addContact(captor.capture());
+            assertThat(captor.getValue().birthdate()).isEqualTo(toDate("2018-11-15"));
+        }
+
         private static JSONObject toJson(ContactOutput maria) {
             return new JSONObject()
                     .put("id", maria.id())

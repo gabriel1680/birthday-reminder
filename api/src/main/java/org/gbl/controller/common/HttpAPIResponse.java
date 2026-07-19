@@ -2,9 +2,11 @@ package org.gbl.controller.common;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public record HttpAPIResponse(ResponseStatus status, String message, Object data) {
     private static final String EMPTY_MESSAGE = "";
-    private static final JSONObject EMPTY_DATA = new JSONObject();
+    private static final Map<String, Object> EMPTY_DATA = Map.of();
 
     public static HttpAPIResponse ofSuccess(Object data) {
         return new HttpAPIResponse(ResponseStatus.SUCCESS, EMPTY_MESSAGE, data);
