@@ -23,8 +23,12 @@ val integrationTest = sourceSets.create("integration") {
     runtimeClasspath += output
 }
 
+val seeder = sourceSets.create("seeder")
+
 configurations["integrationImplementation"].extendsFrom(configurations["testImplementation"])
 configurations["integrationRuntimeOnly"].extendsFrom(configurations["testRuntimeOnly"])
+configurations[seeder.implementationConfigurationName].extendsFrom(configurations["implementation"])
+configurations[seeder.runtimeOnlyConfigurationName].extendsFrom(configurations["runtimeOnly"])
 
 dependencies {
     implementation(project(":core"))
@@ -33,6 +37,8 @@ dependencies {
     implementation("org.json:json:20250107")
     implementation("org.slf4j:slf4j-api:2.0.17")
     implementation("org.slf4j:slf4j-simple:2.0.17")
+    add(seeder.implementationConfigurationName, "net.datafaker:datafaker:2.7.0")
+    add(seeder.implementationConfigurationName, libs.gson)
 
     sourceSets.named("integration") {
         testImplementation("io.rest-assured:rest-assured:5.5.0")
@@ -61,4 +67,15 @@ tasks.register<Test>("integrationTest") {
         includeTestsMatching("org.gbl.BirthdayReminderSuite")
     }
     shouldRunAfter(tasks.test)
+}
+
+val seedCount = providers.gradleProperty("count").orElse("20")
+
+tasks.register<JavaExec>("seed") {
+    description = "Seeds all sample data through the running API. Use -Pcount=<number> to set the amount."
+    group = "application"
+    doNotTrackState("Seeding changes data in an external API and must always run.")
+    classpath = seeder.runtimeClasspath
+    mainClass = "org.gbl.Main"
+    args(seedCount.get())
 }

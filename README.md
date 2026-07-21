@@ -62,14 +62,20 @@ Run the API integration tests:
 - `web` — browser interface on port `9090`
 - `cli` — command-line client
 - `shared` — code shared by the clients
-- `scripts` — optional scripts for seeding contacts and notifications
+- `api/src/seeder` — JVM-based sample data seeder
 
 ## Seed sample data
 
-With the API running, install the script dependency and create sample records:
+With the API running, create sample records using the JVM-based Gradle tasks:
 
 ```bash
-python3 -m pip install -r scripts/requirements.txt
-./scripts/seeder.sh 20
-./scripts/notification-seeder.sh 20
+./gradlew :api:seed
 ```
+
+The task creates 20 contacts and 20 notifications by default. Use `-Pcount=<number>` to change the amount created for each resource:
+
+```bash
+./gradlew :api:seed -Pcount=50
+```
+
+Set `API_BASE_URL` to seed an API running at a different address.
