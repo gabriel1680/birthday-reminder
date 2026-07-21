@@ -43,26 +43,18 @@ public class UpdateContact implements Callable<Integer> {
     @Override
     public Integer call() {
         if (data == null) {
-            var errMsg = "Error: Missing one of arguments: --name=<name> --birthdate=<birthdate>";
+            final var errMsg = "Error: Missing one of arguments: --name=<name> --birthdate=<birthdate>";
             System.err.print(errMsg);
             return 2;
         }
-        final var request = new UpdateContactRequest(id, data.name, data.birthdate);
         try {
+            final var request = new UpdateContactRequest(id, data.name, data.birthdate);
             gateway.update(request);
-            onSuccess(null);
+            System.out.println("Contact updated ✅");
             return 0;
         } catch (RuntimeException error) {
-            onError(error);
+            System.err.printf("Error: %s%n", error.getMessage());
             return 1;
         }
-    }
-
-    private static void onSuccess(Void v) {
-        System.out.println("Contact updated ✅");
-    }
-
-    private static void onError(Throwable error) {
-        System.err.printf("Error: %s%n", error.getMessage());
     }
 }
