@@ -1,4 +1,4 @@
-package org.gbl;
+package org.gbl.app;
 
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;

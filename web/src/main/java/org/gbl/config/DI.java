@@ -1,5 +1,6 @@
-package org.gbl;
+package org.gbl.config;
 
+import org.gbl.app.Web;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.http.HttpApiClient;
 import org.gbl.common.gateway.http.HttpContactGateway;

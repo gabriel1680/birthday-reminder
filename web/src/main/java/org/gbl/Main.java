@@ -1,8 +1,8 @@
 package org.gbl;
 
-import static org.gbl.DI.*;
-import static org.gbl.DI.createWebApp;
-import static org.gbl.DI.httpContactGateway;
+import static org.gbl.config.DI.createWebApp;
+import static org.gbl.config.DI.httpContactGateway;
+import static org.gbl.config.DI.notificationGateway;
 
 public class Main {
 
