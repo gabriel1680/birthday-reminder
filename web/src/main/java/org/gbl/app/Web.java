@@ -37,17 +37,24 @@ public class Web {
     }
 
     private void initRoutes() {
+        // Home
         server.get("/", homeController::homePage);
+
+        // Contacts
         server.get("/contacts", searchContactsController::searchPage);
         server.get("/contacts/new", contactsController::createPage);
         server.post("/contacts", contactsController::createContact);
         server.get("/contacts/{id}", contactsController::contactInfo);
         server.post("/contacts/{id}/delete", contactsController::deleteContact);
+
+        // Notifications
         server.get("/notifications", notificationsController::notificationPage);
         server.get("/notifications/new", notificationsController::createNotificationPage);
         server.post("/notifications", notificationsController::createNotification);
         server.get("/notifications/{id}", notificationsController::notificationDetailsPage);
         server.post("/notifications/{id}/delete", notificationsController::deleteNotification);
+
+        // Errors
         server.error(404, ErrorController::notFoundPage);
         server.error(500, ErrorController::internalServerErrorPage);
         server.exception(RuntimeException.class, (e, context) -> {
