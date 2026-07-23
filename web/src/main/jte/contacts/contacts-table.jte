@@ -1,8 +1,8 @@
-@import org.gbl.view.contacts.ContactView
+@import org.gbl.view.contacts.ContactViewModel
 @import java.util.Collection
 
 @param int totalContacts
-@param Collection<ContactView> contacts
+@param Collection<ContactViewModel> contacts
 
 <section class="data-list card" aria-labelledby="contacts-heading">
     @template.components.data-list-header(
@@ -30,7 +30,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @for(ContactView contact : contacts)
+                @for(ContactViewModel contact : contacts)
                     <tr>
                         <td class="data-list__primary">
                             <a href="/contacts/${contact.id()}" class="data-list__link">

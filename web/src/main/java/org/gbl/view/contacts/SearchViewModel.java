@@ -4,7 +4,7 @@ import org.gbl.common.search.ContactFilter;
 import org.gbl.view.common.PaginationView;
 
 public record SearchViewModel(
-        PaginationView<ContactView> pagination,
+        PaginationView<ContactViewModel> pagination,
         ContactFilter filter,
         ContactUrlBuilder urlBuilder
 ) {}

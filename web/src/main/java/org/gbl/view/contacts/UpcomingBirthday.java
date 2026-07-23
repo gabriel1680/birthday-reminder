@@ -1,6 +1,6 @@
 package org.gbl.view.contacts;
 
-public record UpcomingBirthday(ContactView contact, int daysUntilBirthday) {
+public record UpcomingBirthday(ContactViewModel contact, int daysUntilBirthday) {
 
     public String badge() {
         if (daysUntilBirthday == 0) return "Today 🎂";

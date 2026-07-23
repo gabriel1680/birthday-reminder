@@ -1,6 +1,6 @@
-@import org.gbl.view.contacts.ContactView
+@import org.gbl.view.contacts.ContactViewModel
 
-@param ContactView viewModel
+@param ContactViewModel viewModel
 
 @template.layout.layout(title = "Birthday Reminder")
 

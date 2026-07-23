@@ -1,7 +1,7 @@
 package org.gbl.presenter;
 
 import org.gbl.common.gateway.ContactResponse;
-import org.gbl.view.contacts.ContactView;
+import org.gbl.view.contacts.ContactViewModel;
 import org.gbl.view.contacts.CreateContactViewModel;
 
 import java.time.LocalDate;
@@ -24,8 +24,8 @@ public class ContactsPresenter {
                 birthdateError);
     }
 
-    public ContactView toView(ContactResponse contact) {
-        return new ContactView(
+    public ContactViewModel toView(ContactResponse contact) {
+        return new ContactViewModel(
                 contact.id(),
                 contact.name(),
                 BIRTHDATE_FORMAT.format(contact.birthdate()));

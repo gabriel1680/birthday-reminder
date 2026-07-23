@@ -11,8 +11,8 @@ public final class ContactViewPresenter {
     private ContactViewPresenter() {
     }
 
-    public static ContactView toView(ContactResponse contact) {
-        return new ContactView(
+    public static ContactViewModel toView(ContactResponse contact) {
+        return new ContactViewModel(
                 contact.id(),
                 contact.name(),
                 BIRTHDATE_FORMAT.format(contact.birthdate()));
