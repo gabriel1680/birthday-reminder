@@ -4,9 +4,9 @@ import io.vavr.control.Either;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.CreateContactRequest;
-import org.gbl.controller.InvalidContactFormException;
 import org.gbl.form.CreateContactForm;
 import org.gbl.validation.CreateContactValidator;
+import org.gbl.validation.InvalidContactFormException;
 
 public class ContactsService {
 

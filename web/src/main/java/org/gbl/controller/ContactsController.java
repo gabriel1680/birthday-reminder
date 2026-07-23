@@ -5,6 +5,7 @@ import io.javalin.http.HttpStatus;
 import org.gbl.form.CreateContactForm;
 import org.gbl.presenter.ContactsPresenter;
 import org.gbl.service.ContactsService;
+import org.gbl.validation.InvalidContactFormException;
 
 public class ContactsController extends JavalinController {
 
