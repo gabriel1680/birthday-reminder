@@ -2,10 +2,10 @@ package org.gbl.controller;
 
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import org.gbl.exception.InvalidContactFormException;
 import org.gbl.form.CreateContactForm;
 import org.gbl.presenter.ContactsPresenter;
 import org.gbl.service.ContactsService;
-import org.gbl.validation.InvalidContactFormException;
 
 import static org.gbl.config.JTEPages.CONTACT_CREATE_PAGE;
 import static org.gbl.config.JTEPages.CONTACT_DETAILS_PAGE;

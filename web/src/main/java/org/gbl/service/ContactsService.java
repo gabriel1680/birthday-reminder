@@ -5,9 +5,9 @@ import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
+import org.gbl.exception.InvalidContactFormException;
 import org.gbl.form.CreateContactForm;
 import org.gbl.validation.CreateContactValidator;
-import org.gbl.validation.InvalidContactFormException;
 
 import java.time.ZoneId;
 import java.util.List;

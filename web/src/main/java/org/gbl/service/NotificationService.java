@@ -5,9 +5,9 @@ import org.gbl.common.notification.AddNotificationRequest;
 import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.notification.NotificationResponse;
 import org.gbl.common.notification.RemoveNotificationRequest;
+import org.gbl.exception.InvalidNotificationFormException;
 import org.gbl.form.CreateNotificationForm;
 import org.gbl.validation.CreateNotificationValidator;
-import org.gbl.validation.InvalidNotificationFormException;
 
 import java.util.List;
 
