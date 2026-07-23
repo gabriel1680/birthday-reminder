@@ -19,7 +19,7 @@ public class ContactsPresenter {
                                                      String nameError, String birthdateError) {
         return new CreateContactViewModel(
                 name,
-                birthdate.toString(),
+                birthdate != null ? birthdate.toString() : null,
                 nameError,
                 birthdateError);
     }

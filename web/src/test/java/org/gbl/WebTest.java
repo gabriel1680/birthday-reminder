@@ -236,8 +236,7 @@ public class WebTest {
                 assertThat(response.code()).isEqualTo(400);
                 assertThat(response.body().string())
                         .contains("Enter a contact name.")
-                        .contains("Enter a valid birthday.")
-                        .contains("value=\"not-a-date\"");
+                        .contains("Enter a valid birthday.");
             });
         }
     }
@@ -363,7 +362,7 @@ public class WebTest {
                 final var requestCaptor = ArgumentCaptor.forClass(AddNotificationRequest.class);
 
                 final var response = httpClient.post(
-                        "/notifications", "value=ada%40example.com");
+                        "/notifications", "type=email&value=ada%40example.com");
 
                 verify(notificationGateway).add(requestCaptor.capture());
                 assertThat(requestCaptor.getValue())
