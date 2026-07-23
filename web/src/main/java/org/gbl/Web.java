@@ -6,10 +6,11 @@ import io.javalin.rendering.template.JavalinJte;
 import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.CreateContactController;
+import org.gbl.controller.DeleteContactController;
 import org.gbl.controller.ErrorController;
 import org.gbl.controller.HomeController;
-import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
+import org.gbl.controller.notifications.NotificationsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,19 +23,21 @@ public class Web {
     private final SearchContactsController searchContactsController;
     private final ContactDetailsController contactDetailsController;
     private final CreateContactController createContactController;
+    private final DeleteContactController deleteContactController;
     private final NotificationsController notificationsController;
 
     public Web(
             HomeController homeController,
             SearchContactsController searchContactsController,
             ContactDetailsController contactDetailsController,
-            CreateContactController createContactController,
+            CreateContactController createContactController, DeleteContactController deleteContactController,
             NotificationsController notificationsController
     ) {
         this.homeController = homeController;
         this.searchContactsController = searchContactsController;
         this.contactDetailsController = contactDetailsController;
         this.createContactController = createContactController;
+        this.deleteContactController = deleteContactController;
         this.notificationsController = notificationsController;
         server = Javalin.create(Web::configureServer);
         initRoutes();
@@ -46,7 +49,7 @@ public class Web {
         server.get("/contacts/new", createContactController::createPage);
         server.post("/contacts", createContactController::createContact);
         server.get("/contacts/{id}", contactDetailsController::contactInfo);
-        server.post("/contacts/{id}/delete", contactDetailsController::deleteContact);
+        server.post("/contacts/{id}/delete", deleteContactController::deleteContact);
         server.get("/notifications", notificationsController::notificationPage);
         server.get("/notifications/new", notificationsController::createNotificationPage);
         server.post("/notifications", notificationsController::createNotification);

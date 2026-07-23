@@ -20,11 +20,6 @@ public class ContactDetailsController {
         renderDetailsPage(context, contactResponse);
     }
 
-    public void deleteContact(Context context) {
-        gateway.delete(context.pathParam("id"));
-        context.redirect("/contacts");
-    }
-
     private static void renderDetailsPage(Context context, ContactResponse contactResponse) {
         final var viewModel = ContactViewPresenter.toView(contactResponse);
         context.render("contacts/details-page.jte", Map.of("viewModel", viewModel));

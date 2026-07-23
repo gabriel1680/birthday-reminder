@@ -8,9 +8,11 @@ import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.service.json.GsonJsonServiceAdapter;
 import org.gbl.controller.ContactDetailsController;
 import org.gbl.controller.CreateContactController;
+import org.gbl.controller.DeleteContactController;
 import org.gbl.controller.HomeController;
-import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
+import org.gbl.controller.notifications.NotificationService;
+import org.gbl.controller.notifications.NotificationsController;
 import org.gbl.view.contacts.ContactSearchPresenter;
 import org.gbl.view.contacts.UpcomingBirthdaysPresenter;
 
@@ -24,17 +26,22 @@ public class DI {
         final var searchContactsController = searchContactsController(gateway);
         final var contactInfoController = contactInfoController(gateway);
         final var createContactController = new CreateContactController(gateway);
-        final var notificationsController = notificationsController(notificationGateway);
+        final var notificationService = notificationService(notificationGateway);
+        final var notificationsController = notificationsController(notificationService);
         return new Web(homeController, searchContactsController, contactInfoController,
-                createContactController, notificationsController);
+                createContactController, new DeleteContactController(gateway),  notificationsController);
+    }
+
+    private static NotificationService notificationService(NotificationGateway gateway) {
+        return new NotificationService(gateway);
     }
 
     private static HomeController homeController(ContactsGateway gateway) {
         return new HomeController(gateway, upcomingBirthdaysPresenter());
     }
 
-    private static NotificationsController notificationsController(NotificationGateway notificationGateway) {
-        final var notificationsController = new NotificationsController(notificationGateway);
+    private static NotificationsController notificationsController(NotificationService notificationService) {
+        final var notificationsController = new NotificationsController(notificationService);
         return notificationsController;
     }
 

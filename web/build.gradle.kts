@@ -26,6 +26,9 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.11")
     implementation("com.google.inject:guice:7.0.0")
 
+    // vavr
+    implementation("io.vavr:vavr:1.0.1")
+
     // test
     testImplementation("io.javalin:javalin-testtools:6.5.0")
 }
