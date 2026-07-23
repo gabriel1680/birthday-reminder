@@ -5,7 +5,7 @@ import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
-import org.gbl.view.contacts.ContactSearchPresenter;
+import org.gbl.presenter.ContactSearchPresenter;
 import org.gbl.view.contacts.SearchViewModel;
 
 import java.util.Map;

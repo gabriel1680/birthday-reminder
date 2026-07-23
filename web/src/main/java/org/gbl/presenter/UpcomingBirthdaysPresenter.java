@@ -1,6 +1,7 @@
-package org.gbl.view.contacts;
+package org.gbl.presenter;
 
 import org.gbl.common.gateway.ContactResponse;
+import org.gbl.view.contacts.UpcomingBirthday;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -11,9 +12,11 @@ import java.util.List;
 public class UpcomingBirthdaysPresenter {
 
     private final Clock clock;
+    private final ContactsPresenter contactsPresenter;
 
     public UpcomingBirthdaysPresenter(Clock clock) {
         this.clock = clock;
+        contactsPresenter = new ContactsPresenter();
     }
 
     public List<UpcomingBirthday> toView(List<ContactResponse> contacts) {
@@ -27,6 +30,6 @@ public class UpcomingBirthdaysPresenter {
         final var today = LocalDate.now(clock);
         final var nextBirthday = contact.birthdate().withYear(today.getYear());
         final var daysUntil = (int) ChronoUnit.DAYS.between(today, nextBirthday);
-        return new UpcomingBirthday(ContactViewPresenter.toView(contact), daysUntil);
+        return new UpcomingBirthday(contactsPresenter.toView(contact), daysUntil);
     }
 }
