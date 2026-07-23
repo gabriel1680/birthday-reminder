@@ -6,9 +6,8 @@ import org.gbl.common.gateway.http.HttpContactGateway;
 import org.gbl.common.notification.HttpNotificationGateway;
 import org.gbl.common.notification.NotificationGateway;
 import org.gbl.common.service.json.GsonJsonServiceAdapter;
-import org.gbl.controller.ContactDetailsController;
-import org.gbl.controller.CreateContactController;
-import org.gbl.controller.DeleteContactController;
+import org.gbl.controller.ContactsController;
+import org.gbl.controller.ContactsService;
 import org.gbl.controller.HomeController;
 import org.gbl.controller.SearchContactsController;
 import org.gbl.controller.notifications.NotificationService;
@@ -24,12 +23,11 @@ public class DI {
     public static Web createWebApp(ContactsGateway gateway, NotificationGateway notificationGateway) {
         final var homeController = homeController(gateway);
         final var searchContactsController = searchContactsController(gateway);
-        final var contactInfoController = contactInfoController(gateway);
-        final var createContactController = new CreateContactController(gateway);
+        final var contactsService = contactsService(gateway);
+        final var contactsController = contactsController(contactsService);
         final var notificationService = notificationService(notificationGateway);
         final var notificationsController = notificationsController(notificationService);
-        return new Web(homeController, searchContactsController, contactInfoController,
-                createContactController, new DeleteContactController(gateway),  notificationsController);
+        return new Web(homeController, searchContactsController, contactsController, notificationsController);
     }
 
     private static NotificationService notificationService(NotificationGateway gateway) {
@@ -41,13 +39,15 @@ public class DI {
     }
 
     private static NotificationsController notificationsController(NotificationService notificationService) {
-        final var notificationsController = new NotificationsController(notificationService);
-        return notificationsController;
+        return new NotificationsController(notificationService);
     }
 
-    private static ContactDetailsController contactInfoController(ContactsGateway gateway) {
-        final var contactInfoController = new ContactDetailsController(gateway);
-        return contactInfoController;
+    private static ContactsController contactsController(ContactsService service) {
+        return new ContactsController(service);
+    }
+
+    private static ContactsService contactsService(ContactsGateway gateway) {
+        return new ContactsService(gateway);
     }
 
     private static SearchContactsController searchContactsController(ContactsGateway gateway) {
