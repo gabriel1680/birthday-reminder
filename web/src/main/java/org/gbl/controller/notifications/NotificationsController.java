@@ -2,13 +2,9 @@ package org.gbl.controller.notifications;
 
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
-import org.gbl.view.notification.CreateNotificationViewModel;
-import org.gbl.view.notification.NotificationViewModel;
-import org.gbl.view.notification.NotificationsViewModel;
+import org.gbl.controller.JavalinController;
 
-import java.util.Map;
-
-public class NotificationsController {
+public class NotificationsController extends JavalinController {
 
     private final static String DETAILS_PAGE = "notifications/details-page.jte";
     private final static String CREATE_PAGE = "notifications/create-page.jte";
@@ -51,29 +47,13 @@ public class NotificationsController {
     }
 
     public void notificationDetailsPage(Context context) {
-        final var notification = service.getOf(idOf(context));
+        final var notification = service.getOf(idFrom(context));
         final var viewModel = presenter.toNotification(notification);
         context.render(DETAILS_PAGE, toViewModelMap(viewModel));
     }
 
     public void deleteNotification(Context context) {
-        service.deleteOf(idOf(context));
+        service.deleteOf(idFrom(context));
         context.redirect("/notifications");
-    }
-
-    private static String idOf(Context context) {
-        return context.pathParam("id");
-    }
-
-    private Map<String, NotificationsViewModel> toViewModelMap(NotificationsViewModel viewModel) {
-        return Map.of("viewModel", viewModel);
-    }
-
-    private static Map<String, NotificationViewModel> toViewModelMap(NotificationViewModel viewModel) {
-        return Map.of("viewModel", viewModel);
-    }
-
-    private static Map<String, CreateNotificationViewModel> toViewModelMap(CreateNotificationViewModel viewModel) {
-        return Map.of("viewModel", viewModel);
     }
 }
