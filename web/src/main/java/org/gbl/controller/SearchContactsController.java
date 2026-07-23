@@ -8,20 +8,21 @@ import org.gbl.common.search.SortingOrder;
 import org.gbl.presenter.ContactSearchPresenter;
 import org.gbl.view.contacts.SearchViewModel;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
+import static org.gbl.config.JTEPages.CONTACT_SEARCH_PAGE;
 
-public class SearchContactsController {
+public class SearchContactsController extends JavalinController {
 
     private static final int DEFAULT_PAGE_SIZE = 10;
     private static final int MAX_PAGE_SIZE = 10;
 
     private final ContactsGateway contactsGateway;
     private final ContactSearchPresenter presenter;
+
     public SearchContactsController(ContactsGateway contactsGateway, ContactSearchPresenter presenter) {
         this.contactsGateway = contactsGateway;
         this.presenter = presenter;
@@ -36,7 +37,7 @@ public class SearchContactsController {
 
     private void renderSearchPage(Context context, SearchViewModel viewModel) {
         context.header("Cache-Control", "public, max-age=30, must-revalidate");
-        context.render("contacts/search-page.jte", Map.of("viewModel", viewModel));
+        context.render(CONTACT_SEARCH_PAGE, toViewModelMap(viewModel));
     }
 
     private static SearchRequest<ContactFilter> createSearchRequestFrom(Context context) {

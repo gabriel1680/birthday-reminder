@@ -1,6 +1,7 @@
 package org.gbl.presenter;
 
 import org.gbl.common.gateway.ContactResponse;
+import org.gbl.view.HomeViewModel;
 import org.gbl.view.contacts.UpcomingBirthday;
 
 import java.time.Clock;
@@ -19,11 +20,12 @@ public class UpcomingBirthdaysPresenter {
         contactsPresenter = new ContactsPresenter();
     }
 
-    public List<UpcomingBirthday> toView(List<ContactResponse> contacts) {
-        return contacts.stream()
+    public HomeViewModel toView(List<ContactResponse> contacts) {
+        final var contactsViewModel = contacts.stream()
                 .map(this::toUpcomingBirthday)
                 .sorted(Comparator.comparing(it -> it.contact().birthdate()))
                 .toList();
+        return new HomeViewModel(contactsViewModel);
     }
 
     private UpcomingBirthday toUpcomingBirthday(ContactResponse contact) {

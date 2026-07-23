@@ -22,21 +22,26 @@ import java.time.Clock;
 public class DI {
 
     public static Web createWebApp(ContactsGateway gateway, NotificationGateway notificationGateway) {
-        final var homeController = homeController(gateway);
-        final var searchContactsController = searchContactsController(gateway);
         final var contactsService = contactsService(gateway);
+        final var searchContactsController = searchContactsController(gateway);
+        final var homeController = homeController(contactsService);
         final var contactsController = contactsController(contactsService);
         final var notificationService = notificationService(notificationGateway);
         final var notificationsController = notificationsController(notificationService);
-        return new Web(homeController, searchContactsController, contactsController, notificationsController);
+        return new Web(
+                homeController,
+                searchContactsController,
+                contactsController,
+                notificationsController
+        );
     }
 
     private static NotificationService notificationService(NotificationGateway gateway) {
         return new NotificationService(gateway);
     }
 
-    private static HomeController homeController(ContactsGateway gateway) {
-        return new HomeController(gateway, upcomingBirthdaysPresenter());
+    private static HomeController homeController(ContactsService service) {
+        return new HomeController(service, upcomingBirthdaysPresenter());
     }
 
     private static NotificationsController notificationsController(NotificationService notificationService) {

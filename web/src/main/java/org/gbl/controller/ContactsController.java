@@ -7,10 +7,12 @@ import org.gbl.presenter.ContactsPresenter;
 import org.gbl.service.ContactsService;
 import org.gbl.validation.InvalidContactFormException;
 
-public class ContactsController extends JavalinController {
+import static org.gbl.config.JTEPages.CONTACT_CREATE_PAGE;
+import static org.gbl.config.JTEPages.CONTACT_DETAILS_PAGE;
+import static org.gbl.config.Routes.contactDetails;
+import static org.gbl.config.Routes.contacts;
 
-    private static final String DETAILS_PAGE = "contacts/details-page.jte";
-    private static final String CREATE_PAGE = "contacts/create-page.jte";
+public class ContactsController extends JavalinController {
 
     private final ContactsService contactsService;
     private final ContactsPresenter presenter;
@@ -22,7 +24,7 @@ public class ContactsController extends JavalinController {
 
     public void createPage(Context context) {
         final var viewModel = presenter.emptyCreateForm();
-        context.render(CREATE_PAGE, toViewModelMap(viewModel));
+        context.render(CONTACT_DETAILS_PAGE, toViewModelMap(viewModel));
     }
 
     public void createContact(Context context) {
@@ -30,7 +32,7 @@ public class ContactsController extends JavalinController {
                 context.formParam("name"), context.formParam("birthdate"));
         contactsService.createContact(form)
                 .peekLeft(exception -> handleFormValidationError(context, exception))
-                .peek(contact -> context.redirect("/contacts/" + contact.id()));
+                .peek(contact -> context.redirect(contactDetails(contact.id())));
     }
 
     private void handleFormValidationError(Context context, InvalidContactFormException exception) {
@@ -40,17 +42,17 @@ public class ContactsController extends JavalinController {
                                                            validation.birthdate(),
                                                            validation.nameError(),
                                                            validation.birthdateError());
-        context.render(CREATE_PAGE, toViewModelMap(viewModel));
+        context.render(CONTACT_CREATE_PAGE, toViewModelMap(viewModel));
     }
 
     public void deleteContact(Context context) {
         contactsService.delete(idFrom(context));
-        context.redirect("/contacts");
+        context.redirect(contacts());
     }
 
     public void contactInfo(Context context) {
         final var contactResponse = contactsService.getOf(idFrom(context));
         final var viewModel = presenter.toView(contactResponse);
-        context.render(DETAILS_PAGE, toViewModelMap(viewModel));
+        context.render(CONTACT_DETAILS_PAGE, toViewModelMap(viewModel));
     }
 }

@@ -4,9 +4,13 @@ import io.vavr.control.Either;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.gateway.ContactsGateway;
 import org.gbl.common.gateway.CreateContactRequest;
+import org.gbl.common.gateway.GetUpcomingBirthdaysRequest;
 import org.gbl.form.CreateContactForm;
 import org.gbl.validation.CreateContactValidator;
 import org.gbl.validation.InvalidContactFormException;
+
+import java.time.ZoneId;
+import java.util.List;
 
 public class ContactsService {
 
@@ -33,5 +37,10 @@ public class ContactsService {
 
     public ContactResponse getOf(String contactId) {
         return contactsGateway.get(contactId);
+    }
+
+    public List<ContactResponse> getUpcomingBirthdays(int size, ZoneId zoneId) {
+        final var request = new GetUpcomingBirthdaysRequest(size, zoneId);
+        return contactsGateway.getUpcomingBirthdays(request);
     }
 }

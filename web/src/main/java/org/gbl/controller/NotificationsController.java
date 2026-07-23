@@ -7,11 +7,12 @@ import org.gbl.presenter.NotificationsPresenter;
 import org.gbl.service.NotificationService;
 import org.gbl.validation.InvalidNotificationFormException;
 
-public class NotificationsController extends JavalinController {
+import static org.gbl.config.JTEPages.NOTIFICATION_CREATE_PAGE;
+import static org.gbl.config.JTEPages.NOTIFICATION_DETAILS_PAGE;
+import static org.gbl.config.JTEPages.NOTIFICATION_LIST_PAGE;
+import static org.gbl.config.Routes.notifications;
 
-    private final static String DETAILS_PAGE = "notifications/details-page.jte";
-    private final static String CREATE_PAGE = "notifications/create-page.jte";
-    private final static String LIST_PAGE = "notifications/notifications-page.jte";
+public class NotificationsController extends JavalinController {
 
     private final NotificationService service;
     private final NotificationsPresenter presenter;
@@ -24,11 +25,11 @@ public class NotificationsController extends JavalinController {
     public void notificationPage(Context context) {
         final var notifications = service.getAll();
         final var viewModel = presenter.toNotificationsList((notifications));
-        context.render(LIST_PAGE, toViewModelMap(viewModel));
+        context.render(NOTIFICATION_LIST_PAGE, toViewModelMap(viewModel));
     }
 
     public void createNotificationPage(Context context) {
-        context.render(CREATE_PAGE, toViewModelMap(presenter.toNotificationEmpty()));
+        context.render(NOTIFICATION_CREATE_PAGE, toViewModelMap(presenter.toNotificationEmpty()));
     }
 
     public void createNotification(Context context) {
@@ -37,7 +38,7 @@ public class NotificationsController extends JavalinController {
         final var form = new CreateNotificationForm(type, value);
         service.createNotification(form)
                 .peekLeft(exception -> handleFormError(context, exception, value))
-                .peek(v -> context.redirect("/notifications"));
+                .peek(v -> context.redirect(notifications()));
     }
 
     private void handleFormError(Context context, InvalidNotificationFormException exception,
@@ -46,17 +47,17 @@ public class NotificationsController extends JavalinController {
         final var viewModel = presenter.toNotificationError(
                 value,
                 exception.validation().valueError());
-        context.render(CREATE_PAGE, toViewModelMap(viewModel));
+        context.render(NOTIFICATION_CREATE_PAGE, toViewModelMap(viewModel));
     }
 
     public void notificationDetailsPage(Context context) {
         final var notification = service.getOf(idFrom(context));
         final var viewModel = presenter.toNotification(notification);
-        context.render(DETAILS_PAGE, toViewModelMap(viewModel));
+        context.render(NOTIFICATION_DETAILS_PAGE, toViewModelMap(viewModel));
     }
 
     public void deleteNotification(Context context) {
         service.deleteOf(idFrom(context));
-        context.redirect("/notifications");
+        context.redirect(notifications());
     }
 }
