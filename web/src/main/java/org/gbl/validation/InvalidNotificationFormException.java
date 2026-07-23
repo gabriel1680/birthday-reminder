@@ -1,4 +1,4 @@
-package org.gbl.controller.notifications;
+package org.gbl.validation;
 
 public class InvalidNotificationFormException extends RuntimeException {
 

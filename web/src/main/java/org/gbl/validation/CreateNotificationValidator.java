@@ -1,4 +1,6 @@
-package org.gbl.controller.notifications;
+package org.gbl.validation;
+
+import org.gbl.form.CreateNotificationForm;
 
 public final class CreateNotificationValidator {
 

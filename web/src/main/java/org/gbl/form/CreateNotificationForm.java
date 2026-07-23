@@ -1,4 +1,4 @@
-package org.gbl.controller.notifications;
+package org.gbl.form;
 
 public record CreateNotificationForm(String type, String value) {
 

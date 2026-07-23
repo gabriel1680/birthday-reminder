@@ -7,8 +7,8 @@ import org.gbl.common.gateway.ResourceNotFoundException;
 import org.gbl.controller.ContactsController;
 import org.gbl.controller.ErrorController;
 import org.gbl.controller.HomeController;
+import org.gbl.controller.NotificationsController;
 import org.gbl.controller.SearchContactsController;
-import org.gbl.controller.notifications.NotificationsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

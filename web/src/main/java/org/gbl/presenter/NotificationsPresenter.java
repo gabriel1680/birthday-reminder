@@ -1,4 +1,4 @@
-package org.gbl.controller.notifications;
+package org.gbl.presenter;
 
 import org.gbl.common.notification.NotificationResponse;
 import org.gbl.view.notification.CreateNotificationViewModel;

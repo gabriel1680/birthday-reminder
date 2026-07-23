@@ -1,4 +1,4 @@
-package org.gbl.controller;
+package org.gbl.form;
 
 public record CreateContactForm(String name, String birthdate) {
 

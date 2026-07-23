@@ -1,4 +1,4 @@
-package org.gbl.controller.notifications;
+package org.gbl.validation;
 
 public record CreateNotificationValidation(String type, String value, String typeError,
                                            String valueError) {

@@ -1,5 +1,7 @@
 package org.gbl.controller;
 
+import org.gbl.form.CreateContactForm;
+import org.gbl.validation.CreateContactValidator;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

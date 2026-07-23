@@ -1,4 +1,6 @@
-package org.gbl.controller;
+package org.gbl.validation;
+
+import org.gbl.form.CreateContactForm;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
