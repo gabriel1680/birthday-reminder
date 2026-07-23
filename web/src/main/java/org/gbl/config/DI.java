@@ -19,7 +19,7 @@ import org.gbl.service.NotificationService;
 import java.net.http.HttpClient;
 import java.time.Clock;
 
-public class DI {
+public final class DI {
 
     public static Web createWebApp(ContactsGateway gateway, NotificationGateway notificationGateway) {
         final var contactsService = contactsService(gateway);

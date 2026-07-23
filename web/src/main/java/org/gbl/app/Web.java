@@ -12,7 +12,7 @@ import org.gbl.controller.SearchContactsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Web {
+public final class Web {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Web.class);
 

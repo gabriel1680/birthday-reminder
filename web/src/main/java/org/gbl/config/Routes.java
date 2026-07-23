@@ -1,6 +1,6 @@
 package org.gbl.config;
 
-public class Routes {
+public final class Routes {
 
     public static String notifications() {
         return "/notifications";

@@ -1,6 +1,6 @@
 package org.gbl.config;
 
-public class JTEPages {
+public final class JTEPages {
 
     // Error pages
     public static final String INTERNAL_SERVER_ERROR = "internal-server-error-page.jte";
