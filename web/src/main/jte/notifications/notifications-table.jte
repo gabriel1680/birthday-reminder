@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.notification.NotificationViewModel
 @import java.util.Collection
 
@@ -11,7 +12,7 @@
         description = "Birthday reminders currently sent by the service.",
         total = totalNotifications,
         itemName = "notification",
-        actionHref = "/notifications/new",
+        actionHref = Routes.createNotification(),
         actionLabel = "+ Add notification")
 
     @if(notifications.isEmpty())
@@ -32,7 +33,7 @@
                 @for(NotificationViewModel notification : notifications)
                     <tr>
                         <td class="data-list__type">
-                            <a href="/notifications/${notification.id()}" class="data-list__link">
+                            <a href="${Routes.notificationDetails(notification.id())}" class="data-list__link">
                                 ${notification.type()}
                             </a>
                         </td>

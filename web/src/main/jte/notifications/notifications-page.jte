@@ -18,5 +18,6 @@
     </section>
 
 </main>
+</main>
 
 @template.layout.footer()

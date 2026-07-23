@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.notification.NotificationViewModel
 
 @param NotificationViewModel viewModel
@@ -11,7 +12,7 @@
 
 <main class="container">
     <div class="detail-view__back">
-        <a class="text-link" href="/notifications">← Back to notifications</a>
+        <a class="text-link" href="${Routes.notifications()}">← Back to notifications</a>
     </div>
 
     <section class="card detail-view">
@@ -39,7 +40,7 @@
 
         <div class="detail-view__actions">
             <div class="detail-view__record-actions">
-                <form action="/notifications/${viewModel.id()}/delete" method="post">
+                <form action="${Routes.deleteNotification(viewModel.id())}" method="post">
                     <button class="btn btn--danger"
                             type="submit"
                             onclick="return confirm('Delete this notification?')">

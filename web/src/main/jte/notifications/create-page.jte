@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.notification.CreateNotificationViewModel
 
 @param CreateNotificationViewModel viewModel
@@ -11,7 +12,7 @@
 
 <main class="container">
     <div class="detail-view__back">
-        <a class="text-link" href="/notifications">← Back to notifications</a>
+        <a class="text-link" href="${Routes.notifications()}">← Back to notifications</a>
     </div>
 
     <section class="card detail-view" aria-labelledby="create-notification-heading">
@@ -19,7 +20,7 @@
             <h2 id="create-notification-heading">New notification</h2>
         </div>
 
-        <form action="/notifications" method="post">
+        <form action="${Routes.notifications()}" method="post">
             <div class="detail-view__fields">
                 <div class="detail-view__field detail-view__field--full">
                     <label class="detail-view__label" for="notification-type">Delivery type</label>
@@ -49,7 +50,7 @@
             </div>
 
             <div class="detail-view__actions">
-                <a class="btn btn--secondary" href="/notifications">Cancel</a>
+                <a class="btn btn--secondary" href="${Routes.notifications()}">Cancel</a>
                 <button class="btn btn--primary" type="submit">Create notification</button>
             </div>
         </form>
