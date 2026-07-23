@@ -5,7 +5,7 @@ import org.gbl.form.CreateContactForm;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-public class CreateContactValidator {
+public final class CreateContactValidator {
 
     public CreateContactValidation validate(CreateContactForm form) {
         final var name = form.name().trim();
