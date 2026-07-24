@@ -3,6 +3,7 @@ package org.gbl.presenter;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
+import org.gbl.view.common.PaginationNavigation;
 import org.gbl.view.common.PaginationView;
 import org.gbl.view.common.PaginationWindowBuilder;
 import org.gbl.view.contacts.ContactUrlBuilder;
@@ -28,10 +29,10 @@ public class ContactSearchPresenter {
                 window,
                 pagination.total(),
                 contactViews);
-        return new SearchViewModel(
-                paginationView,
+        final var navigation = new PaginationNavigation<>(
+                window,
                 filter,
-                new ContactUrlBuilder("/contacts")
-        );
+                new ContactUrlBuilder("/contacts"));
+        return new SearchViewModel(paginationView, filter, navigation);
     }
 }

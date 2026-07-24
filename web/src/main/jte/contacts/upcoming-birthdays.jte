@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.contacts.UpcomingBirthday
 @import java.util.Collection
 
@@ -19,7 +20,7 @@
     @else
         <div class="birthday-grid">
             @for(UpcomingBirthday birthday : upcomingBirthdays)
-                <a href="/contacts/${birthday.contact().id()}"
+                <a href="${Routes.contactDetails(birthday.contact().id())}"
                    class="birthday-card">
                     <div class="birthday-card__icon"> 🎂 </div>
                     <div class="birthday-card__name"> ${birthday.contact().name()} </div>

@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.contacts.CreateContactViewModel
 
 @param CreateContactViewModel viewModel
@@ -11,7 +12,7 @@
 
 <main class="container">
     <div class="detail-view__back">
-        <a class="text-link" href="/contacts">← Back to contacts</a>
+        <a class="text-link" href="${Routes.contacts()}">← Back to contacts</a>
     </div>
 
     <section class="card detail-view" aria-labelledby="create-contact-heading">
@@ -19,7 +20,7 @@
             <h2 id="create-contact-heading">New contact</h2>
         </div>
 
-        <form action="/contacts" method="post">
+        <form action="${Routes.contacts()}" method="post">
             <div class="detail-view__fields">
                 <div class="detail-view__field detail-view__field--full">
                     <label class="detail-view__label" for="contact-name">Name</label>
@@ -55,7 +56,7 @@
             </div>
 
             <div class="detail-view__actions">
-                <a class="btn btn--secondary" href="/contacts">Cancel</a>
+                <a class="btn btn--secondary" href="${Routes.contacts()}">Cancel</a>
                 <button class="btn btn--primary" type="submit">Create contact</button>
             </div>
         </form>

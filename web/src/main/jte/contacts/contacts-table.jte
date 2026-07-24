@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.contacts.ContactViewModel
 @import java.util.Collection
 
@@ -11,7 +12,7 @@
         description = null,
         total = totalContacts,
         itemName = "contact",
-        actionHref = "/contacts/new",
+        actionHref = Routes.createContact(),
         actionLabel = "+ Add contact")
 
     @if(contacts.isEmpty())
@@ -33,7 +34,7 @@
                 @for(ContactViewModel contact : contacts)
                     <tr>
                         <td class="data-list__primary">
-                            <a href="/contacts/${contact.id()}" class="data-list__link">
+                            <a href="${Routes.contactDetails(contact.id())}" class="data-list__link">
                                 ${contact.name()}
                             </a>
                         </td>

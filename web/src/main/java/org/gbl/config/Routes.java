@@ -10,6 +10,10 @@ public final class Routes {
         return "/contacts";
     }
 
+    public static String createContact() {
+        return "%s/new".formatted(contacts());
+    }
+
     public static String notifications() {
         return "/notifications";
     }
@@ -24,5 +28,13 @@ public final class Routes {
 
     public static String notificationDetails(String notificationId) {
         return "%s/%s".formatted(notifications(),notificationId);
+    }
+
+    public static String deleteContact(String contactId) {
+        return "%s/%s/delete".formatted(contacts(), contactId);
+    }
+
+    public static String editContact(String contactId) {
+        return "%s/%s/edit".formatted(contacts(), contactId);
     }
 }

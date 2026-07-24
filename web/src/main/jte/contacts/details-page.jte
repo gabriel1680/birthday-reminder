@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.contacts.ContactViewModel
 
 @param ContactViewModel viewModel
@@ -11,7 +12,7 @@
 
 <main class="container">
     <div class="detail-view__back">
-        <a class="text-link" href="/contacts">← Back to contacts</a>
+        <a class="text-link" href="${Routes.contacts()}">← Back to contacts</a>
     </div>
 
     <section class="card detail-view">
@@ -40,14 +41,14 @@
 
         <div class="detail-view__actions">
             <div class="detail-view__record-actions">
-                <form action="/contacts/${viewModel.id()}/delete" method="post">
+                <form action="${Routes.deleteContact(viewModel.id())}" method="post">
                     <button class="btn btn--danger"
                             type="submit"
                             onclick="return confirm('Delete this contact?')">
                         Delete contact
                     </button>
                 </form>
-                <a class="btn btn--primary" href="/contacts/${viewModel.id()}/edit">Edit contact</a>
+                <a class="btn btn--primary" href="${Routes.editContact(viewModel.id())}">Edit contact</a>
             </div>
         </div>
     </section>

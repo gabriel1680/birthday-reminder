@@ -1,3 +1,4 @@
+@import org.gbl.config.Routes
 @import org.gbl.view.contacts.SearchViewModel
 
 @param SearchViewModel viewModel
@@ -12,16 +13,14 @@
 <main class="container">
     @template.contacts.search-form(
     filter = viewModel.filter(),
-    action = "/contacts")
+    action = Routes.contacts())
 
     @template.contacts.contacts-table(
     totalContacts = viewModel.pagination().total(),
     contacts = viewModel.pagination().values())
 
-    @template.contacts.pagination(
-    pagination = viewModel.pagination().window(),
-    filter = viewModel.filter(),
-    urlBuilder = viewModel.urlBuilder())
+    @template.components.pagination(
+    navigation = viewModel.paginationNavigation())
 </main>
 
 @template.layout.footer()
