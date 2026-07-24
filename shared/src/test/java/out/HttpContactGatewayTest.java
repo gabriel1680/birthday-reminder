@@ -5,6 +5,7 @@ import org.gbl.common.gateway.CreateContactRequest;
 import org.gbl.common.gateway.UpdateContactRequest;
 import org.gbl.common.gateway.http.HttpApiClient;
 import org.gbl.common.gateway.http.HttpContactGateway;
+import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 import org.gbl.common.search.SortingOrder;
@@ -137,18 +138,33 @@ class HttpContactGatewayTest {
 
         private final SearchRequest request = new SearchRequest(1, 1, SortingOrder.ASC, null);
 
-        @BeforeEach
-        void setUp() {
+        @Test
+        void shouldReturnAValidOutput() {
             final var pagination = new Pagination<ContactResponse>(1, 1, 1, 1, emptyList());
             when(httpApiClient.get(eq("/contacts?page=1&size=1&order=asc"), any()))
                     .thenReturn(pagination);
-        }
 
-        @Test
-        void shouldReturnAValidOutput() {
             assertThat(sut.search(request))
                     .isNotNull()
                     .isInstanceOf(Pagination.class);
+        }
+
+        @Test
+        void shouldSendEncodedFilters() {
+            final var filteredRequest = new SearchRequest<>(
+                    2,
+                    10,
+                    SortingOrder.DESC,
+                    new ContactFilter("Mary Ann & Sons", "1950-01-01", "2000-12-31"));
+            final var path = "/contacts?page=2&size=10&order=desc"
+                    + "&name=Mary+Ann+%26+Sons"
+                    + "&birthdateFrom=1950-01-01"
+                    + "&birthdateTo=2000-12-31";
+            when(httpApiClient.get(eq(path), any())).thenReturn(Pagination.empty());
+
+            sut.search(filteredRequest);
+
+            verify(httpApiClient).get(eq(path), any());
         }
     }
 }

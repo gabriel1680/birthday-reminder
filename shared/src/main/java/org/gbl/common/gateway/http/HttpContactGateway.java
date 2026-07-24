@@ -11,9 +11,14 @@ import org.gbl.common.search.Pagination;
 import org.gbl.common.search.SearchRequest;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
 
 public class HttpContactGateway implements ContactsGateway {
 
@@ -68,10 +73,21 @@ public class HttpContactGateway implements ContactsGateway {
     }
 
     private String toString(SearchRequest<ContactFilter> searchRequest) {
-        final var paginationParams = List.of("page=" + searchRequest.page(),
-                                             "size=" + searchRequest.size(),
-                                             "order=" + searchRequest.order());
-        var params = new ArrayList<>(paginationParams);
-        return String.join("&", params);
+        final var filter = searchRequest.filter();
+        return Stream.of(
+                        queryParameter("page", String.valueOf(searchRequest.page())),
+                        queryParameter("size", String.valueOf(searchRequest.size())),
+                        queryParameter("order", searchRequest.order().toString()),
+                        queryParameter("name", filter == null ? null : filter.name()),
+                        queryParameter("birthdateFrom", filter == null ? null : filter.birthdateFrom()),
+                        queryParameter("birthdateTo", filter == null ? null : filter.birthdateTo()))
+                .flatMap(Optional::stream)
+                .collect(joining("&"));
+    }
+
+    private static Optional<String> queryParameter(String name, String value) {
+        return Optional.ofNullable(value)
+                .filter(v -> !v.isBlank())
+                .map(v -> name + "=" + URLEncoder.encode(v, StandardCharsets.UTF_8));
     }
 }
