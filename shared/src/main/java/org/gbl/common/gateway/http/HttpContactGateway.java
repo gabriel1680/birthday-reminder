@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -78,11 +79,15 @@ public class HttpContactGateway implements ContactsGateway {
                         queryParameter("page", String.valueOf(searchRequest.page())),
                         queryParameter("size", String.valueOf(searchRequest.size())),
                         queryParameter("order", searchRequest.order().toString()),
-                        queryParameter("name", filter == null ? null : filter.name()),
-                        queryParameter("birthdateFrom", filter == null ? null : filter.birthdateFrom()),
-                        queryParameter("birthdateTo", filter == null ? null : filter.birthdateTo()))
+                        queryParameter("name", applyFor(filter, ContactFilter::name)),
+                        queryParameter("birthdateFrom", applyFor(filter, ContactFilter::birthdateFrom)),
+                        queryParameter("birthdateTo", applyFor(filter, ContactFilter::birthdateTo)))
                 .flatMap(Optional::stream)
                 .collect(joining("&"));
+    }
+
+    private static String applyFor(ContactFilter filter, Function<ContactFilter, String> delegate) {
+        return filter == null ? null : delegate.apply(filter);
     }
 
     private static Optional<String> queryParameter(String name, String value) {
