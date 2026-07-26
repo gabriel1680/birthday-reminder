@@ -15,7 +15,7 @@
         @for(var row : table.rows())
             <tr>
                 @for(TableCell cell : row.cells())
-                    <td class="data_list--type">
+                    <td class="data_list__type">
                         @if(cell instanceof TableCell.Link link)
                             <a href="${link.href()}" class="data-list__link">${link.value()}</a>
                         @elseif(cell instanceof TableCell.Text text)
