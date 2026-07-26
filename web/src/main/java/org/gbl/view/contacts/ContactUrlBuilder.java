@@ -1,7 +1,7 @@
 package org.gbl.view.contacts;
 
 import org.gbl.common.search.ContactFilter;
-import org.gbl.view.common.UrlBuilder;
+import org.gbl.view.common.pagination.UrlBuilder;
 
 public class ContactUrlBuilder extends UrlBuilder<ContactFilter> {
 

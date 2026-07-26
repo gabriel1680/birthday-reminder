@@ -1,9 +1,8 @@
 @import org.gbl.config.Routes
-@import org.gbl.view.contacts.ContactViewModel
-@import java.util.Collection
+@import org.gbl.view.common.table.Table
 
 @param int totalContacts
-@param Collection<ContactViewModel> contacts
+@param Table table
 
 <section class="data-list card" aria-labelledby="contacts-heading">
     @template.components.data-list-header(
@@ -15,37 +14,12 @@
         actionHref = Routes.createContact(),
         actionLabel = "+ Add contact")
 
-    @if(contacts.isEmpty())
+    @if(table.isEmpty())
         @template.components.empty-state(
             icon = "🔍",
             title = "No contacts found",
             message = "Try adjusting your search filters or add a new contact.")
     @else
-        <div class="data-list__table-wrapper">
-            <table class="data-list__table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Birthday</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @for(ContactViewModel contact : contacts)
-                    <tr>
-                        <td class="data-list__primary">
-                            <a href="${Routes.contactDetails(contact.id())}" class="data-list__link">
-                                ${contact.name()}
-                            </a>
-                        </td>
-                        <td>${contact.birthdate()}</td>
-                        <td class="data-list__arrow">
-                            ›
-                        </td>
-                    </tr>
-                @endfor
-                </tbody>
-            </table>
-        </div>
+        @template.components.table(table = table)
     @endif
 </section>

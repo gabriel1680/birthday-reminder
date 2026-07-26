@@ -1,4 +1,4 @@
-package org.gbl.view.common;
+package org.gbl.view.common.pagination;
 
 import org.gbl.common.search.Pagination;
 

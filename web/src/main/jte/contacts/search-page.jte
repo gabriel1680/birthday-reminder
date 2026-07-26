@@ -17,7 +17,7 @@
 
     @template.contacts.contacts-table(
     totalContacts = viewModel.pagination().total(),
-    contacts = viewModel.pagination().values())
+    table = viewModel.table())
 
     @template.components.pagination(
     navigation = viewModel.paginationNavigation())

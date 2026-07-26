@@ -1,4 +1,4 @@
-package org.gbl.view.common;
+package org.gbl.view.common.pagination;
 
 public record PaginationItem(
         int page,

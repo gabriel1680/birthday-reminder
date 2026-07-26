@@ -14,7 +14,7 @@
     <section class="notifications card" aria-labelledby="notifications-heading">
         @template.notifications.notifications-table(
             totalNotifications = viewModel.total(),
-            notifications = viewModel.notifications())
+            table = viewModel.table())
     </section>
 
 </main>

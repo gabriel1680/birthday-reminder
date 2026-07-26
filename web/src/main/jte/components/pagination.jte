@@ -1,4 +1,4 @@
-@param org.gbl.view.common.PaginationNavigation<?> navigation
+@param org.gbl.view.common.pagination.PaginationNavigation<?> navigation
 
 <nav class="pagination">
 
@@ -10,7 +10,7 @@
         <span class="pagination__disabled">← Previous</span>
     @endif
 
-    @for(org.gbl.view.common.PaginationItem item : navigation.window().items())
+    @for(org.gbl.view.common.pagination.PaginationItem item : navigation.window().items())
 
         @if(item.ellipsis())
             <span class="pagination__ellipsis">...</span>

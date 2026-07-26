@@ -3,13 +3,29 @@ package org.gbl.presenter;
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.common.search.ContactFilter;
 import org.gbl.common.search.Pagination;
-import org.gbl.view.common.PaginationNavigation;
-import org.gbl.view.common.PaginationView;
-import org.gbl.view.common.PaginationWindowBuilder;
+import org.gbl.view.common.pagination.PaginationNavigation;
+import org.gbl.view.common.pagination.PaginationView;
+import org.gbl.view.common.pagination.PaginationWindowBuilder;
+import org.gbl.view.common.table.Table;
+import org.gbl.view.common.table.TableCell;
+import org.gbl.view.common.table.TableColumn;
+import org.gbl.view.common.table.TableRow;
 import org.gbl.view.contacts.ContactUrlBuilder;
+import org.gbl.view.contacts.ContactViewModel;
 import org.gbl.view.contacts.SearchViewModel;
 
+import java.util.List;
+
+import static org.gbl.config.Routes.contactDetails;
+
 public class ContactSearchPresenter {
+
+    private static final List<TableColumn> TABLE_COLUMNS = List.of(
+            new TableColumn("Name"),
+            new TableColumn("Birthday"),
+            new TableColumn(""));
+
+    private static final TableCell ARROW_CELL = new TableCell.Text("›");
 
     private final ContactsPresenter contactsPresenter;
 
@@ -33,6 +49,22 @@ public class ContactSearchPresenter {
                 window,
                 filter,
                 new ContactUrlBuilder("/contacts"));
-        return new SearchViewModel(paginationView, filter, navigation);
+        return new SearchViewModel(paginationView, filter, navigation, toTable(contactViews));
+    }
+
+    private static Table toTable(List<ContactViewModel> contacts) {
+        final var rows = contacts.stream()
+                .map(ContactSearchPresenter::tableRow)
+                .toList();
+        return new Table(TABLE_COLUMNS, rows);
+    }
+
+    private static TableRow tableRow(ContactViewModel contact) {
+        final var nameCell = new TableCell.Link(
+                contact.name(),
+                contactDetails(contact.id()));
+        final var birthdateCell = new TableCell.Text(contact.birthdate());
+        final List<TableCell> cells = List.of(nameCell, birthdateCell, ARROW_CELL);
+        return new TableRow(cells);
     }
 }

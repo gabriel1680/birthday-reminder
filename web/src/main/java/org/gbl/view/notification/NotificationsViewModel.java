@@ -1,6 +1,5 @@
 package org.gbl.view.notification;
 
-import java.util.Collection;
+import org.gbl.view.common.table.Table;
 
-public record NotificationsViewModel(int total, Collection<NotificationViewModel> notifications) {
-}
+public record NotificationsViewModel(int total, Table table) {}
