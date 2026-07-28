@@ -1,4 +1,4 @@
-package org.gbl.presenter;
+package org.gbl.view.presenter;
 
 import org.gbl.common.notification.NotificationResponse;
 import org.gbl.view.components.table.Table;

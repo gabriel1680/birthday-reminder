@@ -1,4 +1,4 @@
-package org.gbl.presenter;
+package org.gbl.view.presenter;
 
 import org.gbl.common.gateway.ContactResponse;
 import org.gbl.view.contacts.ContactViewModel;

@@ -1,8 +1,8 @@
 package org.gbl.controller;
 
 import io.javalin.http.Context;
-import org.gbl.presenter.UpcomingBirthdaysPresenter;
 import org.gbl.service.ContactsService;
+import org.gbl.view.presenter.UpcomingBirthdaysPresenter;
 
 import java.time.ZoneId;
 

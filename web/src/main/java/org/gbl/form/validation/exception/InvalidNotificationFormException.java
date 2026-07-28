@@ -1,6 +1,6 @@
-package org.gbl.exception;
+package org.gbl.form.validation.exception;
 
-import org.gbl.validation.CreateNotificationValidation;
+import org.gbl.form.validation.CreateNotificationValidation;
 
 public class InvalidNotificationFormException extends RuntimeException {
 

@@ -1,6 +1,7 @@
 package org.gbl.validation;
 
 import org.gbl.form.CreateNotificationForm;
+import org.gbl.form.validation.CreateNotificationValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

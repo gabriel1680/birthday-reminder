@@ -1,4 +1,4 @@
-package org.gbl.validation;
+package org.gbl.form.validation;
 
 import org.gbl.form.CreateNotificationForm;
 

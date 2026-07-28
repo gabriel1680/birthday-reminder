@@ -2,10 +2,10 @@ package org.gbl.controller;
 
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
-import org.gbl.exception.InvalidNotificationFormException;
 import org.gbl.form.CreateNotificationForm;
-import org.gbl.presenter.NotificationsPresenter;
+import org.gbl.form.validation.exception.InvalidNotificationFormException;
 import org.gbl.service.NotificationService;
+import org.gbl.view.presenter.NotificationsPresenter;
 
 import static org.gbl.config.JTEPages.NOTIFICATION_CREATE_PAGE;
 import static org.gbl.config.JTEPages.NOTIFICATION_DETAILS_PAGE;

@@ -1,6 +1,6 @@
-package org.gbl.exception;
+package org.gbl.form.validation.exception;
 
-import org.gbl.validation.CreateContactValidation;
+import org.gbl.form.validation.CreateContactValidation;
 
 public class InvalidContactFormException extends RuntimeException {
 
