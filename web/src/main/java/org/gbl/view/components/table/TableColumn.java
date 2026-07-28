@@ -1,3 +1,3 @@
-package org.gbl.view.common.table;
+package org.gbl.view.components.table;
 
 public record TableColumn(String label) {}

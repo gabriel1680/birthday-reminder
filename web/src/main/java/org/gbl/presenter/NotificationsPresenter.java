@@ -1,10 +1,10 @@
 package org.gbl.presenter;
 
 import org.gbl.common.notification.NotificationResponse;
-import org.gbl.view.common.table.Table;
-import org.gbl.view.common.table.TableCell;
-import org.gbl.view.common.table.TableColumn;
-import org.gbl.view.common.table.TableRow;
+import org.gbl.view.components.table.Table;
+import org.gbl.view.components.table.TableCell;
+import org.gbl.view.components.table.TableColumn;
+import org.gbl.view.components.table.TableRow;
 import org.gbl.view.notification.CreateNotificationViewModel;
 import org.gbl.view.notification.NotificationViewModel;
 import org.gbl.view.notification.NotificationsViewModel;

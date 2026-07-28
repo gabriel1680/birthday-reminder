@@ -1,5 +1,5 @@
 @import org.gbl.config.Routes
-@import org.gbl.view.common.table.Table
+@import org.gbl.view.components.table.Table
 
 @param int totalContacts
 @param Table table

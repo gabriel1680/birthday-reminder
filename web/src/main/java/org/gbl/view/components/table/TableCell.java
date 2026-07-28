@@ -1,4 +1,4 @@
-package org.gbl.view.common.table;
+package org.gbl.view.components.table;
 
 public sealed interface TableCell {
 

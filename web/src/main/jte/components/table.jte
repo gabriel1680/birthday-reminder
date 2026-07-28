@@ -1,6 +1,6 @@
-@import org.gbl.view.common.table.TableCell
+@import org.gbl.view.components.table.TableCell
 
-@param org.gbl.view.common.table.Table table
+@param org.gbl.view.components.table.Table table
 
 <div class="data-list__table-wrapper">
     <table class="data-list__table">
